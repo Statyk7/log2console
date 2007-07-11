@@ -400,6 +400,9 @@ namespace Log2Console
 
         private void copyLogDetailBtn_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrEmpty(logDetailTextBox.Text))
+                return;
+
             Clipboard.SetText(logDetailTextBox.Text);
         }
 
