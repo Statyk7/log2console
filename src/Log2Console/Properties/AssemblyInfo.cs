@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Log2Console")]
 [assembly: AssemblyDescription("Universal Logging Console compatible with different Logging Services: log4net, log4j, log4cpp.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Statyk7")]
+[assembly: AssemblyCompany("Remy Baudet")]
 [assembly: AssemblyProduct("Log2Console")]
-[assembly: AssemblyCopyright("Copyright © Statyk7 2007")]
+[assembly: AssemblyCopyright("Copyright © Remy Baudet 2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("0.1.2607.0")]
-[assembly: AssemblyFileVersion("0.1.2607.0")]
+[assembly: AssemblyVersion("0.1.2807.0")]
+[assembly: AssemblyFileVersion("0.1.2807.0")]

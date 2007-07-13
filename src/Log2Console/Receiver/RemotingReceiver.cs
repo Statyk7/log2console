@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Collections;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
@@ -8,27 +10,18 @@ using log4net.Appender;
 using log4net.Core;
 
 using Log2Console.Log;
-using System.ComponentModel;
-using System.Collections;
 
 
 namespace Log2Console.Receiver
 {
-    class RemotingReceiver : MarshalByRefObject, RemotingAppender.IRemoteLoggingSink, IReceiver
+    public class RemotingReceiver : BaseReceiver, RemotingAppender.IRemoteLoggingSink
     {
 		private const string RemotingReceiverChannelName = "RemotingReceiverChannel";
 
 		private string _sinkName = "LoggingSink";
 		private int _port = 7070;
 
-        private ILogMessageNotifiable _notifiable = null;
-
 		private IChannel _channel = null;
-
-
-        public RemotingReceiver()
-        {
-        }
 
 
 		[DisplayName("Remote Sink Name")]
@@ -48,7 +41,7 @@ namespace Log2Console.Receiver
 
         #region IReceiver Members
 
-		public void Initialize()
+        public override void Initialize()
 		{
 			// Channel already open?
 			_channel = ChannelServices.GetChannel(RemotingReceiverChannelName);
@@ -97,22 +90,12 @@ namespace Log2Console.Receiver
 			}
 		}
 
-		public void Terminate()
+        public override void Terminate()
 		{
 			if (_channel != null)
 				ChannelServices.UnregisterChannel(_channel);
 			_channel = null;
 		}
-
-        public void Attach(ILogMessageNotifiable notifiable)
-        {
-            _notifiable = notifiable;
-        }
-
-        public void Detach()
-        {
-            _notifiable = null;
-        }
 
         #endregion
 
@@ -164,7 +147,7 @@ namespace Log2Console.Receiver
             logMsg.ThreadName = logEvent.ThreadName;
             logMsg.Message = logEvent.RenderedMessage;
             logMsg.TimeStamp = logEvent.TimeStamp;
-            logMsg.Level = logEvent.Level.Value;
+            logMsg.Level = LogUtils.GetLogLevelInfo(logEvent.Level.Value);
 
             return logMsg;
         }
