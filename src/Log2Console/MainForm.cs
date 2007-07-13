@@ -87,9 +87,11 @@ namespace Log2Console
 
         private void ApplySettings(bool noCheck)
         {
-			this.Opacity = (double)UserSettings.Instance.Transparency / 100;
+            this.Opacity = (double)UserSettings.Instance.Transparency / 100;
+            this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
+
 			this.TopMost = UserSettings.Instance.AlwaysOnTop;
-			this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
+            pinOnTopBtn.Checked = UserSettings.Instance.AlwaysOnTop;
 
 			logListView.Font = UserSettings.Instance.LogListFont;
 			logDetailTextBox.Font = UserSettings.Instance.LogDetailFont;
@@ -480,6 +482,15 @@ namespace Log2Console
 			ZoomControlFont(logDetailTextBox, true);
         }
 
+        private void pinOnTopBtn_Click(object sender, EventArgs e)
+        {
+            // Toggle check state
+            pinOnTopBtn.Checked = !pinOnTopBtn.Checked;
+
+            // Save and apply setting
+            UserSettings.Instance.AlwaysOnTop = pinOnTopBtn.Checked;
+            this.TopMost = pinOnTopBtn.Checked;
+        }
 
 		private void ZoomControlFont(Control ctrl, bool zoomIn)
 		{
@@ -543,6 +554,7 @@ namespace Log2Console
 				_lastHighlightedLogger = null;
 			}
 		}
+
     }
 
 }

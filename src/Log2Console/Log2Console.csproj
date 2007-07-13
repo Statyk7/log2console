@@ -15,6 +15,10 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
     <PublishUrl>ftp://remserver/htdocs/log2console/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -32,10 +36,6 @@
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationVersion>0.2.2807.%2a</ApplicationVersion>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -144,20 +144,21 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="res\back16.png" />
-    <Content Include="res\close16.png" />
-    <Content Include="res\configure16.png" />
-    <Content Include="res\delete16.png" />
-    <Content Include="res\deletefile16.png" />
-    <Content Include="res\documentsorcopy16.png" />
-    <Content Include="res\find16.png" />
-    <Content Include="res\gotoapp16.png" />
-    <Content Include="res\infoabout16.png" />
-    <Content Include="res\next16.png" />
-    <Content Include="res\window16.png" />
-    <Content Include="res\windowb.ico" />
-    <Content Include="res\zoomin16.png" />
-    <Content Include="res\zoomout16.png" />
+    <None Include="res\back16.png" />
+    <None Include="res\cd16.png" />
+    <None Include="res\close16.png" />
+    <None Include="res\configure16.png" />
+    <None Include="res\delete16.png" />
+    <None Include="res\deletefile16.png" />
+    <None Include="res\documentsorcopy16.png" />
+    <None Include="res\find16.png" />
+    <None Include="res\gotoapp16.png" />
+    <None Include="res\infoabout16.png" />
+    <None Include="res\next16.png" />
+    <None Include="res\window16.png" />
+    <None Include="res\windowb.ico" />
+    <None Include="res\zoomin16.png" />
+    <None Include="res\zoomout16.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -165,134 +166,6 @@
       <ProductName>.NET Framework 2.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <PublishFile Include="res\back16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\close16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\configure16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\delete16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\deletefile16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\documentsorcopy16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\find16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\gotoapp16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\infoabout16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\next16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\window16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\windowb.ico">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\zoomin16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="res\zoomout16.png">
-      <Visible>False</Visible>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <FileType>File</FileType>
-    </PublishFile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
