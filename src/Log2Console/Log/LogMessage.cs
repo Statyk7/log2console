@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Log2Console.Settings;
 
@@ -85,7 +86,32 @@ namespace Log2Console.Log
 					return InvalidLogLevel;
 				return LogLevelInfos[level];
 			}
-		}
+        }
+
+        internal LogLevelInfo this[LogLevel logLevel]
+        {
+            get
+            {
+                int level = (int) logLevel;
+                if ((level < (int)LogLevel.Trace) || (level > (int)LogLevel.Fatal))
+                    return InvalidLogLevel;
+                return LogLevelInfos[level];
+            }
+        }
+
+        internal LogLevelInfo this[string level]
+        {
+            get
+            {
+                foreach (LogLevelInfo info in LogLevelInfos)
+                {
+                    if (info.Name.Equals(level, StringComparison.InvariantCultureIgnoreCase))
+                        return info;
+                }
+                return InvalidLogLevel;
+            }
+        }
+
 	}
 
     public static class LogUtils
@@ -127,7 +153,7 @@ namespace Log2Console.Log
 		/// <summary>
 		/// Log Level.
 		/// </summary>
-		public int Level;
+		public LogLevelInfo Level;
 		/// <summary>
 		/// Log Message.
 		/// </summary>
@@ -140,5 +166,9 @@ namespace Log2Console.Log
 		/// Time Stamp.
 		/// </summary>
 		public DateTime TimeStamp;
+        /// <summary>
+        /// Properties collection.
+        /// </summary>
+        public Dictionary<string, string> Properties = new Dictionary<string, string>();
     }
 }

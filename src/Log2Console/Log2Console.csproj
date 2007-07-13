@@ -119,9 +119,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Receiver\BaseReceiver.cs" />
     <Compile Include="Receiver\IReceiver.cs" />
     <Compile Include="Receiver\ReceiverFactory.cs" />
     <Compile Include="Receiver\RemotingReceiver.cs" />
+    <Compile Include="Receiver\UdpReceiver.cs" />
     <Compile Include="Settings\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

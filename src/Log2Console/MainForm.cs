@@ -66,7 +66,8 @@ namespace Log2Console
 
 
             // Create a Remoting Receiver
-            _receiver = new RemotingReceiver();
+            //_receiver = new RemotingReceiver();
+            _receiver = new UdpReceiver();
 			_receiver.Initialize();
             _receiver.Attach(this);
 
@@ -330,7 +331,7 @@ namespace Log2Console
 			if (logMsgItem == null)
 				return;
 
-			LogLevelInfo llInfo = LogUtils.GetLogLevelInfo(logMsgItem.Message.Level);
+			LogLevelInfo llInfo = logMsgItem.Message.Level;
 
 			// Store the text to avoid editing without settings the control
 			// as readonly... kind of ugly trick...

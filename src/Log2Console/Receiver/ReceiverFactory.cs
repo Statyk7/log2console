@@ -22,6 +22,11 @@ namespace Log2Console.Receiver
 			// Remoting Receiver
 			Type type = typeof(RemotingReceiver);
 			_receiverTypes.Add(type.FullName, type);
+            
+            // UDP Receiver
+			type = typeof(UdpReceiver);
+			_receiverTypes.Add(type.FullName, type);
+
 		}
 
 		public static ReceiverFactory Instance

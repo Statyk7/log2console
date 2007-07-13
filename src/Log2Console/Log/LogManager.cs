@@ -440,20 +440,19 @@ namespace Log2Console.Log
 			Message = logMsg;
 
 			// Create List View Item
-			LogLevelInfo llInfo = LogUtils.GetLogLevelInfo(logMsg.Level);
 			Item = new ListViewItem(logMsg.TimeStamp.ToString());
-			Item.SubItems.Add(llInfo.Name);
+            Item.SubItems.Add(logMsg.Level.Name);
 			Item.SubItems.Add(Parent.Name);
 			Item.SubItems.Add(logMsg.ThreadName);
 			Item.SubItems.Add(logMsg.Message);
 			Item.ToolTipText = logMsg.Message;
-			Item.ForeColor = llInfo.Color;
+            Item.ForeColor = logMsg.Level.Color;
 			Item.Tag = this;
 		}
 
 		internal bool IsLevelInRange()
 		{
-			return (Message.Level >= UserSettings.Instance.LogLevelInfo.RangeMax);
+			return (Message.Level.RangeMax >= UserSettings.Instance.LogLevelInfo.RangeMax);
 		}
 	}
 
