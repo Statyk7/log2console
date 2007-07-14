@@ -1,28 +1,28 @@
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Xml;
 
 using Log2Console.Log;
 
 
 namespace Log2Console.Receiver
 {
+    [Serializable]
     public class UdpReceiver : BaseReceiver
     {
-        static readonly DateTime s1970 = new DateTime(1970, 1, 1);
-
+        [NonSerialized]
         private Thread _worker = null;
+        [NonSerialized]
         private UdpClient _udpClient = null;
+        [NonSerialized]
         private IPEndPoint _remoteEndPoint = null;
 
 		private int _port = 7071;
 
 
+        [Category("Configuration")]
 		[DisplayName("UDP Port Number")]
 		public int Port
 		{
@@ -32,6 +32,21 @@ namespace Log2Console.Receiver
 
 
         #region IReceiver Members
+
+        [Browsable(false)]
+        public override string SampleClientConfig
+        {
+            get
+            {
+                return
+                    "Configuration for log4net:" + Environment.NewLine +
+                    "<appender name=\"UdpAppender\" type=\"log4net.Appender.UdpAppender\">" + Environment.NewLine +
+                    "    <remoteAddress value=\"localhost\" />" + Environment.NewLine +
+                    "    <remotePort value=\"7071\" />" + Environment.NewLine +
+                    "    <layout type=\"log4net.Layout.XmlLayoutSchemaLog4j\" />" + Environment.NewLine +
+                    "</appender>";
+            }
+        }
 
         public override void Initialize()
         {
@@ -79,7 +94,7 @@ namespace Log2Console.Receiver
                     if (_notifiable == null)
                         continue;
 
-                    LogMessage logMsg = CreateLogMessage(loggingEvent);
+                    LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "UdpLogger");
                     _notifiable.Notify(logMsg);
                 }
                 catch (Exception ex)
@@ -90,89 +105,5 @@ namespace Log2Console.Receiver
             }
         }
 
-
-        /// <summary>
-        /// Here we expect the log event to use the log4j schema.
-        /// Sample:
-        ///     <log4j:event logger="Statyk7.Another.Name.DummyManager" timestamp="1184286222308" level="ERROR" thread="1">
-        ///         <log4j:message>This is an Message</log4j:message>
-        ///         <log4j:properties>
-        ///             <log4j:data name="log4jmachinename" value="remserver" />
-        ///             <log4j:data name="log4net:HostName" value="remserver" />
-        ///             <log4j:data name="log4net:UserName" value="REMSERVER\Statyk7" />
-        ///             <log4j:data name="log4japp" value="Test.exe" />
-        ///         </log4j:properties>
-        ///     </log4j:event>
-        /// </summary>
-        /// 
-        /// Partial implementation taken from: http://geekswithblogs.net/kobush/archive/2006/04/20/75717.aspx
-        /// 
-        protected static LogMessage CreateLogMessage(string logEvent)
-        {
-            LogMessage logMsg = new LogMessage();
-            
-            try
-            {
-                NameTable nt = new NameTable();
-                XmlNamespaceManager nsmanager = new XmlNamespaceManager(nt);
-                nsmanager.AddNamespace("log4j", "http://jakarta.apache.org/log4j/");
-                XmlParserContext context =
-                    new XmlParserContext(nt, nsmanager, "elem", XmlSpace.None, Encoding.ASCII);
-
-                XmlTextReader reader = new XmlTextReader(logEvent, XmlNodeType.Element, context);
-                reader.Read();
-                reader.MoveToContent();
-
-                logMsg.LoggerName = reader.GetAttribute("logger");
-                logMsg.Level = LogLevels.Instance[reader.GetAttribute("level")];
-                logMsg.ThreadName = reader.GetAttribute("thread");
-
-                long timeStamp;
-                if (long.TryParse(reader.GetAttribute("timestamp"), out timeStamp))
-                    logMsg.TimeStamp = s1970.AddMilliseconds(timeStamp).ToLocalTime();
-
-                int eventDepth = reader.Depth;
-                reader.Read();
-                while (reader.Depth > eventDepth)
-                {
-                    if (reader.MoveToContent() == XmlNodeType.Element)
-                    {
-                        switch (reader.Name)
-                        {
-                            case "log4j:message":
-                                logMsg.Message = reader.ReadString();
-                                break;
-                            case "log4j:throwable":
-                                reader.ReadString();
-                                break;
-                            case "log4j:locationInfo":
-                                break;
-                            case "log4j:properties":
-                                reader.Read();
-                                while (reader.MoveToContent() == XmlNodeType.Element
-                                       && reader.Name == "log4j:data")
-                                {
-                                    string name = reader.GetAttribute("name");
-                                    string value = reader.GetAttribute("value");
-                                    logMsg.Properties[name] = value;
-                                    reader.Read();
-                                }
-                                break;
-                        }
-                    }
-                    reader.Read();
-                }
-            }
-            catch (Exception ex)
-            {
-                logMsg.LoggerName = "UdpReceiverLogger";
-                logMsg.ThreadName = String.Empty;
-                logMsg.Message = logEvent;
-                logMsg.TimeStamp = DateTime.Now;
-                logMsg.Level = LogLevels.Instance[LogLevel.Info];
-            }
-
-            return logMsg;
-        }
     }
 }

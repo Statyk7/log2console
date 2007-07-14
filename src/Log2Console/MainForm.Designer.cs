@@ -216,6 +216,7 @@ namespace Log2Console
             // toolStripLabel4
             // 
             this.toolStripLabel4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripLabel4.Enabled = false;
             this.toolStripLabel4.Image = global::Log2Console.Properties.Resources.find16;
             this.toolStripLabel4.Name = "toolStripLabel4";
             this.toolStripLabel4.Size = new System.Drawing.Size(16, 22);
@@ -223,6 +224,7 @@ namespace Log2Console
             // 
             // searchTextBox
             // 
+            this.searchTextBox.Enabled = false;
             this.searchTextBox.Margin = new System.Windows.Forms.Padding(1, 1, 1, 0);
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(100, 24);
@@ -232,6 +234,7 @@ namespace Log2Console
             // searchPrevBtn
             // 
             this.searchPrevBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.searchPrevBtn.Enabled = false;
             this.searchPrevBtn.Image = global::Log2Console.Properties.Resources.back16;
             this.searchPrevBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.searchPrevBtn.Name = "searchPrevBtn";
@@ -242,6 +245,7 @@ namespace Log2Console
             // searchNextBtn
             // 
             this.searchNextBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.searchNextBtn.Enabled = false;
             this.searchNextBtn.Image = global::Log2Console.Properties.Resources.next16;
             this.searchNextBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.searchNextBtn.Name = "searchNextBtn";

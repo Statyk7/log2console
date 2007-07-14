@@ -1,12 +1,11 @@
 using System;
 using System.IO;
-using System.Xml;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.Serialization.Formatters.Binary;
 
 using Log2Console.Log;
-using System.Xml.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using Log2Console.Receiver;
 
 
 namespace Log2Console.Settings
@@ -47,7 +46,8 @@ namespace Log2Console.Settings
 		private Color _errorLevelColor = DefaultErrorLevelColor;
 		private Color _fatalLevelColor = DefaultFatalLevelColor;
 
-		private LogLevelInfo _logLevelInfo;
+        private LogLevelInfo _logLevelInfo;
+        private IReceiver _receiver = null;
 
 
 		private UserSettings()
@@ -91,8 +91,18 @@ namespace Log2Console.Settings
 			}
         }
 
+        public void Close()
+        {
+            if (_receiver != null)
+            {
+                _receiver.Detach();
+                _receiver.Terminate();
+                _receiver = null;
+            }
+        }
 
-        [Category("Appearance")]
+
+	    [Category("Appearance")]
         [Description("Hides the taskbar icon, only the tray icon will remain visible.")]
         [DisplayName("Hide Taskbar Icon")]
         public bool HideTaskbarIcon
@@ -253,10 +263,21 @@ namespace Log2Console.Settings
 		/// <summary>
 		/// This setting is not available through the Settings PropertyGrid.
 		/// </summary>
+		[Browsable(false)]
 		internal LogLevelInfo LogLevelInfo
 		{
 			get { return _logLevelInfo; }
 			set { _logLevelInfo = value; }
+		}
+
+		/// <summary>
+		/// This setting is not available through the Settings PropertyGrid.
+        /// </summary>
+        [Browsable(false)]
+        internal IReceiver Receiver
+		{
+            get { return _receiver; }
+            set { _receiver = value; }
 		}
 
     }

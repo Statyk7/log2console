@@ -11,7 +11,7 @@ namespace Log2Console.Settings
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm(UserSettings userSettings, IReceiver receiver)
+        public SettingsForm(UserSettings userSettings)
         {
             InitializeComponent();
 
@@ -23,34 +23,43 @@ namespace Log2Console.Settings
 			foreach (KeyValuePair<string, Type>  kvp in receiverTypes)
 				receiverTypeComboBox.Items.Add(kvp.Key);
 
-			if (receiver != null)
+			if (userSettings.Receiver != null)
 			{
-				Receiver = receiver;
-
-				Type receiverType = receiver.GetType();
+				Type receiverType = userSettings.Receiver.GetType();
 				receiverTypeComboBox.SelectedIndex = 
 					receiverTypeComboBox.FindString(receiverType.FullName);
 			}
+
+            // Set the event handler only after having set the receiver
+            this.receiverTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.receiverTypeComboBox_SelectedIndexChanged);
         }
 
 
         public UserSettings UserSettings
         {
             get { return settingsPropertyGrid.SelectedObject as UserSettings; }
-            set { settingsPropertyGrid.SelectedObject = value; }
+            set
+            {
+                settingsPropertyGrid.SelectedObject = value;
+                if (value.Receiver != null)
+                    SetReceiver(value.Receiver);
+            }
         }
 
-		public IReceiver Receiver
-		{
-			get { return receiverPropertyGrid.SelectedObject as IReceiver; }
-			set { receiverPropertyGrid.SelectedObject = value; }
-		}
+        private void SetReceiver(IReceiver receiver)
+        {
+            if (receiver != null)
+                sampleClientConfigTextBox.Text = receiver.SampleClientConfig;
+            receiverPropertyGrid.SelectedObject = receiver;
 
+            if (UserSettings != null)
+                UserSettings.Receiver = receiver;
+        }
 
 		private void receiverTypeComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			if ((Receiver != null) && 
-				Receiver.GetType().FullName.Equals(receiverTypeComboBox.SelectedText))
+            if ((UserSettings != null) && (UserSettings.Receiver != null) &&
+                UserSettings.Receiver.GetType().FullName.Equals(receiverTypeComboBox.SelectedText))
 			{
 				return;
 			}
@@ -59,7 +68,7 @@ namespace Log2Console.Settings
 			IReceiver receiver =
 				ReceiverFactory.Instance.Create(receiverTypeComboBox.Text);
 
-			Receiver = receiver;
+            SetReceiver(receiver);
 		}
     }
 }

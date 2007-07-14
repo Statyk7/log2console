@@ -27,8 +27,6 @@ namespace Log2Console
 		private LoggerItem _lastHighlightedLogger = null;
 		private LoggerItem _lastHighlightedLogMsgs = null;
 
-        private IReceiver _receiver = null;
-
 		delegate void NotifyLogMsgCallback(LogMessage logMsg);
 		delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
 
@@ -65,16 +63,9 @@ namespace Log2Console
             _loggersPanelFloaty.Docking += new EventHandler(floaty_Docking);
 
 
-            // Create a Remoting Receiver
-            //_receiver = new RemotingReceiver();
-            _receiver = new UdpReceiver();
-			_receiver.Initialize();
-            _receiver.Attach(this);
-
-
             // Settings
 			UserSettings.Load();
-            ApplySettings(true);
+            ApplySettings(true, true);
         }
 
         protected void floaty_Docking(object sender, EventArgs e)
@@ -85,7 +76,7 @@ namespace Log2Console
         }
 
 
-        private void ApplySettings(bool noCheck)
+        private void ApplySettings(bool noCheck, bool initReceiver)
         {
             this.Opacity = (double)UserSettings.Instance.Transparency / 100;
             this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
@@ -130,18 +121,30 @@ namespace Log2Console
 					}
 				}
 			}
+
+            if (initReceiver && (UserSettings.Instance.Receiver != null))
+            {
+                try
+                {
+                    UserSettings.Instance.Receiver.Initialize();
+                    UserSettings.Instance.Receiver.Attach(this);
+                }
+                catch (Exception ex)
+                {
+                    try {
+                        UserSettings.Instance.Receiver.Terminate();
+                    } catch {}
+                    UserSettings.Instance.Receiver = null;
+
+                    ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
+                }
+            }
         }
 
         private void Quit()
 		{
-			UserSettings.Instance.Save();
-
-			if (_receiver != null)
-			{
-				_receiver.Detach();
-				_receiver.Terminate();
-				_receiver = null;
-			}
+            UserSettings.Instance.Save();
+            UserSettings.Instance.Close();
 
             Close();
         }
@@ -177,54 +180,34 @@ namespace Log2Console
 
         private void ShowSettingsForm()
         {
-			SettingsForm form = new SettingsForm(UserSettings.Instance, _receiver);
+            IReceiver prevReceiver = UserSettings.Instance.Receiver;
+
+			SettingsForm form = new SettingsForm(UserSettings.Instance);
 			if (form.ShowDialog(this) != DialogResult.OK)
 				return;
 
 			// TODO: Manage Cancel!! (copy UserSettings obj)
 
-			//UserSettings.Instance = form.UserSettings;
-			UserSettings.Instance.Save();
-            ApplySettings(false);
-
-
-			// TODO: Terminate Receiver settings...
-			return;
-
-			if (_receiver == form.Receiver)
-				return;
-
-			if (_receiver != null)
+            // Terminate previous receiver
+            bool receiverHasChanged = (prevReceiver != UserSettings.Instance.Receiver);
+            if (receiverHasChanged && (prevReceiver != null))
 			{
 				try
 				{
-					_receiver.Detach();
-					_receiver.Terminate();
+					prevReceiver.Detach();
+					prevReceiver.Terminate();
 				}
 				catch (Exception ex)
 				{
 					ShowErrorBox("Failed to Terminate Receiver: " + ex.Message);
 				}
 
-				_receiver = null;
+				prevReceiver = null;
 			}
 
-			if (form.Receiver != null)
-			{
-				try
-				{
-					_receiver = form.Receiver;
-
-					_receiver.Initialize();
-					_receiver.Attach(this);
-				}
-				catch (Exception ex)
-				{
-					_receiver = null;
-
-					ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
-				}
-			}
+			//UserSettings.Instance = form.UserSettings;
+			UserSettings.Instance.Save();
+            ApplySettings(false, receiverHasChanged);
 		}
 
         private void ShowAboutForm()
