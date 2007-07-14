@@ -14,16 +14,19 @@ using Log2Console.Log;
 
 namespace Log2Console.Receiver
 {
+    [Serializable]
     public class RemotingReceiver : BaseReceiver, RemotingAppender.IRemoteLoggingSink
     {
 		private const string RemotingReceiverChannelName = "RemotingReceiverChannel";
 
+        [NonSerialized]
+        private IChannel _channel = null;
+
 		private string _sinkName = "LoggingSink";
 		private int _port = 7070;
 
-		private IChannel _channel = null;
 
-
+        [Category("Configuration")]
 		[DisplayName("Remote Sink Name")]
 		public string SinkName
 		{
@@ -31,6 +34,7 @@ namespace Log2Console.Receiver
 			set { _sinkName = value; }
 		}
 
+        [Category("Configuration")]
 		[DisplayName("Remote TCP Port Number")]
 		public int Port
 		{
@@ -40,6 +44,24 @@ namespace Log2Console.Receiver
 
 
         #region IReceiver Members
+
+        [Browsable(false)]
+        public override string SampleClientConfig
+        {
+            get
+            {
+                return
+                    "Configuration for log4net:" + Environment.NewLine +
+                    "<appender name=\"RemotingAppender\" type=\"log4net.Appender.RemotingAppender\" >" + Environment.NewLine +
+                    "    <!--The remoting URL to the remoting server object-->" + Environment.NewLine +
+                    "    <sink value=\"tcp://localhost:7070/LoggingSink\" />" + Environment.NewLine +
+                    "    <!--Send all events, do not discard events when the buffer is full-->" + Environment.NewLine +
+                    "    <lossy value=\"false\" />" + Environment.NewLine +
+                    "    <!--The number of events to buffer before sending-->" + Environment.NewLine +
+                    "    <bufferSize value=\"5\" />" + Environment.NewLine +
+                    "</appender>";
+            }
+        }
 
         public override void Initialize()
 		{

@@ -19,7 +19,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <PublishUrl>ftp://remserver/htdocs/log2console/</PublishUrl>
+    <PublishUrl>ftp://192.168.1.10/htdocs/log2console/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -29,10 +29,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://remstation.no-ip.com/log2console/</InstallUrl>
-    <SupportUrl>http://remstation.free.fr</SupportUrl>
+    <InstallUrl>http://192.168.1.10/log2console/</InstallUrl>
+    <SupportUrl>http://www.codeplex.com/log2console/Thread/List.aspx</SupportUrl>
     <ProductName>Log2Console</ProductName>
-    <PublisherName>Remy Baudet</PublisherName>
+    <PublisherName>Remy Baudet aka Statyk7</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationVersion>0.2.2807.%2a</ApplicationVersion>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -120,6 +120,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Receiver\BaseReceiver.cs" />
+    <Compile Include="Receiver\FileReceiver.cs" />
     <Compile Include="Receiver\IReceiver.cs" />
     <Compile Include="Receiver\ReceiverFactory.cs" />
     <Compile Include="Receiver\RemotingReceiver.cs" />
