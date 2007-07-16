@@ -19,7 +19,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <PublishUrl>ftp://192.168.1.10/htdocs/log2console/</PublishUrl>
+    <PublishUrl>ftp://remserver/htdocs/log2console/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -29,13 +29,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://192.168.1.10/log2console/</InstallUrl>
+    <InstallUrl>http://remstation.no-ip.com/log2console/</InstallUrl>
     <SupportUrl>http://www.codeplex.com/log2console/Thread/List.aspx</SupportUrl>
     <ProductName>Log2Console</ProductName>
     <PublisherName>Remy Baudet aka Statyk7</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationVersion>0.2.2807.%2a</ApplicationVersion>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetZone>LocalIntranet</TargetZone>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Log2Console.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,11 +56,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\log4net-1.2.10\bin\net\2.0\release\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -145,6 +152,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <BaseApplicationManifest Include="Properties\app.manifest" />
+    <None Include="Log2Console.snk" />
     <None Include="res\back16.png" />
     <None Include="res\cd16.png" />
     <None Include="res\close16.png" />

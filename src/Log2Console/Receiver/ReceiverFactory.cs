@@ -88,7 +88,7 @@ namespace Log2Console.Receiver
                     reader.Read();
                 }
             }
-            catch (Exception ex)
+            catch (Exception /*ex*/)
             {
                 // Create a simple log message with some default values
                 logMsg.LoggerName = defaultLogger;

@@ -13,7 +13,7 @@ namespace Log2Console.Log
 	/// </summary>
 	public class LoggerItem
 	{
-		private static readonly char LoggerSeparator = '.';
+		private const char LoggerSeparator = '.';
 
 
 		/// <summary>

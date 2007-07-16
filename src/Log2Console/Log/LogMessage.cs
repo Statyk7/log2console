@@ -19,11 +19,12 @@ namespace Log2Console.Log
     }
 
 	[Serializable]
-	public struct LogLevelInfo
+	public class LogLevelInfo
 	{
-		public LogLevel Level;
+	    public LogLevel Level;
 		public string Name;
 		public Color Color;
+	    public int Value;
 		public int RangeMin;
 		public int RangeMax;
 
@@ -36,14 +37,37 @@ namespace Log2Console.Log
 			RangeMax = RangeMin = 0;
 		}
 
-		public LogLevelInfo(LogLevel level, string name, Color color, int rangeMin, int rangeMax)
+		public LogLevelInfo(LogLevel level, string name, Color color, int value, int rangeMin, int rangeMax)
 		{
 			Level = level;
 			Name = name;
 			Color = color;
+		    Value = value;
 			RangeMin = rangeMin;
 			RangeMax = rangeMax;
 		}
+
+        public override bool Equals(object obj)
+        {
+            if (obj is LogLevelInfo)
+                return ((obj as LogLevelInfo) == this);
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
+        }
+
+        public static bool operator == (LogLevelInfo first, LogLevelInfo second)
+        {
+            return (first.Value == second.Value);
+        }
+
+        public static bool operator !=(LogLevelInfo first, LogLevelInfo second)
+        {
+            return (first.Value != second.Value);
+        }
 	}
 
 
@@ -60,12 +84,12 @@ namespace Log2Console.Log
 
 			LogLevelInfos = new LogLevelInfo[]
 			{
-				new LogLevelInfo(LogLevel.Trace, "Trace", UserSettings.DefaultTraceLevelColor, 0, 10000),
-				new LogLevelInfo(LogLevel.Debug, "Debug", UserSettings.DefaultDebugLevelColor, 10001, 30000),
-				new LogLevelInfo(LogLevel.Info, "Info", UserSettings.DefaultInfoLevelColor, 30001, 40000),
-				new LogLevelInfo(LogLevel.Warn, "Warning", UserSettings.DefaultWarnLevelColor, 40001, 60000),
-				new LogLevelInfo(LogLevel.Error, "Error", UserSettings.DefaultErrorLevelColor, 60001, 70000),
-				new LogLevelInfo(LogLevel.Fatal, "Fatal", UserSettings.DefaultFatalLevelColor, 70001, 110000),
+				new LogLevelInfo(LogLevel.Trace, "Trace", UserSettings.DefaultTraceLevelColor, 10000, 0, 10000),
+				new LogLevelInfo(LogLevel.Debug, "Debug", UserSettings.DefaultDebugLevelColor, 30000, 10001, 30000),
+				new LogLevelInfo(LogLevel.Info, "Info", UserSettings.DefaultInfoLevelColor, 40000, 30001, 40000),
+				new LogLevelInfo(LogLevel.Warn, "Warning", UserSettings.DefaultWarnLevelColor, 60000, 40001, 60000),
+				new LogLevelInfo(LogLevel.Error, "Error", UserSettings.DefaultErrorLevelColor, 70000, 60001, 70000),
+				new LogLevelInfo(LogLevel.Fatal, "Fatal", UserSettings.DefaultFatalLevelColor, 110000, 70001, 110000),
 			};
 		}
 

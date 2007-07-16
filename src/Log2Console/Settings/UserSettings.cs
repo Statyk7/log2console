@@ -24,7 +24,7 @@ namespace Log2Console.Settings
 		private const string SettingsFileName = "UserSettings.dat";
 
 		[NonSerialized]
-		private static UserSettings _instance = null;
+		private static UserSettings _instance;
 
         private bool _hideTaskbarIcon = false;
         private bool _notifyNewLogWhenHidden = true;

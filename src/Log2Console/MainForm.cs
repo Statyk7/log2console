@@ -68,7 +68,7 @@ namespace Log2Console
             ApplySettings(true, true);
         }
 
-        protected void floaty_Docking(object sender, EventArgs e)
+        private void floaty_Docking(object sender, EventArgs e)
         {
             // make sure the ZOrder remains intact
             logListView.BringToFront();
@@ -475,7 +475,7 @@ namespace Log2Console
             this.TopMost = pinOnTopBtn.Checked;
         }
 
-		private void ZoomControlFont(Control ctrl, bool zoomIn)
+		private static void ZoomControlFont(Control ctrl, bool zoomIn)
 		{
 			// Limit to a minimum size
 			float newSize = Math.Max(0.5f, ctrl.Font.SizeInPoints + (zoomIn ? +1 : -1));
