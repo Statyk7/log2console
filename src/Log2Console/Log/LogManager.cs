@@ -47,9 +47,9 @@ namespace Log2Console.Log
 		private ListView _logListView = null;
 
 		/// <summary>
-		/// Short Name of this Logger.
+		/// Short Name of this Logger (used as the node name).
 		/// </summary>
-		public string Name = String.Empty;
+        private string _name = String.Empty;
 		/// <summary>
 		/// Full Name (or "Path") of this Logger.
 		/// </summary>
@@ -120,6 +120,19 @@ namespace Log2Console.Log
 		}
 
 
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+
+                if (Node != null)
+                    Node.Text = _name;
+            }
+        }
+
 		internal bool Enabled
 		{
 			get { return _enabled; }
@@ -187,11 +200,12 @@ namespace Log2Console.Log
 
 				_highlightLogMessages = value;
 
-				Color color = value ? Color.LightBlue : Color.Transparent;
 
 				_logListView.BeginUpdate();
+
 				foreach (LogMessageItem item in LogMessages)
-					item.Item.BackColor = color;
+                    item.Highlight(value);
+
 				_logListView.EndUpdate();
 			}
 		}
@@ -328,7 +342,7 @@ namespace Log2Console.Log
 			return logger;
 		}
 
-		internal void AddLogMessage(LogMessage logMsg)
+		internal LogMessageItem AddLogMessage(LogMessage logMsg)
 		{
 			LogMessageItem item = new LogMessageItem(this, logMsg);
 			item.Enabled = Enabled;
@@ -367,6 +381,8 @@ namespace Log2Console.Log
 
 			// Done!
 			_logListView.EndUpdate();
+
+		    return item;
 		}
 
 		private void RemoveExtraLogMessages(int count)
@@ -397,6 +413,21 @@ namespace Log2Console.Log
 
 			_logListView.Items.Remove(item.Item);
 		}
+
+        internal void HighlightSearchedText(string str)
+        {
+            bool hasText = !String.IsNullOrEmpty(str);
+
+            _logListView.BeginUpdate();
+
+            foreach (LogMessageItem item in LogMessages)
+                item.HighlightSearchedText(hasText, str);
+
+            foreach (KeyValuePair<string, LoggerItem> kvp in Loggers)
+                kvp.Value.HighlightSearchedText(str);
+
+            _logListView.EndUpdate();
+        }
 	}
 
 
@@ -450,10 +481,24 @@ namespace Log2Console.Log
 			Item.Tag = this;
 		}
 
+        internal void Highlight(bool state)
+        {
+            Item.BackColor = state ? Color.LightBlue : Color.Transparent;
+        }
+
 		internal bool IsLevelInRange()
 		{
 			return (Message.Level.RangeMax >= UserSettings.Instance.LogLevelInfo.RangeMax);
 		}
+
+        internal void HighlightSearchedText(bool hasText, string str)
+        {
+            if (hasText && 
+                (Message.Message.IndexOf(str, StringComparison.InvariantCultureIgnoreCase) > 0))
+                Item.BackColor = Color.LightYellow;
+            else
+                Item.BackColor = Color.Transparent;
+        }
 	}
 
 
@@ -464,6 +509,8 @@ namespace Log2Console.Log
 
 		private LoggerItem _rootLoggerItem = null;
 		private Dictionary<string, LoggerItem> _fullPathLoggers = null;
+
+	    private string _searchedText = String.Empty;
 
 
 		private LogManager()
@@ -480,10 +527,16 @@ namespace Log2Console.Log
 			}
 		}
 
-		internal void Initialize(TreeView loggerTreeView, ListView logListView)
+        internal LoggerItem RootLoggerItem
+	    {
+	        get { return _rootLoggerItem; }
+	        set { _rootLoggerItem = value; }
+	    }
+
+	    internal void Initialize(TreeView loggerTreeView, ListView logListView)
 		{
 			// Root Logger
-			_rootLoggerItem = LoggerItem.CreateRootLoggerItem("Root", loggerTreeView, logListView);
+			RootLoggerItem = LoggerItem.CreateRootLoggerItem("Root", loggerTreeView, logListView);
 
 			// Quick Access Logger Collection
 			_fullPathLoggers = new Dictionary<string, LoggerItem>();
@@ -496,13 +549,13 @@ namespace Log2Console.Log
 		{
 			ClearLogMessages();
 
-			_rootLoggerItem.ClearAll();
+			RootLoggerItem.ClearAll();
 			_fullPathLoggers.Clear();
 		}
 
 		internal void ClearLogMessages()
 		{
-			_rootLoggerItem.ClearLogMessages();
+			RootLoggerItem.ClearLogMessages();
 		}
 
 
@@ -513,20 +566,36 @@ namespace Log2Console.Log
 			if (!_fullPathLoggers.TryGetValue(logMsg.LoggerName, out logger))
 			{
 				// Not found, create one
-				logger = _rootLoggerItem.GetOrCreateLogger(logMsg.LoggerName);
+				logger = RootLoggerItem.GetOrCreateLogger(logMsg.LoggerName);
 			}
 			if (logger == null)
 				throw new Exception("No Logger for this Log Message.");
 
-			logger.AddLogMessage(logMsg);
+			LogMessageItem logMsgItem = logger.AddLogMessage(logMsg);
+
+            // Contains searched text?
+            logMsgItem.HighlightSearchedText(!String.IsNullOrEmpty(_searchedText), _searchedText);
 		}
+
+
+        internal void HighlightSearchedText(string str)
+        {
+            _searchedText = str;
+
+            _rootLoggerItem.HighlightSearchedText(str);
+        }
 
 
 		internal void UpdateLogLevel()
 		{
-			if (_rootLoggerItem == null)
+			if (RootLoggerItem == null)
 				return;
-			_rootLoggerItem.UpdateLogLevel();
+			RootLoggerItem.UpdateLogLevel();
 		}
+
+        internal void SetRootLoggerName(string name)
+        {
+            RootLoggerItem.Name = name;
+        }
 	}
 }

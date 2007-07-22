@@ -19,6 +19,9 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetZone>LocalIntranet</TargetZone>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Log2Console.snk</AssemblyOriginatorKeyFile>
     <PublishUrl>ftp://remserver/htdocs/log2console/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -34,11 +37,8 @@
     <ProductName>Log2Console</ProductName>
     <PublisherName>Remy Baudet aka Statyk7</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationVersion>0.2.2807.%2a</ApplicationVersion>
+    <ApplicationVersion>0.2.2907.%2a</ApplicationVersion>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetZone>LocalIntranet</TargetZone>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Log2Console.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -176,6 +176,9 @@
       <ProductName>.NET Framework 2.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\burn16.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />

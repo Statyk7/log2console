@@ -42,9 +42,6 @@ namespace Log2Console
 
             levelComboBox.SelectedIndex = 0;
 
-            searchPrevBtn.Enabled = false;
-            searchNextBtn.Enabled = false;
-
 
 			// Init Log Manager Singleton
 			LogManager.Instance.Initialize(loggerTreeView, logListView);
@@ -122,21 +119,30 @@ namespace Log2Console
 				}
 			}
 
-            if (initReceiver && (UserSettings.Instance.Receiver != null))
+            if (initReceiver)
             {
-                try
+                if (UserSettings.Instance.Receiver == null)
                 {
-                    UserSettings.Instance.Receiver.Initialize();
-                    UserSettings.Instance.Receiver.Attach(this);
+                    ShowErrorBox("No Receiver has been set yet!\nGo to the Settings dialog and configure one.");
                 }
-                catch (Exception ex)
+                else 
                 {
-                    try {
-                        UserSettings.Instance.Receiver.Terminate();
-                    } catch {}
-                    UserSettings.Instance.Receiver = null;
+                    try
+                    {
+                        UserSettings.Instance.Receiver.Initialize();
+                        UserSettings.Instance.Receiver.Attach(this);
+                        LogManager.Instance.SetRootLoggerName(
+                            String.Format("Root [{0}]", UserSettings.Instance.Receiver));
+                    }
+                    catch (Exception ex)
+                    {
+                        try {
+                            UserSettings.Instance.Receiver.Terminate();
+                        } catch {}
+                        UserSettings.Instance.Receiver = null;
 
-                    ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
+                        ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
+                    }
                 }
             }
         }
@@ -429,20 +435,9 @@ namespace Log2Console
 
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
-            bool hasText = !String.IsNullOrEmpty(searchTextBox.Text);
+            RemovedLogMsgsHighlight();
 
-            searchPrevBtn.Enabled = hasText;
-            searchNextBtn.Enabled = hasText;
-        }
-
-        private void searchPrevBtn_Click(object sender, EventArgs e)
-        {
-            // TODO
-        }
-
-        private void searchNextBtn_Click(object sender, EventArgs e)
-        {
-            // TODO
+            LogManager.Instance.HighlightSearchedText(searchTextBox.Text);
         }
 
         private void zoomOutLogListBtn_Click(object sender, EventArgs e)

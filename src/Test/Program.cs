@@ -9,8 +9,8 @@ using log4net;
 
 namespace Test
 {
-	using Statyk7.Another.Name;
-	using Statyk7.Test;
+    using Company.Product.BusinessLogic;
+    using Company.Product.ServiceTester;
 
 
     class Program
@@ -62,7 +62,7 @@ namespace Test
 }
 
 
-namespace Statyk7.Another.Name
+namespace Company.Product.BusinessLogic
 {
 
 	public class DummyManager
@@ -89,7 +89,7 @@ namespace Statyk7.Another.Name
 	}
 }
 
-namespace Statyk7.Test
+namespace Company.Product.ServiceTester
 {
 
 	public class DummyTester
