@@ -494,7 +494,7 @@ namespace Log2Console.Log
         internal void HighlightSearchedText(bool hasText, string str)
         {
             if (hasText && 
-                (Message.Message.IndexOf(str, StringComparison.InvariantCultureIgnoreCase) > 0))
+                (Message.Message.IndexOf(str, StringComparison.InvariantCultureIgnoreCase) >= 0))
                 Item.BackColor = Color.LightYellow;
             else
                 Item.BackColor = Color.Transparent;
