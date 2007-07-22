@@ -13,9 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Log2Console", "Log2Console\
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "L2C_Setup", "L2C_Setup\L2C_Setup.vdproj", "{19438485-B918-42F2-8DC7-F352D24AC55E}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs04.codeplex.com/
 		SccLocalPath0 = .
@@ -25,6 +31,9 @@ Global
 		SccProjectUniqueName2 = Test\\Test.csproj
 		SccProjectName2 = Test
 		SccLocalPath2 = Test
+		SccProjectUniqueName3 = L2C_Setup\\L2C_Setup.vdproj
+		SccProjectName3 = L2C_Setup
+		SccLocalPath3 = L2C_Setup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +48,8 @@ Global
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19438485-B918-42F2-8DC7-F352D24AC55E}.Debug|Any CPU.ActiveCfg = Debug
+		{19438485-B918-42F2-8DC7-F352D24AC55E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

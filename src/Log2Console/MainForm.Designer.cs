@@ -42,8 +42,6 @@ namespace Log2Console
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.searchTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.searchPrevBtn = new System.Windows.Forms.ToolStripButton();
-            this.searchNextBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.logDetailsPanelToggleBtn = new System.Windows.Forms.ToolStripButton();
             this.loggersPanelToggleBtn = new System.Windows.Forms.ToolStripButton();
@@ -117,8 +115,6 @@ namespace Log2Console
             this.toolStripSeparator1,
             this.toolStripLabel4,
             this.searchTextBox,
-            this.searchPrevBtn,
-            this.searchNextBtn,
             this.toolStripSeparator9,
             this.logDetailsPanelToggleBtn,
             this.loggersPanelToggleBtn,
@@ -148,9 +144,11 @@ namespace Log2Console
             // 
             // toolStripLabel3
             // 
+            this.toolStripLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripLabel3.Image = global::Log2Console.Properties.Resources.burn16;
             this.toolStripLabel3.Name = "toolStripLabel3";
-            this.toolStripLabel3.Size = new System.Drawing.Size(34, 22);
-            this.toolStripLabel3.Text = "Level";
+            this.toolStripLabel3.Size = new System.Drawing.Size(16, 22);
+            this.toolStripLabel3.ToolTipText = "Log Level Filter";
             // 
             // levelComboBox
             // 
@@ -205,7 +203,7 @@ namespace Log2Console
             this.clearBtn.Name = "clearBtn";
             this.clearBtn.Size = new System.Drawing.Size(54, 22);
             this.clearBtn.Text = "Clear";
-            this.clearBtn.ToolTipText = "Clear All the Log Messages";
+            this.clearBtn.ToolTipText = "Clear Log Messages";
             this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
             // 
             // toolStripSeparator1
@@ -216,42 +214,19 @@ namespace Log2Console
             // toolStripLabel4
             // 
             this.toolStripLabel4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripLabel4.Enabled = false;
             this.toolStripLabel4.Image = global::Log2Console.Properties.Resources.find16;
             this.toolStripLabel4.Name = "toolStripLabel4";
             this.toolStripLabel4.Size = new System.Drawing.Size(16, 22);
             this.toolStripLabel4.Text = "toolStripLabel4";
+            this.toolStripLabel4.ToolTipText = "Search Text in Log Messages";
             // 
             // searchTextBox
             // 
-            this.searchTextBox.Enabled = false;
             this.searchTextBox.Margin = new System.Windows.Forms.Padding(1, 1, 1, 0);
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(100, 24);
-            this.searchTextBox.ToolTipText = "Enter a Text to Search";
+            this.searchTextBox.ToolTipText = "Search Text in Log Messages";
             this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
-            // 
-            // searchPrevBtn
-            // 
-            this.searchPrevBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.searchPrevBtn.Enabled = false;
-            this.searchPrevBtn.Image = global::Log2Console.Properties.Resources.back16;
-            this.searchPrevBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.searchPrevBtn.Name = "searchPrevBtn";
-            this.searchPrevBtn.Size = new System.Drawing.Size(23, 22);
-            this.searchPrevBtn.ToolTipText = "Find Previous";
-            this.searchPrevBtn.Click += new System.EventHandler(this.searchPrevBtn_Click);
-            // 
-            // searchNextBtn
-            // 
-            this.searchNextBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.searchNextBtn.Enabled = false;
-            this.searchNextBtn.Image = global::Log2Console.Properties.Resources.next16;
-            this.searchNextBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.searchNextBtn.Name = "searchNextBtn";
-            this.searchNextBtn.Size = new System.Drawing.Size(23, 22);
-            this.searchNextBtn.ToolTipText = "Find Next";
-            this.searchNextBtn.Click += new System.EventHandler(this.searchNextBtn_Click);
             // 
             // toolStripSeparator9
             // 
@@ -267,7 +242,7 @@ namespace Log2Console
             this.logDetailsPanelToggleBtn.Name = "logDetailsPanelToggleBtn";
             this.logDetailsPanelToggleBtn.Size = new System.Drawing.Size(62, 22);
             this.logDetailsPanelToggleBtn.Text = "Details";
-            this.logDetailsPanelToggleBtn.ToolTipText = "Toggle the Log Details Panel";
+            this.logDetailsPanelToggleBtn.ToolTipText = "Show/Hide Log Details";
             this.logDetailsPanelToggleBtn.Click += new System.EventHandler(this.logDetailsPanelToggleBtn_Click);
             // 
             // loggersPanelToggleBtn
@@ -279,7 +254,7 @@ namespace Log2Console
             this.loggersPanelToggleBtn.Name = "loggersPanelToggleBtn";
             this.loggersPanelToggleBtn.Size = new System.Drawing.Size(69, 22);
             this.loggersPanelToggleBtn.Text = "Loggers";
-            this.loggersPanelToggleBtn.ToolTipText = "Toggle the Loggers Panel";
+            this.loggersPanelToggleBtn.ToolTipText = "Show/Hide Loggers";
             this.loggersPanelToggleBtn.Click += new System.EventHandler(this.loggersPanelToggleBtn_Click);
             // 
             // toolStripSeparator3
@@ -389,7 +364,7 @@ namespace Log2Console
             // columnHeader5
             // 
             this.columnHeader5.Text = "Message";
-            this.columnHeader5.Width = 751;
+            this.columnHeader5.Width = 540;
             // 
             // timeColumnHeader
             // 
@@ -671,6 +646,7 @@ namespace Log2Console
             this.Controls.Add(this.loggerSplitter);
             this.Controls.Add(this.loggerPanel);
             this.Controls.Add(this.mainToolStrip);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Log2Console";
@@ -748,8 +724,6 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
         private System.Windows.Forms.ToolStripTextBox searchTextBox;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        private System.Windows.Forms.ToolStripButton searchPrevBtn;
-        private System.Windows.Forms.ToolStripButton searchNextBtn;
         private System.Windows.Forms.ToolStripButton zoomOutLogListBtn;
         private System.Windows.Forms.ToolStripButton zoomInLogListBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;

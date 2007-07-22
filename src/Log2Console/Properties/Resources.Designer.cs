@@ -74,6 +74,13 @@ namespace Log2Console.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap burn16 {
+            get {
+                object obj = ResourceManager.GetObject("burn16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap cd16 {
             get {
                 object obj = ResourceManager.GetObject("cd16", resourceCulture);

@@ -70,17 +70,27 @@ namespace Log2Console.Settings
 				return;
 			}
 
-			using (FileStream fs = new FileStream(SettingsFileName, FileMode.Open))
-			{
-				if (fs.Length > 0)
-				{
-					BinaryFormatter bf = new BinaryFormatter();
-					_instance = bf.Deserialize(fs) as UserSettings;
-				}
-				else
-					_instance = new UserSettings();
-			}
-        }
+            try
+            {
+                using (FileStream fs = new FileStream(SettingsFileName, FileMode.Open))
+                {
+                    if (fs.Length > 0)
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        _instance = bf.Deserialize(fs) as UserSettings;
+                    }
+                    else
+                        _instance = new UserSettings();
+                }
+            }
+            catch (Exception)
+            {
+                // The settings file might be corrupted, delete it...
+                try {
+                    File.Delete(SettingsFileName);
+                } catch {}
+            }
+		}
         
         public void Save()
 		{
