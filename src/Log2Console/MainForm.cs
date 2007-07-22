@@ -157,11 +157,13 @@ namespace Log2Console
 
 		private void ClearLogMessages()
 		{
+		    SetLogMessageDetail(null);
 			LogManager.Instance.ClearLogMessages();
 		}
 
 		private void ClearLoggers()
-		{
+        {
+            SetLogMessageDetail(null);
 			LogManager.Instance.ClearAll();
 		}
 
@@ -312,31 +314,36 @@ namespace Log2Console
         {
 			RemovedLoggerHighlight();
 
-            if (logListView.SelectedItems.Count == 0)
-                return;
+            LogMessageItem logMsgItem = null;
+            if (logListView.SelectedItems.Count > 0)
+                logMsgItem = logListView.SelectedItems[0].Tag as LogMessageItem;
 
-			if (!logDetailPanel.Visible)
-				return;
-
-            LogMessageItem logMsgItem = logListView.SelectedItems[0].Tag as LogMessageItem;
-			if (logMsgItem == null)
-				return;
-
-			LogLevelInfo llInfo = logMsgItem.Message.Level;
-
-			// Store the text to avoid editing without settings the control
-			// as readonly... kind of ugly trick...
-			_msgDetailText = logMsgItem.Message.Message;
-
-			logDetailTextBox.ForeColor = llInfo.Color;
-			logDetailTextBox.Text = _msgDetailText;
+            SetLogMessageDetail(logMsgItem);
 
 			// Highlight Logger in the Tree View
-			if (UserSettings.Instance.HighlightLogger)
+			if ((logMsgItem != null) && (UserSettings.Instance.HighlightLogger))
 			{
 				logMsgItem.Parent.Highlight = true;
 				_lastHighlightedLogger = logMsgItem.Parent;
 			}
+        }
+
+        private void SetLogMessageDetail(LogMessageItem logMsgItem)
+        {
+            // Store the text to avoid editing without settings the control
+            // as readonly... kind of ugly trick...
+
+            if (logMsgItem == null)
+            {
+                _msgDetailText = String.Empty;
+            }
+            else
+            {
+                _msgDetailText = logMsgItem.Message.Message;
+                logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
+            }
+
+            logDetailTextBox.Text = _msgDetailText;
         }
 
 		private void logDetailTextBox_TextChanged(object sender, EventArgs e)
