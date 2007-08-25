@@ -4,6 +4,7 @@ using System.Collections;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 
 using log4net.Appender;
@@ -15,32 +16,61 @@ using Log2Console.Log;
 namespace Log2Console.Receiver
 {
     [Serializable]
-    public class RemotingReceiver : BaseReceiver, RemotingAppender.IRemoteLoggingSink
+    public class RemotingReceiver : BaseReceiver, RemotingAppender.IRemoteLoggingSink, ISerializable
     {
-		private const string RemotingReceiverChannelName = "RemotingReceiverChannel";
+        private const string RemotingReceiverChannelName = "RemotingReceiverChannel";
 
         [NonSerialized]
         private IChannel _channel = null;
 
-		private string _sinkName = "LoggingSink";
-		private int _port = 7070;
+        private string _sinkName = "LoggingSink";
+        private int _port = 7070;
 
 
         [Category("Configuration")]
-		[DisplayName("Remote Sink Name")]
-		public string SinkName
-		{
-			get { return _sinkName; }
-			set { _sinkName = value; }
-		}
+        [DisplayName("Remote Sink Name")]
+        public string SinkName
+        {
+            get { return _sinkName; }
+            set { _sinkName = value; }
+        }
 
         [Category("Configuration")]
-		[DisplayName("Remote TCP Port Number")]
-		public int Port
-		{
-			get { return _port; }
-			set { _port = value; }
-		}
+        [DisplayName("Remote TCP Port Number")]
+        public int Port
+        {
+            get { return _port; }
+            set { _port = value; }
+        }
+
+        /// <summary>
+        /// Default ctor
+        /// </summary>
+        public RemotingReceiver() { }
+
+        #region ISerializable Members
+
+        /// <summary>
+        /// Constructor for Serialization
+        /// N.B: Explicit implementation of ISerializable to mask SecurityIdentity Property of mother class
+        /// </summary>
+        public RemotingReceiver(SerializationInfo info, StreamingContext context)
+        {
+            _sinkName = info.GetString("SinkName");
+            _port = info.GetInt32("Port");
+        }
+
+        /// <summary>
+        /// ISerializable method override for deserialization
+        /// N.B: Explicit implementation of ISerializable to mask SecurityIdentity Property of mother class
+        /// </summary>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("SinkName", _sinkName);
+            info.AddValue("Port", _port);
+        }
+
+        #endregion
 
 
         #region IReceiver Members
