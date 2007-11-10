@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections;
 
 using ControlExtenders;
 
@@ -8,8 +9,6 @@ using Log2Console.Log;
 using Log2Console.Receiver;
 using Log2Console.Settings;
 using Log2Console.UI;
-using System.Collections;
-
 
 // Configure log4net using the .config file
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -26,6 +25,7 @@ namespace Log2Console
 		private string _msgDetailText = String.Empty;
 		private LoggerItem _lastHighlightedLogger = null;
 		private LoggerItem _lastHighlightedLogMsgs = null;
+        private bool _ignoreEvents = false;
 
 		delegate void NotifyLogMsgCallback(LogMessage logMsg);
 		delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
@@ -44,7 +44,7 @@ namespace Log2Console
 
 
 			// Init Log Manager Singleton
-			LogManager.Instance.Initialize(loggerTreeView, logListView);
+			LogManager.Instance.Initialize(new TreeViewLoggerView(loggerTreeView), logListView);
 
 
             _dockExtender = new DockExtender(this);
@@ -71,7 +71,6 @@ namespace Log2Console
             logListView.BringToFront();
             this.BringToFront();
         }
-
 
         private void ApplySettings(bool noCheck, bool initReceiver)
         {
@@ -226,11 +225,15 @@ namespace Log2Console
 
         private void RestoreWindow()
         {
+            //
+            // Make the form visible and activate it. We need to bring the form
+            // the front so the user will see it. Otherwise the user would have
+            // to find it in the task bar and click on it.
+            //
             this.Visible = true;
             this.Activate();
+            this.BringToFront();
 		}
-
-
 
 		#region ILogMessageNotifiable Members
 
@@ -276,7 +279,6 @@ namespace Log2Console
 
         #endregion
 
-
 		/// <summary>
 		/// Adds a new log message, synchronously.
 		/// </summary>
@@ -290,7 +292,6 @@ namespace Log2Console
 			logListView.EndUpdate();
 		}
 
-
 		/// <summary>
 		/// Adds a new log message, synchronously.
 		/// </summary>
@@ -303,7 +304,6 @@ namespace Log2Console
 			if (!this.Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
 				ShowBalloonTip("A new message has been received...");
 		}
-
 
         private void quitBtn_Click(object sender, EventArgs e)
         {
@@ -351,7 +351,6 @@ namespace Log2Console
 			// Disable Edition without making it Read Only (better rendering...), see above
 			logDetailTextBox.Text = _msgDetailText;
 		}
-
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
@@ -488,7 +487,32 @@ namespace Log2Console
 		{
 			using (new AutoWaitCursor())
 			{
-				(e.Node.Tag as LoggerItem).Enabled = e.Node.Checked;
+                //
+                // If we are suppose to ignore events right now, then just
+                // return.
+                //
+                if (this._ignoreEvents) return;
+
+                try
+                {
+                    //
+                    // Set a flag to ignore future events while processing this event. We have
+                    // to do this because it may be possbile that this event gets fired again
+                    // during a recursive call. To avoid more processing than necessary, we should
+                    // set a flag and clear it when we're done.
+                    //
+                    this._ignoreEvents = true;
+
+                    //
+                    // Enable/disable the logger item that is represented by the
+                    // checked node.
+                    //
+                    (e.Node.Tag as LoggerItem).Enabled = e.Node.Checked;
+                }
+                finally
+                {
+                    this._ignoreEvents = false;
+                }
 			}
 		}
 
