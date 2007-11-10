@@ -136,11 +136,15 @@ namespace Log2Console.Log
                 LoggerView.Enabled = value;
 
                 //
-                // Now enable all child loggers.
+                // Now enable all child loggers if the settings are set to 
+                // recursivly enable/disable chid loggers.
                 //
-                foreach (LoggerItem child in Loggers.Values)
+                if (UserSettings.Instance.RecursivlyEnableLoggers)
                 {
-                    child.Enabled = value;
+                    foreach (LoggerItem child in Loggers.Values)
+                    {
+                        child.Enabled = value;
+                    }
                 }
 
 				if (LogMessages.Count == 0)
