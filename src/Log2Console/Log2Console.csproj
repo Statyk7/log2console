@@ -81,6 +81,8 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Log\ILoggerView.cs" />
+    <Compile Include="Log\ILogManager.cs" />
     <Compile Include="Log\ILogMessageNotifiable.cs" />
     <Compile Include="Log\LogManager.cs">
     </Compile>
@@ -150,6 +152,7 @@
     <Compile Include="UI\ToolStripControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\TreeViewLoggerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <BaseApplicationManifest Include="Properties\app.manifest" />

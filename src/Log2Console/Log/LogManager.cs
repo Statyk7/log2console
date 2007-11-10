@@ -32,11 +32,7 @@ namespace Log2Console.Log
 		/// <summary>
 		/// The associated Tree Node.
 		/// </summary>
-		public TreeNode Node = null;
-		/// <summary>
-		/// A reference to the Logger TreeView associated to this Logger.
-		/// </summary>
-		private TreeView _loggerTreeView = null;
+		public ILoggerView LoggerView = null;
 		/// <summary>
 		/// The optional associated List View Group.
 		/// </summary>
@@ -67,48 +63,43 @@ namespace Log2Console.Log
 		{
 		}
 
-		public static LoggerItem CreateRootLoggerItem(string name, TreeView loggerTreeView, ListView logListView)
-		{
-			LoggerItem logger = new LoggerItem();
-			logger.Name = name;
-			logger._loggerTreeView = loggerTreeView;
-			logger._logListView = logListView;
+        public static LoggerItem CreateRootLoggerItem(string name, ILoggerView loggerView, ListView logListView)
+        {
+            LoggerItem logger = new LoggerItem();
+            logger.Name = name;
+            logger._logListView = logListView;
 
-			// Tree Node
-			logger.Node = new TreeNode(name);
-			logger.Node.Checked = true;
-			//logger._loggerTreeView.BeginUpdate();
-			logger._loggerTreeView.Nodes.Add(logger.Node);
-			//logger._loggerTreeView.EndUpdate();
+            // Tree Node
+            logger.LoggerView = loggerView.AddNew(name, logger);
 
-			return logger;
-		}
+            return logger;
+        }
 
 		private static LoggerItem CreateLoggerItem(string name, string fullName, LoggerItem parent)
 		{
 			if (parent == null)
 				throw new ArgumentNullException();
 
+            //
+            // Creating the logger item.
+            //
 			LoggerItem logger = new LoggerItem();
 			logger.Name = name;
 			logger.FullName = fullName;
 			logger.Parent = parent;
 
-			logger._loggerTreeView = logger.Parent._loggerTreeView;
 			logger._logListView = logger.Parent._logListView;
 
+            //
+            // Adding the logger as a child of the parent logger.
+            //
 			logger.Parent.Loggers.Add(name, logger);
 
-			// Tree Node
-			logger.Node = new TreeNode(name);
-			logger.Node.Tag = logger;
-			logger.Node.Checked = true;
-			//logger._loggerTreeView.BeginUpdate();
-			logger.Parent.Node.Nodes.Add(logger.Node);
-			logger.Parent.Node.Expand();
-			logger.Node.EnsureVisible();
-			//logger._loggerTreeView.EndUpdate();
-
+            //
+			// Creating a child logger view and saving it in the new logger.
+            //
+			logger.LoggerView = parent.LoggerView.AddNew(name, logger);;
+			
 			// Group
 			if (UserSettings.Instance.GroupLogMessages)
 			{
@@ -128,8 +119,8 @@ namespace Log2Console.Log
             {
                 _name = value;
 
-                if (Node != null)
-                    Node.Text = _name;
+                if (LoggerView != null)
+                    LoggerView.Text = _name;
             }
         }
 
@@ -142,6 +133,15 @@ namespace Log2Console.Log
 					return;
 
 				_enabled = value;
+                LoggerView.Enabled = value;
+
+                //
+                // Now enable all child loggers.
+                //
+                foreach (LoggerItem child in Loggers.Values)
+                {
+                    child.Enabled = value;
+                }
 
 				if (LogMessages.Count == 0)
 					return;
@@ -177,12 +177,7 @@ namespace Log2Console.Log
 					return;
 
 				_highlight = value;
-
-				if (value)
-					Node.BackColor = Color.LightBlue;
-				else
-					Node.BackColor = Color.Transparent;
-
+                this.LoggerView.Highlight = value;
 				if (Parent != null)
 					Parent.Highlight = value;
 			}
@@ -215,15 +210,11 @@ namespace Log2Console.Log
 		{
 			ClearLogMessages();
 
-			_loggerTreeView.BeginUpdate();
-
 			foreach (KeyValuePair<string, LoggerItem> kvp in Loggers)
 				kvp.Value.ClearAll();
 
-			Node.Nodes.Clear();
+            LoggerView.Clear();
 			Loggers.Clear();
-
-			_loggerTreeView.EndUpdate();
 		}
 
 		public void ClearLogMessages()
@@ -503,7 +494,7 @@ namespace Log2Console.Log
 
 
 
-	public class LogManager
+	public class LogManager : ILogManager
 	{
 		private static LogManager _instance = null;
 
@@ -517,7 +508,7 @@ namespace Log2Console.Log
 		{
 		}
 
-		internal static LogManager Instance
+		internal static ILogManager Instance
 		{
 			get
 			{
@@ -533,19 +524,16 @@ namespace Log2Console.Log
 	        set { _rootLoggerItem = value; }
 	    }
 
-	    internal void Initialize(TreeView loggerTreeView, ListView logListView)
-		{
-			// Root Logger
-			RootLoggerItem = LoggerItem.CreateRootLoggerItem("Root", loggerTreeView, logListView);
+        public void Initialize(ILoggerView loggerView, ListView logListView)
+        {
+            // Root Logger
+            _rootLoggerItem = LoggerItem.CreateRootLoggerItem("Root", loggerView, logListView);
 
-			// Quick Access Logger Collection
-			_fullPathLoggers = new Dictionary<string, LoggerItem>();
+            // Quick Access Logger Collection
+            _fullPathLoggers = new Dictionary<string, LoggerItem>();
+        }
 
-		}
-
-
-
-		internal void ClearAll()
+		public void ClearAll()
 		{
 			ClearLogMessages();
 
@@ -553,13 +541,12 @@ namespace Log2Console.Log
 			_fullPathLoggers.Clear();
 		}
 
-		internal void ClearLogMessages()
+		public void ClearLogMessages()
 		{
 			RootLoggerItem.ClearLogMessages();
 		}
 
-
-		internal void ProcessLogMessage(LogMessage logMsg)
+		public void ProcessLogMessage(LogMessage logMsg)
 		{
 			// Check 1st in the global LoggerPath/Logger dictionary
 			LoggerItem logger = null;
@@ -578,7 +565,7 @@ namespace Log2Console.Log
 		}
 
 
-        internal void HighlightSearchedText(string str)
+        public void HighlightSearchedText(string str)
         {
             _searchedText = str;
 
@@ -586,14 +573,14 @@ namespace Log2Console.Log
         }
 
 
-		internal void UpdateLogLevel()
+		public void UpdateLogLevel()
 		{
 			if (RootLoggerItem == null)
 				return;
 			RootLoggerItem.UpdateLogLevel();
 		}
 
-        internal void SetRootLoggerName(string name)
+        public void SetRootLoggerName(string name)
         {
             RootLoggerItem.Name = name;
         }

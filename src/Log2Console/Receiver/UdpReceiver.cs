@@ -59,6 +59,7 @@ namespace Log2Console.Receiver
 
             // We need a working thread
             _worker = new Thread(Start);
+            _worker.IsBackground = true;
             _worker.Start();
         }
 
