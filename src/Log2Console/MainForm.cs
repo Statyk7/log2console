@@ -189,6 +189,7 @@ namespace Log2Console
         {
             IReceiver prevReceiver = UserSettings.Instance.Receiver;
 
+
             //
             // Make a copy of the settings in case the user cancels.
             //

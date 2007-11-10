@@ -142,7 +142,6 @@ namespace Log2Console.Settings
             }
         }
 
-
 	    [Category("Appearance")]
         [Description("Hides the taskbar icon, only the tray icon will remain visible.")]
         [DisplayName("Hide Taskbar Icon")]

@@ -34,7 +34,6 @@ namespace Log2Console.Settings
             this.receiverTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.receiverTypeComboBox_SelectedIndexChanged);
         }
 
-
         public UserSettings UserSettings
         {
             get { return settingsPropertyGrid.SelectedObject as UserSettings; }
