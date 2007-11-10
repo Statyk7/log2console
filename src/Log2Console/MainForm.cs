@@ -189,11 +189,15 @@ namespace Log2Console
         {
             IReceiver prevReceiver = UserSettings.Instance.Receiver;
 
-			SettingsForm form = new SettingsForm(UserSettings.Instance);
-			if (form.ShowDialog(this) != DialogResult.OK)
-				return;
-
-			// TODO: Manage Cancel!! (copy UserSettings obj)
+            //
+            // Make a copy of the settings in case the user cancels.
+            //
+            UserSettings copy = UserSettings.Instance.Clone();
+			SettingsForm form = new SettingsForm(copy);
+            if (form.ShowDialog(this) != DialogResult.OK)
+                return;
+            else
+                UserSettings.Instance = copy;
 
             // Terminate previous receiver
             bool receiverHasChanged = (prevReceiver != UserSettings.Instance.Receiver);
@@ -212,7 +216,6 @@ namespace Log2Console
 				prevReceiver = null;
 			}
 
-			//UserSettings.Instance = form.UserSettings;
 			UserSettings.Instance.Save();
             ApplySettings(false, receiverHasChanged);
 		}
@@ -563,7 +566,6 @@ namespace Log2Console
 				_lastHighlightedLogger = null;
 			}
 		}
-
     }
 
 }

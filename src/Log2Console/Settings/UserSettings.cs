@@ -56,10 +56,41 @@ namespace Log2Console.Settings
 			_logLevelInfo = LogLevels.Instance[(int)LogLevel.Trace];
 		}
 
+        /// <summary>
+        /// Creates and returns an exact copy of the settings.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
+        public UserSettings Clone()
+        {
+            //
+            // We're going to serialize and deserialize to make the copy. That
+            // way if we add new properties and/or settings, we don't have to 
+            // maintain a copy constructor.
+            //
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            {
+                //
+                // Serialize the object.
+                //
+                formatter.Serialize(ms, this);
+
+                //
+                // Reset the stream and deserialize it.
+                //
+                ms.Position = 0;
+
+                return formatter.Deserialize(ms) as UserSettings;
+            }
+        }
 
 		public static UserSettings Instance
 		{
 			get { return _instance; }
+            set { _instance = value; }
 		}
 
         public static void Load()
