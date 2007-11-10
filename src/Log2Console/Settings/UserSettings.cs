@@ -26,6 +26,7 @@ namespace Log2Console.Settings
 		[NonSerialized]
 		private static UserSettings _instance;
 
+        private bool _recursivlyEnableLoggers = false;
         private bool _hideTaskbarIcon = false;
         private bool _notifyNewLogWhenHidden = true;
         private bool _alwaysOnTop = false;
@@ -222,6 +223,15 @@ namespace Log2Console.Settings
 			get { return _messageCycleCount; }
 			set { _messageCycleCount = value; }
 		}
+
+        [Category("Logging")]
+        [Description("When a logger is enabled or disabled, do the same for all child loggers.")]
+        [DisplayName("Recursively Enable Loggers")]
+        public bool RecursivlyEnableLoggers
+        {
+            get { return _recursivlyEnableLoggers; }
+            set { _recursivlyEnableLoggers = value; }
+        }
 
 		[Category("Fonts")]
 		[Description("Set the Font of the Log List View.")]
