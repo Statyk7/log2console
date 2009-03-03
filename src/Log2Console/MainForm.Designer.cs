@@ -35,6 +35,7 @@ namespace Log2Console
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.levelComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.pauseBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomOutLogListBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInLogListBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -108,6 +109,7 @@ namespace Log2Console
             this.toolStripLabel3,
             this.levelComboBox,
             this.toolStripSeparator8,
+            this.pauseBtn,
             this.zoomOutLogListBtn,
             this.zoomInLogListBtn,
             this.toolStripSeparator10,
@@ -124,6 +126,7 @@ namespace Log2Console
             this.aboutBtn,
             this.toolStripSeparator12,
             this.pinOnTopBtn});
+
             this.mainToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
@@ -170,6 +173,16 @@ namespace Log2Console
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+            // 
+            // pauseBtn
+            // 
+            this.pauseBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.pauseBtn.Image = global::Log2Console.Properties.Resources.Pause16;
+            this.pauseBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.pauseBtn.Name = "pauseBtn";
+            this.pauseBtn.Size = new System.Drawing.Size(23, 22);
+     //       this.pauseBtn.Text = "Pause / Go";
+            this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
             // 
             // zoomOutLogListBtn
             // 
@@ -412,11 +425,6 @@ namespace Log2Console
             // 
             // loggersToolStrip
             // 
-            this.loggersToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel1,
-            this.closeLoggersPanelBtn,
-            this.toolStripSeparator2,
-            this.clearLoggersBtn});
             this.loggersToolStrip.Location = new System.Drawing.Point(0, 0);
             this.loggersToolStrip.Name = "loggersToolStrip";
             this.loggersToolStrip.Size = new System.Drawing.Size(237, 25);
@@ -555,14 +563,6 @@ namespace Log2Console
             // 
             // logDetailToolStrip
             // 
-            this.logDetailToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel2,
-            this.closeLogDetailPanelBtn,
-            this.toolStripSeparator11,
-            this.zoomOutLogDetailsBtn,
-            this.zoomInLogDetailsBtn,
-            this.toolStripSeparator7,
-            this.copyLogDetailBtn});
             this.logDetailToolStrip.Location = new System.Drawing.Point(0, 0);
             this.logDetailToolStrip.Name = "logDetailToolStrip";
             this.logDetailToolStrip.Size = new System.Drawing.Size(881, 25);
@@ -732,6 +732,7 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripButton zoomInLogDetailsBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripButton pinOnTopBtn;
+        private System.Windows.Forms.ToolStripButton pauseBtn;
     }
 }
 

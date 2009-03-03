@@ -26,6 +26,7 @@ namespace Log2Console
 		private LoggerItem _lastHighlightedLogger = null;
 		private LoggerItem _lastHighlightedLogMsgs = null;
         private bool _ignoreEvents = false;
+        private bool _pauseLog = false;
 
 		delegate void NotifyLogMsgCallback(LogMessage logMsg);
 		delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
@@ -301,12 +302,15 @@ namespace Log2Console
 		/// </summary>
 		private void AddLogMessage(LogMessage logMsg)
 		{
-			RemovedLogMsgsHighlight();
+            if (_pauseLog)  return;
 
-			LogManager.Instance.ProcessLogMessage(logMsg);
+            RemovedLogMsgsHighlight();
 
-			if (!this.Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
-				ShowBalloonTip("A new message has been received...");
+            LogManager.Instance.ProcessLogMessage(logMsg);
+
+            if (!this.Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
+                ShowBalloonTip("A new message has been received...");
+            
 		}
 
         private void quitBtn_Click(object sender, EventArgs e)
@@ -567,6 +571,14 @@ namespace Log2Console
 				_lastHighlightedLogger = null;
 			}
 		}
+
+        private void pauseBtn_Click(object sender, EventArgs e) {
+            _pauseLog = !_pauseLog;
+            if (_pauseLog)
+                pauseBtn.Image = Properties.Resources.Go16;
+            else
+                pauseBtn.Image = Properties.Resources.Pause16;
+        }
     }
 
 }

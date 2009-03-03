@@ -87,7 +87,7 @@ namespace Log2Console.Log
 				new LogLevelInfo(LogLevel.Trace, "Trace", UserSettings.DefaultTraceLevelColor, 10000, 0, 10000),
 				new LogLevelInfo(LogLevel.Debug, "Debug", UserSettings.DefaultDebugLevelColor, 30000, 10001, 30000),
 				new LogLevelInfo(LogLevel.Info, "Info", UserSettings.DefaultInfoLevelColor, 40000, 30001, 40000),
-				new LogLevelInfo(LogLevel.Warn, "Warning", UserSettings.DefaultWarnLevelColor, 60000, 40001, 60000),
+				new LogLevelInfo(LogLevel.Warn, "Warn", UserSettings.DefaultWarnLevelColor, 60000, 40001, 60000),
 				new LogLevelInfo(LogLevel.Error, "Error", UserSettings.DefaultErrorLevelColor, 70000, 60001, 70000),
 				new LogLevelInfo(LogLevel.Fatal, "Fatal", UserSettings.DefaultFatalLevelColor, 110000, 70001, 110000),
 			};
