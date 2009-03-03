@@ -126,7 +126,6 @@ namespace Log2Console
             this.aboutBtn,
             this.toolStripSeparator12,
             this.pinOnTopBtn});
-
             this.mainToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
@@ -181,7 +180,6 @@ namespace Log2Console
             this.pauseBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.pauseBtn.Name = "pauseBtn";
             this.pauseBtn.Size = new System.Drawing.Size(23, 22);
-     //       this.pauseBtn.Text = "Pause / Go";
             this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
             // 
             // zoomOutLogListBtn
@@ -425,6 +423,11 @@ namespace Log2Console
             // 
             // loggersToolStrip
             // 
+            this.loggersToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.closeLoggersPanelBtn,
+            this.toolStripSeparator2,
+            this.clearLoggersBtn});
             this.loggersToolStrip.Location = new System.Drawing.Point(0, 0);
             this.loggersToolStrip.Name = "loggersToolStrip";
             this.loggersToolStrip.Size = new System.Drawing.Size(237, 25);
@@ -557,12 +560,22 @@ namespace Log2Console
             this.logDetailTextBox.Location = new System.Drawing.Point(0, 0);
             this.logDetailTextBox.Multiline = true;
             this.logDetailTextBox.Name = "logDetailTextBox";
+            this.logDetailTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.logDetailTextBox.Size = new System.Drawing.Size(881, 44);
             this.logDetailTextBox.TabIndex = 0;
             this.logDetailTextBox.TextChanged += new System.EventHandler(this.logDetailTextBox_TextChanged);
             // 
             // logDetailToolStrip
             // 
+            this.logDetailToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel2,
+            this.closeLogDetailPanelBtn,
+            this.toolStripSeparator11,
+            this.zoomOutLogDetailsBtn,
+            this.zoomInLogDetailsBtn,
+            this.toolStripSeparator7,
+            this.copyLogDetailBtn});
+   
             this.logDetailToolStrip.Location = new System.Drawing.Point(0, 0);
             this.logDetailToolStrip.Name = "logDetailToolStrip";
             this.logDetailToolStrip.Size = new System.Drawing.Size(881, 25);
