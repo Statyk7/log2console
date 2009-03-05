@@ -35,10 +35,9 @@ namespace Log2Console
 
         public MainForm()
         {
+            
             InitializeComponent();
 
-			// Set titles
-			this.Text = AboutForm.AssemblyTitle + " - v" + AboutForm.AssemblyVersion;
             appNotifyIcon.Text = AboutForm.AssemblyTitle;
 
             levelComboBox.SelectedIndex = 0;
@@ -64,6 +63,16 @@ namespace Log2Console
             // Settings
 			UserSettings.Load();
             ApplySettings(true, true);
+        }
+
+        protected override void OnLoad(EventArgs e) {
+            // Set Window title
+            this.Text = AboutForm.AssemblyTitle + " - v" + AboutForm.AssemblyVersion;
+            
+
+            
+            DoubleBuffered = true;
+            base.OnLoad(e);
         }
 
         private void floaty_Docking(object sender, EventArgs e)
