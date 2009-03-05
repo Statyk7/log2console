@@ -68,7 +68,7 @@ namespace Log2Console.Receiver
                                 logMsg.Message = reader.ReadString();
                                 break;
                             case "log4j:throwable":
-                                reader.ReadString();
+                                logMsg.Message += Environment.NewLine + reader.ReadString();
                                 break;
                             case "log4j:locationInfo":
                                 break;
