@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 
 using Log2Console.Log;
+using System.Collections.Generic;
+using System.Text;
 
 
 namespace Log2Console.Receiver
@@ -98,16 +101,27 @@ namespace Log2Console.Receiver
             // Seek to the last file length
             _fileReader.BaseStream.Seek(_lastFileLength, SeekOrigin.Begin);
 
+            List<LogMessage> logMsgs = new List<LogMessage>();
             // Get last added lines
             string line = "";
+            var sb = new StringBuilder();
+            
             while ((line = _fileReader.ReadLine()) != null)
             {
                 if (String.IsNullOrEmpty(line))
                     continue;
+                sb.Append(line);
 
-                LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(line, "FileLogger");
-                _notifiable.Notify(logMsg);
+                // This condition allows us to process events that spread over multiple lines
+                if (line.Contains("</log4j:event>")) {
+                    LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(sb.ToString(), "FileLogger");
+                    logMsgs.Add(logMsg);
+                    sb = new StringBuilder();
+                }
+
             }
+            // Notify the UI with the set of messages
+            _notifiable.Notify(logMsgs.ToArray());
 
             // Update the last file length
             _lastFileLength = _fileReader.BaseStream.Position;
