@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.ComponentModel;
 using System.Drawing;
@@ -48,7 +49,7 @@ namespace Log2Console.Settings
 		private Color _fatalLevelColor = DefaultFatalLevelColor;
 
         private LogLevelInfo _logLevelInfo;
-        private IReceiver _receiver = null;
+        private List<IReceiver> _receivers = new List<IReceiver>();
 
 
 		private UserSettings()
@@ -60,28 +61,20 @@ namespace Log2Console.Settings
         /// <summary>
         /// Creates and returns an exact copy of the settings.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="item">The item.</param>
         /// <returns></returns>
         public UserSettings Clone()
         {
-            //
             // We're going to serialize and deserialize to make the copy. That
             // way if we add new properties and/or settings, we don't have to 
             // maintain a copy constructor.
-            //
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            BinaryFormatter formatter = new BinaryFormatter();
 
-            using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                //
                 // Serialize the object.
-                //
                 formatter.Serialize(ms, this);
 
-                //
                 // Reset the stream and deserialize it.
-                //
                 ms.Position = 0;
 
                 return formatter.Deserialize(ms) as UserSettings;
@@ -95,12 +88,11 @@ namespace Log2Console.Settings
 		}
 
         public static void Load()
-		{
+        {
+            _instance = new UserSettings();
+
 			if (!File.Exists(SettingsFileName))
-			{
-				_instance = new UserSettings();
 				return;
-			}
 
             try
             {
@@ -111,8 +103,6 @@ namespace Log2Console.Settings
                         BinaryFormatter bf = new BinaryFormatter();
                         _instance = bf.Deserialize(fs) as UserSettings;
                     }
-                    else
-                        _instance = new UserSettings();
                 }
             }
             catch (Exception)
@@ -125,7 +115,7 @@ namespace Log2Console.Settings
 		}
         
         public void Save()
-		{
+        {
 			using (FileStream fs = new FileStream(SettingsFileName, FileMode.Create))
 			{
 				BinaryFormatter bf = new BinaryFormatter();
@@ -135,12 +125,12 @@ namespace Log2Console.Settings
 
         public void Close()
         {
-            if (_receiver != null)
+            foreach (IReceiver receiver in _receivers)
             {
-                _receiver.Detach();
-                _receiver.Terminate();
-                _receiver = null;
+                receiver.Detach();
+                receiver.Terminate();
             }
+            _receivers.Clear();
         }
 
 	    [Category("Appearance")]
@@ -324,12 +314,10 @@ namespace Log2Console.Settings
 		/// This setting is not available through the Settings PropertyGrid.
         /// </summary>
         [Browsable(false)]
-        internal IReceiver Receiver
+        internal List<IReceiver> Receivers
 		{
-            get { return _receiver; }
-            set { _receiver = value; }
+            get { return _receivers; }
+            set { _receivers = value; }
 		}
-
     }
-
 }

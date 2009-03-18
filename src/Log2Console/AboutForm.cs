@@ -26,10 +26,13 @@ namespace Log2Console
             lines.Add(AssemblyDescription);
             lines.Add("");
             lines.Add("This is an open source application written by Rémy Baudet (statyk7@gmail.com).");
-            lines.Add("Additional developper: Nicolas Lépinay (agentsmith7.0@gmail.com).");
+            lines.Add("");
+            lines.Add("Additional Developpers:");
+            lines.Add(" - Nicolas Lépinay (agentsmith7.0@gmail.com)");
+            lines.Add(" - Darrel Miller");
             lines.Add("");
             lines.Add("Credits:");
-            lines.Add(" - Boomy Icons by Milosz Wlazlo (http://miloszwl.deviantart.com).");
+            lines.Add(" - Boomy Icons by Milosz Wlazlo (http://miloszwl.deviantart.com)");
             lines.Add(" - DockExtender by Herre Kuijpers (herre@xs4all.nl)");
             this.textBoxDescription.Lines = lines.ToArray();
         }

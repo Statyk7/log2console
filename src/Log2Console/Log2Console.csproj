@@ -68,8 +68,7 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\log4net-1.2.10\bin\net\2.0\release\log4net.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\external\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -113,6 +112,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Settings\ReceiversForm.resx">
+      <DependentUpon>ReceiversForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\SelectReceiverForm.resx">
+      <DependentUpon>SelectReceiverForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Settings\SettingsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -134,11 +139,25 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Receiver\BaseReceiver.cs" />
+    <Compile Include="Receiver\DebugMonitor.cs" />
     <Compile Include="Receiver\FileReceiver.cs" />
     <Compile Include="Receiver\IReceiver.cs" />
     <Compile Include="Receiver\ReceiverFactory.cs" />
     <Compile Include="Receiver\RemotingReceiver.cs" />
     <Compile Include="Receiver\UdpReceiver.cs" />
+    <Compile Include="Receiver\WinDebugReceiver.cs" />
+    <Compile Include="Settings\ReceiversForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\ReceiversForm.Designer.cs">
+      <DependentUpon>ReceiversForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\SelectReceiverForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\SelectReceiverForm.Designer.cs">
+      <DependentUpon>SelectReceiverForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

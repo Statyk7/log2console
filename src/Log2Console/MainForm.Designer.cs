@@ -48,6 +48,7 @@ namespace Log2Console
             this.loggersPanelToggleBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsBtn = new System.Windows.Forms.ToolStripButton();
+            this.receiversBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -122,6 +123,7 @@ namespace Log2Console
             this.loggersPanelToggleBtn,
             this.toolStripSeparator3,
             this.settingsBtn,
+            this.receiversBtn,
             this.toolStripSeparator4,
             this.aboutBtn,
             this.toolStripSeparator12,
@@ -281,6 +283,15 @@ namespace Log2Console
             this.settingsBtn.Size = new System.Drawing.Size(78, 22);
             this.settingsBtn.Text = "Settings...";
             this.settingsBtn.Click += new System.EventHandler(this.settingsBtn_Click);
+            // 
+            // receiversBtn
+            // 
+            this.receiversBtn.Image = global::Log2Console.Properties.Resources.configure16;
+            this.receiversBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.receiversBtn.Name = "receiversBtn";
+            this.receiversBtn.Size = new System.Drawing.Size(85, 22);
+            this.receiversBtn.Text = "Receivers...";
+            this.receiversBtn.Click += new System.EventHandler(this.receiversBtn_Click);
             // 
             // toolStripSeparator4
             // 
@@ -575,7 +586,6 @@ namespace Log2Console
             this.zoomInLogDetailsBtn,
             this.toolStripSeparator7,
             this.copyLogDetailBtn});
-   
             this.logDetailToolStrip.Location = new System.Drawing.Point(0, 0);
             this.logDetailToolStrip.Name = "logDetailToolStrip";
             this.logDetailToolStrip.Size = new System.Drawing.Size(881, 25);
@@ -746,6 +756,7 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripButton pinOnTopBtn;
         private System.Windows.Forms.ToolStripButton pauseBtn;
+        private System.Windows.Forms.ToolStripButton receiversBtn;
     }
 }
 

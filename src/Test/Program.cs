@@ -22,15 +22,24 @@ namespace Test
 
         static void Main(string[] args)
 		{
-			ConsoleKeyInfo key;
-			do
+            ConsoleKeyInfo key = Console.ReadKey();
+            while (key.Key != ConsoleKey.X)
 			{
 				DoLog();
+			    DoWinDebug();
 				key = Console.ReadKey();
-			} while (key.Key != ConsoleKey.X);
+			}
         }
 
-		static void DoLog()
+        static void DoWinDebug()
+        {
+			Console.WriteLine("Doing WinDebug!");
+
+            System.Diagnostics.Debug.WriteLine("This is a call to System.Diagnostics.Debug");
+            System.Diagnostics.Trace.WriteLine("This is a call to System.Diagnostics.Trace");
+        }
+
+        static void DoLog()
 		{
 			Console.WriteLine("Doing Log!");
 
