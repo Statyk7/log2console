@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Log2Console.Log;
 using System.Windows.Forms;
 using System.Drawing;
+
+using Log2Console.Log;
+
 
 namespace Log2Console.UI
 {
@@ -21,6 +20,7 @@ namespace Log2Console.UI
             this._node = node;
             this._isRoot = false;
         }
+
 
         #region ILoggerView Members
 
@@ -63,14 +63,12 @@ namespace Log2Console.UI
         /// <returns></returns>
         public ILoggerView AddNew(string text, LoggerItem logger)
         {
-            //
             // Creating a new node.
-            //
             TreeNode node = new TreeNode(text);
             node.Checked = true;
             node.Tag = logger;
 
-            if (this._isRoot)
+            if (_isRoot)
             {
                 this._treeView.Nodes.Add(node);
             }

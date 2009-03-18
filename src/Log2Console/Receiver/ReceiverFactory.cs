@@ -104,9 +104,9 @@ namespace Log2Console.Receiver
 
 	public class ReceiverFactory
 	{
-		private static ReceiverFactory _instance = null;
+		private static ReceiverFactory _instance;
 
-		private Dictionary<string, Type> _receiverTypes = null;
+		private readonly Dictionary<string, Type> _receiverTypes;
 
 
 		private ReceiverFactory()
@@ -116,17 +116,23 @@ namespace Log2Console.Receiver
 			// TODO: Populate using reflection onto assembly
 
 			// Remoting Receiver
-			Type type = typeof(RemotingReceiver);
-			_receiverTypes.Add(type.FullName, type);
+            AddReceiver<RemotingReceiver>();
             
             // UDP Receiver
-			type = typeof(UdpReceiver);
-			_receiverTypes.Add(type.FullName, type);
+			AddReceiver<UdpReceiver>();
             
             // File Receiver
-            type = typeof(FileReceiver);
-			_receiverTypes.Add(type.FullName, type);
+            AddReceiver<FileReceiver>();
+            
+            // WinDebug Receiver
+            AddReceiver<WinDebugReceiver>();
 		}
+
+        private void AddReceiver<T>()
+        {
+			Type type = typeof(T);
+			_receiverTypes.Add(type.FullName, type);
+        }
 
 		public static ReceiverFactory Instance
 		{

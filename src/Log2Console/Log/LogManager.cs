@@ -19,7 +19,7 @@ namespace Log2Console.Log
 		/// <summary>
 		/// Parent Logger Item. Null for the Root.
 		/// </summary>
-		public LoggerItem Parent = null;
+		public LoggerItem Parent;
 		/// <summary>
 		/// Collection of child Logger Items, identified by their full path.
 		/// </summary>
@@ -32,15 +32,15 @@ namespace Log2Console.Log
 		/// <summary>
 		/// The associated Tree Node.
 		/// </summary>
-		public ILoggerView LoggerView = null;
+		public ILoggerView LoggerView;
 		/// <summary>
 		/// The optional associated List View Group.
 		/// </summary>
-		public ListViewGroup Group = null;
+		public ListViewGroup Group;
 		/// <summary>
 		/// A reference to the Log ListView associated to this Logger.
 		/// </summary>
-		private ListView _logListView = null;
+		private ListView _logListView;
 
 		/// <summary>
 		/// Short Name of this Logger (used as the node name).
@@ -321,7 +321,7 @@ namespace Log2Console.Log
 			}
 
 			// Check if the Logger is in the Child Collection
-			LoggerItem logger = null;
+			LoggerItem logger;
 			if (!Loggers.TryGetValue(currentLoggerName, out logger))
 			{
 				// Not found here, needs to be created
@@ -441,7 +441,7 @@ namespace Log2Console.Log
 		/// The item before this one, allow to retrieve the order of arrival (time is not reliable here).
 		/// The previous item is not necessary a sibling in the logger tree, only in the message list view.
 		/// </summary>
-		public LogMessageItem Previous = null;
+		public LogMessageItem Previous;
 
 		/// <summary>
 		/// The associated List View Item.
@@ -465,10 +465,14 @@ namespace Log2Console.Log
 			Parent = parent;
 			Message = logMsg;
 
+		    string parentName = Parent.Name;
+            if ((Parent.Name == logMsg.ThreadName) && (Parent.Parent != null))
+                parentName = Parent.Parent.Name;
+
 			// Create List View Item
 			Item = new ListViewItem(logMsg.TimeStamp.ToString());
             Item.SubItems.Add(logMsg.Level.Name);
-			Item.SubItems.Add(Parent.Name);
+			Item.SubItems.Add(parentName);
 			Item.SubItems.Add(logMsg.ThreadName);
 			Item.SubItems.Add(logMsg.Message);
 			Item.ToolTipText = logMsg.Message;
@@ -500,10 +504,10 @@ namespace Log2Console.Log
 
 	public class LogManager : ILogManager
 	{
-		private static LogManager _instance = null;
+		private static LogManager _instance;
 
-		private LoggerItem _rootLoggerItem = null;
-		private Dictionary<string, LoggerItem> _fullPathLoggers = null;
+		private LoggerItem _rootLoggerItem;
+		private Dictionary<string, LoggerItem> _fullPathLoggers;
 
 	    private string _searchedText = String.Empty;
 
@@ -553,7 +557,7 @@ namespace Log2Console.Log
 		public void ProcessLogMessage(LogMessage logMsg)
 		{
 			// Check 1st in the global LoggerPath/Logger dictionary
-			LoggerItem logger = null;
+			LoggerItem logger;
 			if (!_fullPathLoggers.TryGetValue(logMsg.LoggerName, out logger))
 			{
 				// Not found, create one

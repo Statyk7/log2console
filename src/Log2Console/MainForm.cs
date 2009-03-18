@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections;
 
 using ControlExtenders;
 
@@ -18,15 +17,15 @@ namespace Log2Console
 {
     public partial class MainForm : Form, ILogMessageNotifiable
     {
-        private DockExtender _dockExtender = null;
-        private IFloaty _logDetailsPanelFloaty = null;
-        private IFloaty _loggersPanelFloaty = null;
+        private readonly DockExtender _dockExtender;
+        private readonly IFloaty _logDetailsPanelFloaty;
+        private readonly IFloaty _loggersPanelFloaty;
 
 		private string _msgDetailText = String.Empty;
-		private LoggerItem _lastHighlightedLogger = null;
-		private LoggerItem _lastHighlightedLogMsgs = null;
-        private bool _ignoreEvents = false;
-        private bool _pauseLog = false;
+		private LoggerItem _lastHighlightedLogger;
+		private LoggerItem _lastHighlightedLogMsgs;
+        private bool _ignoreEvents;
+        private bool _pauseLog;
 
 		delegate void NotifyLogMsgCallback(LogMessage logMsg);
 		delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
@@ -62,7 +61,11 @@ namespace Log2Console
 
             // Settings
 			UserSettings.Load();
-            ApplySettings(true, true);
+            ApplySettings(true);
+
+            // Initialize Receivers
+            foreach (IReceiver receiver in UserSettings.Instance.Receivers)
+                InitializeReceiver(receiver);
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -82,7 +85,7 @@ namespace Log2Console
             this.BringToFront();
         }
 
-        private void ApplySettings(bool noCheck, bool initReceiver)
+        private void ApplySettings(bool noCheck)
         {
             this.Opacity = (double)UserSettings.Instance.Transparency / 100;
             this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
@@ -127,32 +130,37 @@ namespace Log2Console
 					}
 				}
 			}
+        }
 
-            if (initReceiver)
+        private void InitializeReceiver(IReceiver receiver)
+        {
+            try
             {
-                if (UserSettings.Instance.Receiver == null)
-                {
-                    ShowErrorBox("No Receiver has been set yet!\nGo to the Settings dialog and configure one.");
-                }
-                else 
-                {
-                    try
-                    {
-                        UserSettings.Instance.Receiver.Initialize();
-                        UserSettings.Instance.Receiver.Attach(this);
-                        LogManager.Instance.SetRootLoggerName(
-                            String.Format("Root [{0}]", UserSettings.Instance.Receiver));
-                    }
-                    catch (Exception ex)
-                    {
-                        try {
-                            UserSettings.Instance.Receiver.Terminate();
-                        } catch {}
-                        UserSettings.Instance.Receiver = null;
+                receiver.Initialize();
+                receiver.Attach(this);
 
-                        ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
-                    }
-                }
+                //LogManager.Instance.SetRootLoggerName(String.Format("Root [{0}]", receiver));
+            }
+            catch (Exception ex)
+            {
+                try {
+                    receiver.Terminate();
+                } catch {}
+
+                ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
+            }
+        }
+
+        private void TerminateReceiver(IReceiver receiver)
+        {
+            try
+            {
+                receiver.Detach();
+                receiver.Terminate();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorBox("Failed to Terminate Receiver: " + ex.Message);
             }
         }
 
@@ -197,12 +205,7 @@ namespace Log2Console
 
         private void ShowSettingsForm()
         {
-            IReceiver prevReceiver = UserSettings.Instance.Receiver;
-
-
-            //
             // Make a copy of the settings in case the user cancels.
-            //
             UserSettings copy = UserSettings.Instance.Clone();
 			SettingsForm form = new SettingsForm(copy);
             if (form.ShowDialog(this) != DialogResult.OK)
@@ -210,26 +213,31 @@ namespace Log2Console
             else
                 UserSettings.Instance = copy;
 
-            // Terminate previous receiver
-            bool receiverHasChanged = (prevReceiver != UserSettings.Instance.Receiver);
-            if (receiverHasChanged && (prevReceiver != null))
-			{
-				try
-				{
-					prevReceiver.Detach();
-					prevReceiver.Terminate();
-				}
-				catch (Exception ex)
-				{
-					ShowErrorBox("Failed to Terminate Receiver: " + ex.Message);
-				}
-
-				prevReceiver = null;
-			}
-
 			UserSettings.Instance.Save();
-            ApplySettings(false, receiverHasChanged);
+            ApplySettings(false);
 		}
+
+        private void ShowReceiversForm()
+        {
+            ReceiversForm form = new ReceiversForm(UserSettings.Instance.Receivers);
+            if (form.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            foreach (IReceiver receiver in form.RemovedReceivers)
+            {
+                TerminateReceiver(receiver);
+                UserSettings.Instance.Receivers.Remove(receiver);
+            }
+
+            foreach (IReceiver receiver in form.AddedReceivers)
+            {
+                UserSettings.Instance.Receivers.Add(receiver);
+                InitializeReceiver(receiver);
+            }
+
+            UserSettings.Instance.Save();
+        }
+
 
         private void ShowAboutForm()
         {
@@ -429,6 +437,11 @@ namespace Log2Console
         private void settingsBtn_Click(object sender, EventArgs e)
         {
             ShowSettingsForm();
+        }
+
+        private void receiversBtn_Click(object sender, EventArgs e)
+        {
+            ShowReceiversForm();
         }
 
         private void appNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
