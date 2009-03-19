@@ -74,7 +74,7 @@ namespace Log2Console.Settings
 
         private ListViewItem GetSelectedItem()
         {
-            if (receiversListView.SelectedItems.Count <= 0)
+            if (receiversListView.SelectedItems.Count > 0)
                 return receiversListView.SelectedItems[0];
             return null;
         }
