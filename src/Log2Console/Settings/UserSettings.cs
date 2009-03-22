@@ -4,6 +4,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Forms;
 
 using Log2Console.Log;
 using Log2Console.Receiver;
@@ -37,6 +38,8 @@ namespace Log2Console.Settings
 		private bool _autoScrollToLastLog = true;
 		private bool _groupLogMessages = false;
 		private int _messageCycleCount = 0;
+		private string _timeStampFormatString = "G";
+		
 		private Font _logListFont = null;
 		private Font _logDetailFont = null;
 		private Font _loggerTreeFont = null;
@@ -91,17 +94,22 @@ namespace Log2Console.Settings
         {
             _instance = new UserSettings();
 
-			if (!File.Exists(SettingsFileName))
+        	string settingsFilePath = GetSettingsFilePath();
+			if (!File.Exists(settingsFilePath))
 				return;
 
             try
             {
-                using (FileStream fs = new FileStream(SettingsFileName, FileMode.Open))
+				using (FileStream fs = new FileStream(settingsFilePath, FileMode.Open))
                 {
                     if (fs.Length > 0)
                     {
                         BinaryFormatter bf = new BinaryFormatter();
                         _instance = bf.Deserialize(fs) as UserSettings;
+                        
+                        // During 1st load, receiver collection is set to null...
+                        if ((_instance != null) && (_instance._receivers == null))
+							_instance._receivers = new List<IReceiver>();
                     }
                 }
             }
@@ -109,14 +117,26 @@ namespace Log2Console.Settings
             {
                 // The settings file might be corrupted, delete it...
                 try {
-                    File.Delete(SettingsFileName);
+					File.Delete(settingsFilePath);
                 } catch {}
             }
 		}
+
+		private static string GetSettingsFilePath()
+		{
+			string userDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+			
+			DirectoryInfo di = new DirectoryInfo(userDir);
+			di = di.CreateSubdirectory("Log2Console");
+
+			return di.FullName + Path.DirectorySeparatorChar + SettingsFileName;
+		}
         
         public void Save()
-        {
-			using (FileStream fs = new FileStream(SettingsFileName, FileMode.Create))
+		{
+			string settingsFilePath = GetSettingsFilePath();
+
+			using (FileStream fs = new FileStream(settingsFilePath, FileMode.Create))
 			{
 				BinaryFormatter bf = new BinaryFormatter();
 				bf.Serialize(fs, this);
@@ -212,6 +232,28 @@ namespace Log2Console.Settings
 		{
 			get { return _messageCycleCount; }
 			set { _messageCycleCount = value; }
+		}
+
+		[Category("Logging")]
+		[Description("Defines the format to be used to display the log message timestamps (cf. DateTime.ToString(format) in the .NET Framework.")]
+		[DisplayName("TimeStamp Format String")]
+		public string TimeStampFormatString
+		{
+			get { return _timeStampFormatString; }
+			set
+			{
+				// Check validity
+				try
+				{
+					string str= DateTime.Now.ToString(value); // If error, will throw FormatException
+					_timeStampFormatString = value;
+				}
+				catch (FormatException ex)
+				{
+					MessageBox.Show(Form.ActiveForm, ex.Message, Form.ActiveForm.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					_timeStampFormatString = "G"; // Back to default
+				}
+			}
 		}
 
         [Category("Logging")]

@@ -25,6 +25,7 @@ namespace Log2Console.Receiver
 
         private string _sinkName = "LoggingSink";
         private int _port = 7070;
+		private bool _appendHostNameToLogger = true;
 
 
         [Category("Configuration")]
@@ -41,7 +42,17 @@ namespace Log2Console.Receiver
         {
             get { return _port; }
             set { _port = value; }
-        }
+		}
+		
+		[Category("Configuration")]
+		[DisplayName("Append Host Name to Logger")]
+		[Description("Append the remote Host Name to the Logger Name.")]
+		public bool AppendHostNameToLogger
+		{
+			get { return _appendHostNameToLogger; }
+			set { _appendHostNameToLogger = value; }
+		}
+
 
         /// <summary>
         /// Default ctor
@@ -191,12 +202,15 @@ namespace Log2Console.Receiver
         #endregion Implementation of IRemoteLoggingSink
 
 
-        protected static LogMessage CreateLogMessage(LoggingEvent logEvent)
+        protected LogMessage CreateLogMessage(LoggingEvent logEvent)
         {
             LogMessage logMsg = new LogMessage();
 
-            logMsg.LoggerName = logEvent.LoggerName;
-            logMsg.ThreadName = logEvent.ThreadName;
+			logMsg.LoggerName = _appendHostNameToLogger && logEvent.Properties.Contains(LoggingEvent.HostNameProperty)
+        	                    	? String.Format("[Host: {0}].{1}", logEvent.Properties[LoggingEvent.HostNameProperty], logEvent.LoggerName)
+        	                    	: logEvent.LoggerName;
+
+        	logMsg.ThreadName = logEvent.ThreadName;
             logMsg.Message = logEvent.RenderedMessage;
             logMsg.TimeStamp = logEvent.TimeStamp;
             logMsg.Level = LogUtils.GetLogLevelInfo(logEvent.Level.Value);

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Log2Console")]
 [assembly: AssemblyDescription("Log2Console is an advanced log message viewer for log4net, log4j and log4cxx.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Remy Baudet aka Statyk7")]
+[assembly: AssemblyCompany("Rémy Baudet aka Statyk7")]
 [assembly: AssemblyProduct("Log2Console")]
-[assembly: AssemblyCopyright("Copyright © Remy Baudet 2007")]
+[assembly: AssemblyCopyright("Copyright © Rémy Baudet 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.1.1209.2")]
-[assembly: AssemblyFileVersion("1.1.1209.2")]
+[assembly: AssemblyVersion("1.2.1209.3")]
+[assembly: AssemblyFileVersion("1.2.1209.3")]

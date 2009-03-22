@@ -58,6 +58,9 @@ namespace Log2Console.Log
 		private bool _highlight = false;
 		private bool _highlightLogMessages = false;
 
+		private string _searchedText;
+		private bool _hasSearchedText;
+		
 
 		private LoggerItem()
 		{
@@ -371,7 +374,8 @@ namespace Log2Console.Log
 					item.Item.EnsureVisible();
 			}
 
-			if (!item.IsLevelInRange())
+			// Hide the item is is not in range or doesn't match the current text search if any
+			if (!item.IsLevelInRange() || (_hasSearchedText && !item.HasSearchedText(_searchedText)))
 				DisableLogMessage(item);
 
 			// Done!
@@ -409,17 +413,23 @@ namespace Log2Console.Log
 			_logListView.Items.Remove(item.Item);
 		}
 
-        internal void HighlightSearchedText(string str)
+        internal void SearchText(string str)
         {
-            bool hasText = !String.IsNullOrEmpty(str);
+			_hasSearchedText = !String.IsNullOrEmpty(str);
+        	_searchedText = str;
 
             _logListView.BeginUpdate();
 
             foreach (LogMessageItem item in LogMessages)
-                item.HighlightSearchedText(hasText, str);
+			{
+				if (_hasSearchedText && !item.HasSearchedText(_searchedText))
+					DisableLogMessage(item);
+				else
+					EnableLogMessage(item);
+            }
 
-            foreach (KeyValuePair<string, LoggerItem> kvp in Loggers)
-                kvp.Value.HighlightSearchedText(str);
+        	foreach (KeyValuePair<string, LoggerItem> kvp in Loggers)
+				kvp.Value.SearchText(str);
 
             _logListView.EndUpdate();
         }
@@ -470,7 +480,7 @@ namespace Log2Console.Log
                 parentName = Parent.Parent.Name;
 
 			// Create List View Item
-			Item = new ListViewItem(logMsg.TimeStamp.ToString());
+			Item = new ListViewItem(logMsg.TimeStamp.ToString(UserSettings.Instance.TimeStampFormatString));
             Item.SubItems.Add(logMsg.Level.Name);
 			Item.SubItems.Add(parentName);
 			Item.SubItems.Add(logMsg.ThreadName);
@@ -492,11 +502,15 @@ namespace Log2Console.Log
 
         internal void HighlightSearchedText(bool hasText, string str)
         {
-            if (hasText && 
-                (Message.Message.IndexOf(str, StringComparison.InvariantCultureIgnoreCase) >= 0))
+            if (hasText && HasSearchedText(str))
                 Item.BackColor = Color.LightYellow;
             else
                 Item.BackColor = Color.Transparent;
+        }
+        
+        internal bool HasSearchedText(string str)
+        {
+        	return (Message.Message.IndexOf(str, StringComparison.InvariantCultureIgnoreCase) >= 0);
         }
 	}
 
@@ -566,18 +580,15 @@ namespace Log2Console.Log
 			if (logger == null)
 				throw new Exception("No Logger for this Log Message.");
 
-			LogMessageItem logMsgItem = logger.AddLogMessage(logMsg);
-
-            // Contains searched text?
-            logMsgItem.HighlightSearchedText(!String.IsNullOrEmpty(_searchedText), _searchedText);
+			logger.AddLogMessage(logMsg);
 		}
 
 
-        public void HighlightSearchedText(string str)
+		public void SearchText(string str)
         {
             _searchedText = str;
 
-            _rootLoggerItem.HighlightSearchedText(str);
+			_rootLoggerItem.SearchText(str);
         }
 
 
