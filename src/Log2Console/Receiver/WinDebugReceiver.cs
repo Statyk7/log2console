@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 
 using CatchOutputDbg;
@@ -13,6 +14,7 @@ namespace Log2Console.Receiver
     {
         #region Overrides of BaseReceiver
 
+		[Browsable(false)]
         public override string SampleClientConfig
         {
             get { return "N/A"; }

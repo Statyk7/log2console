@@ -32,10 +32,10 @@ namespace Log2Console.Log
         void ProcessLogMessage(LogMessage logMsg);
 
         /// <summary>
-        /// Highlights the searched text.
+        /// Search for text.
         /// </summary>
-        /// <param name="str">The STR.</param>
-        void HighlightSearchedText(string str);
+        /// <param name="str">The string to search.</param>
+		void SearchText(string str);
 
         /// <summary>
         /// Updates the log level.

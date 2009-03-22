@@ -38,6 +38,7 @@ namespace Log2Console.Receiver
 
         #region IReceiver Members
 
+		[Browsable(false)]
         public override string SampleClientConfig
         {
             get

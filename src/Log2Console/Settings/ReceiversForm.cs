@@ -68,8 +68,12 @@ namespace Log2Console.Settings
         private void receiversListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             IReceiver receiver = GetSelectedReceiver();
+
             removeReceiverBtn.Enabled = (receiver != null);
             receiverPropertyGrid.SelectedObject = receiver;
+
+			if (receiver != null)
+				sampleClientConfigTextBox.Text = receiver.SampleClientConfig;
         }
 
         private ListViewItem GetSelectedItem()

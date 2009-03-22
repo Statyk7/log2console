@@ -471,9 +471,7 @@ namespace Log2Console
 
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
-            RemovedLogMsgsHighlight();
-
-            LogManager.Instance.HighlightSearchedText(searchTextBox.Text);
+			LogManager.Instance.SearchText(searchTextBox.Text);
         }
 
         private void zoomOutLogListBtn_Click(object sender, EventArgs e)
