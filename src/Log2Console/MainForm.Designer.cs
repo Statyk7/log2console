@@ -36,6 +36,7 @@ namespace Log2Console
             this.levelComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.pauseBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.zoomOutLogListBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInLogListBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -49,6 +50,8 @@ namespace Log2Console
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsBtn = new System.Windows.Forms.ToolStripButton();
             this.receiversBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -111,6 +114,7 @@ namespace Log2Console
             this.levelComboBox,
             this.toolStripSeparator8,
             this.pauseBtn,
+            this.toolStripSeparator13,
             this.zoomOutLogListBtn,
             this.zoomInLogListBtn,
             this.toolStripSeparator10,
@@ -124,6 +128,8 @@ namespace Log2Console
             this.toolStripSeparator3,
             this.settingsBtn,
             this.receiversBtn,
+            this.toolStripSeparator14,
+            this.saveBtn,
             this.toolStripSeparator4,
             this.aboutBtn,
             this.toolStripSeparator12,
@@ -183,6 +189,11 @@ namespace Log2Console
             this.pauseBtn.Name = "pauseBtn";
             this.pauseBtn.Size = new System.Drawing.Size(23, 22);
             this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
+            // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(6, 25);
             // 
             // zoomOutLogListBtn
             // 
@@ -293,6 +304,21 @@ namespace Log2Console
             this.receiversBtn.Text = "Receivers...";
             this.receiversBtn.Click += new System.EventHandler(this.receiversBtn_Click);
             // 
+            // toolStripSeparator14
+            // 
+            this.toolStripSeparator14.Name = "toolStripSeparator14";
+            this.toolStripSeparator14.Size = new System.Drawing.Size(6, 25);
+            // 
+            // saveBtn
+            // 
+            this.saveBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveBtn.Image = global::Log2Console.Properties.Resources.saveas16;
+            this.saveBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveBtn.Name = "saveBtn";
+            this.saveBtn.Size = new System.Drawing.Size(23, 22);
+            this.saveBtn.Text = "Export Logs...";
+            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
+            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
@@ -353,6 +379,7 @@ namespace Log2Console
             this.logListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logListView.FullRowSelect = true;
             this.logListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.logListView.HideSelection = false;
             this.logListView.Location = new System.Drawing.Point(0, 25);
             this.logListView.MultiSelect = false;
             this.logListView.Name = "logListView";
@@ -757,6 +784,9 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripButton pinOnTopBtn;
         private System.Windows.Forms.ToolStripButton pauseBtn;
         private System.Windows.Forms.ToolStripButton receiversBtn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+        private System.Windows.Forms.ToolStripButton saveBtn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
     }
 }
 

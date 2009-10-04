@@ -215,6 +215,19 @@ namespace Log2Console.Receiver
             logMsg.TimeStamp = logEvent.TimeStamp;
             logMsg.Level = LogUtils.GetLogLevelInfo(logEvent.Level.Value);
 
+            // Per LoggingEvent.ExceptionObject, the exception object is not serialized, but the exception 
+            // text is available through LoggingEvent.GetExceptionString
+            logMsg.ExceptionString = logEvent.GetExceptionString();
+
+            // Copy properties as string
+            foreach (DictionaryEntry entry in logEvent.Properties)
+            {
+                if ((entry.Key == null) || (entry.Value == null))
+                    continue;
+
+                logMsg.Properties.Add(entry.Key.ToString(), entry.Value.ToString());
+            }
+
             return logMsg;
         }
     }

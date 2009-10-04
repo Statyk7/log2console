@@ -194,5 +194,9 @@ namespace Log2Console.Log
         /// Properties collection.
         /// </summary>
         public Dictionary<string, string> Properties = new Dictionary<string, string>();
+        /// <summary>
+        /// An exception message to associate to this message.
+        /// </summary>
+        public String ExceptionString;
     }
 }

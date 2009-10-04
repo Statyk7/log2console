@@ -44,6 +44,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,9 +69,12 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\external\log4net.dll</HintPath>
+      <HintPath>..\External\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -177,6 +181,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\TreeViewLoggerView.cs" />
+    <Compile Include="UI\WindowRestorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BaseApplicationManifest Include="Properties\app.manifest" />
@@ -210,6 +215,7 @@
   <ItemGroup>
     <Content Include="res\Go16.png" />
     <Content Include="res\Pause16.png" />
+    <Content Include="res\saveas16.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />

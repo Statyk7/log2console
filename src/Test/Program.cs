@@ -60,6 +60,8 @@ namespace Test
 			_log.Warn("This is a Warning...");
 			_log.Fatal("This is a Fatal...");
 
+            _log.Error("This is an error with an exception.", new Exception("The message exception here."));
+
 
 			DummyManager dm = new DummyManager();
 			dm.DoIt();
@@ -94,6 +96,8 @@ namespace Company.Product.BusinessLogic
 			_log.Warn("This is a Warning from DM...");
 			_log.Error("This is an Error from DM...");
 			_log.Fatal("This is a Fatal from DM...");
+
+            _log.Error("This is an error from DM with an exception.", new Exception("The message exception here."));
 		}
 	}
 }
@@ -121,6 +125,8 @@ namespace Company.Product.ServiceTester
 			_log.Warn("This is a Warning from DT...");
 			_log.Error("This is an Error from DT...");
 			_log.Fatal("This is a Fatal from DT...");
+
+            _log.Error("This is an error from DT with an exception.", new Exception("The message exception here."));
 		}
 	}
 }

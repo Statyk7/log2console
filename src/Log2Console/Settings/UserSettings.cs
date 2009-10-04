@@ -12,6 +12,17 @@ using Log2Console.Receiver;
 
 namespace Log2Console.Settings
 {
+    [Serializable]
+    public sealed class LayoutSettings
+    {
+        public Rectangle WindowPosition { get; set; }
+        public FormWindowState WindowState { get; set; }
+
+        public bool ShowLogDetailView { get; set; }
+        public bool ShowLoggerTree { get; set; }
+    }
+
+
 	[Serializable]
     public sealed class UserSettings
 	{
@@ -51,8 +62,12 @@ namespace Log2Console.Settings
 		private Color _errorLevelColor = DefaultErrorLevelColor;
 		private Color _fatalLevelColor = DefaultFatalLevelColor;
 
+	    private bool _msgDetailsProperties = false;
+        private bool _msgDetailsException = true;
+
         private LogLevelInfo _logLevelInfo;
         private List<IReceiver> _receivers = new List<IReceiver>();
+	    private LayoutSettings _layout = new LayoutSettings();
 
 
 		private UserSettings()
@@ -110,6 +125,10 @@ namespace Log2Console.Settings
                         // During 1st load, receiver collection is set to null...
                         if ((_instance != null) && (_instance._receivers == null))
 							_instance._receivers = new List<IReceiver>();
+
+                        // During 1st load, layout is set to null...
+                        if ((_instance != null) && (_instance._layout == null))
+							_instance._layout = new LayoutSettings();
                     }
                 }
             }
@@ -131,8 +150,8 @@ namespace Log2Console.Settings
 
 			return di.FullName + Path.DirectorySeparatorChar + SettingsFileName;
 		}
-        
-        public void Save()
+
+	    public void Save()
 		{
 			string settingsFilePath = GetSettingsFilePath();
 
@@ -265,6 +284,26 @@ namespace Log2Console.Settings
             set { _recursivlyEnableLoggers = value; }
         }
 
+
+        [Category("Message Details")]
+        [Description("Show or hide the message properties in the message details panel.")]
+        [DisplayName("Show Properties")]
+        public bool ShowMsgDetailsProperties
+        {
+            get { return _msgDetailsProperties; }
+            set { _msgDetailsProperties = value; }
+        }
+
+        [Category("Message Details")]
+        [Description("Show or hide the exception in the message details panel.")]
+        [DisplayName("Show Exception")]
+        public bool ShowMsgDetailsException
+        {
+            get { return _msgDetailsException; }
+            set { _msgDetailsException = value; }
+        }
+
+
 		[Category("Fonts")]
 		[Description("Set the Font of the Log List View.")]
 		[DisplayName("Log List View Font")]
@@ -360,6 +399,16 @@ namespace Log2Console.Settings
 		{
             get { return _receivers; }
             set { _receivers = value; }
+		}
+
+		/// <summary>
+		/// This setting is not available through the Settings PropertyGrid.
+        /// </summary>
+        [Browsable(false)]
+        internal LayoutSettings Layout
+		{
+            get { return _layout; }
+            set { _layout = value; }
 		}
     }
 }
