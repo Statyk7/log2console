@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 using ControlExtenders;
@@ -17,6 +20,8 @@ namespace Log2Console
 {
     public partial class MainForm : Form, ILogMessageNotifiable
     {
+        private readonly WindowRestorer _windowRestorer;
+
         private readonly DockExtender _dockExtender;
         private readonly IFloaty _logDetailsPanelFloaty;
         private readonly IFloaty _loggersPanelFloaty;
@@ -34,7 +39,6 @@ namespace Log2Console
 
         public MainForm()
         {
-            
             InitializeComponent();
 
             appNotifyIcon.Text = AboutForm.AssemblyTitle;
@@ -58,9 +62,10 @@ namespace Log2Console
             _loggersPanelFloaty.DontHideHandle = true;
             _loggersPanelFloaty.Docking += new EventHandler(floaty_Docking);
 
-
             // Settings
-			UserSettings.Load();
+            UserSettings.Load();
+            _windowRestorer = new WindowRestorer(this, UserSettings.Instance.Layout.WindowPosition,
+                                                       UserSettings.Instance.Layout.WindowState);
             ApplySettings(true);
 
             // Initialize Receivers
@@ -68,12 +73,38 @@ namespace Log2Console
                 InitializeReceiver(receiver);
         }
 
-        protected override void OnLoad(EventArgs e) {
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+
+            if (_windowRestorer != null)
+                _windowRestorer.TrackWindow();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            if (_windowRestorer != null)
+                _windowRestorer.TrackWindow();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            UserSettings.Instance.Layout.WindowPosition = _windowRestorer.WindowPosition;
+            UserSettings.Instance.Layout.WindowState = _windowRestorer.WindowState;
+            UserSettings.Instance.Layout.ShowLogDetailView = logDetailPanel.Visible;
+            UserSettings.Instance.Layout.ShowLoggerTree = loggerPanel.Visible;
+
+            UserSettings.Instance.Save();
+            UserSettings.Instance.Close();
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
             // Set Window title
             this.Text = AboutForm.AssemblyTitle + " - v" + AboutForm.AssemblyVersion;
-            
 
-            
             DoubleBuffered = true;
             base.OnLoad(e);
         }
@@ -130,6 +161,15 @@ namespace Log2Console
 					}
 				}
 			}
+
+            if (noCheck)
+            {
+                this.DesktopBounds = UserSettings.Instance.Layout.WindowPosition;
+                this.WindowState = UserSettings.Instance.Layout.WindowState;
+
+                ShowDetailsPanel(UserSettings.Instance.Layout.ShowLogDetailView);
+                ShowLoggersPanel(UserSettings.Instance.Layout.ShowLoggerTree);
+            }
         }
 
         private void InitializeReceiver(IReceiver receiver)
@@ -166,9 +206,6 @@ namespace Log2Console
 
         private void Quit()
 		{
-            UserSettings.Instance.Save();
-            UserSettings.Instance.Close();
-
             Close();
         }
 
@@ -305,7 +342,10 @@ namespace Log2Console
 		/// Adds a new log message, synchronously.
 		/// </summary>
 		private void AddLogMessages(LogMessage[] logMsgs)
-		{
+        {
+            if (_pauseLog)
+                return;
+
 			logListView.BeginUpdate();
 
 			foreach (LogMessage msg in logMsgs)
@@ -319,7 +359,8 @@ namespace Log2Console
 		/// </summary>
 		private void AddLogMessage(LogMessage logMsg)
 		{
-            if (_pauseLog)  return;
+            if (_pauseLog)
+                return;
 
             RemovedLogMsgsHighlight();
 
@@ -364,7 +405,26 @@ namespace Log2Console
             }
             else
             {
-                _msgDetailText = logMsgItem.Message.Message;
+                StringBuilder sb = new StringBuilder();
+
+                if (UserSettings.Instance.ShowMsgDetailsProperties)
+                {
+                    // Append properties
+                    foreach (KeyValuePair<string, string> kvp in logMsgItem.Message.Properties)
+                        sb.AppendFormat("{0} = {1}{2}", kvp.Key, kvp.Value, Environment.NewLine);
+                }
+
+                // Append message
+                sb.AppendLine(logMsgItem.Message.Message);
+
+                // Append exception
+                if (UserSettings.Instance.ShowMsgDetailsException && !String.IsNullOrEmpty(logMsgItem.Message.ExceptionString))
+                {
+                    sb.AppendLine(logMsgItem.Message.ExceptionString);
+                }
+
+                _msgDetailText = sb.ToString();
+
                 logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
             }
 
@@ -384,16 +444,20 @@ namespace Log2Console
 
         private void closeLoggersPanelBtn_Click(object sender, EventArgs e)
         {
-            _dockExtender.Hide(loggerPanel);
-            loggersPanelToggleBtn.Checked = false;
+            ShowLoggersPanel(false);
         }
 
         private void loggersPanelToggleBtn_Click(object sender, EventArgs e)
         {
             // Toggle check state
-            loggersPanelToggleBtn.Checked = !loggersPanelToggleBtn.Checked;
+            ShowLoggersPanel(!loggersPanelToggleBtn.Checked);
+        }
 
-            if (loggersPanelToggleBtn.Checked)
+        private void ShowLoggersPanel(bool show)
+        {
+            loggersPanelToggleBtn.Checked = show;
+
+            if (show)
                 _dockExtender.Show(loggerPanel);
             else
                 _dockExtender.Hide(loggerPanel);
@@ -406,16 +470,20 @@ namespace Log2Console
 
         private void closeLogDetailPanelBtn_Click(object sender, EventArgs e)
         {
-            _dockExtender.Hide(logDetailPanel);
-            logDetailsPanelToggleBtn.Checked = false;
+            ShowDetailsPanel(false);
         }
 
         private void logDetailsPanelToggleBtn_Click(object sender, EventArgs e)
         {
             // Toggle check state
-            logDetailsPanelToggleBtn.Checked = !logDetailsPanelToggleBtn.Checked;
+            ShowDetailsPanel(!logDetailsPanelToggleBtn.Checked);
+        }
 
-            if (logDetailsPanelToggleBtn.Checked)
+        private void ShowDetailsPanel(bool show)
+        {
+            logDetailsPanelToggleBtn.Checked = show;
+
+            if (show)
                 _dockExtender.Show(logDetailPanel);
             else
                 _dockExtender.Hide(logDetailPanel);
@@ -592,12 +660,35 @@ namespace Log2Console
 			}
 		}
 
-        private void pauseBtn_Click(object sender, EventArgs e) {
+        private void pauseBtn_Click(object sender, EventArgs e)
+        {
             _pauseLog = !_pauseLog;
-            if (_pauseLog)
-                pauseBtn.Image = Properties.Resources.Go16;
-            else
-                pauseBtn.Image = Properties.Resources.Pause16;
+
+            pauseBtn.Image = _pauseLog ? Properties.Resources.Go16 : Properties.Resources.Pause16;
+        }
+
+        /// <summary>
+        /// Quick and dirty implementation of an export function...
+        /// </summary>
+        private void saveBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            if (dlg.ShowDialog(this) == DialogResult.Cancel)
+                return;
+
+            using (StreamWriter sw = new StreamWriter(dlg.FileName))
+            {
+                using (TextWriter ssw = TextWriter.Synchronized(sw))
+                {
+                    foreach (ListViewItem lvi in logListView.Items)
+                    {
+                        string line = 
+                            String.Format("{0}\t{1}\t{2}\t{3}\t{4}",
+                                lvi.SubItems[0].Text, lvi.SubItems[1].Text, lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text);
+                        ssw.WriteLine(line);
+                    }
+                }
+            }
         }
     }
 

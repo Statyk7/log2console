@@ -20,6 +20,7 @@ namespace Log2Console.Receiver
         private IPEndPoint _remoteEndPoint = null;
 
 		private int _port = 7071;
+        private string _address = String.Empty;
 
 
         [Category("Configuration")]
@@ -28,6 +29,14 @@ namespace Log2Console.Receiver
 		{
 			get { return _port; }
 			set { _port = value; }
+		}
+
+        [Category("Configuration")]
+        [DisplayName("Multicast Group Address (Optional)")]
+        public string Address
+		{
+            get { return _address; }
+            set { _address = value; }
 		}
 
 
@@ -56,6 +65,9 @@ namespace Log2Console.Receiver
             // Init connexion here, before starting the thread, to know the status now
             _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
             _udpClient = new UdpClient(_port);
+
+            if (!String.IsNullOrEmpty(_address))
+                _udpClient.JoinMulticastGroup(IPAddress.Parse(_address));
 
             // We need a working thread
             _worker = new Thread(Start);
@@ -96,6 +108,7 @@ namespace Log2Console.Receiver
                         continue;
 
                     LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "UdpLogger");
+                    logMsg.LoggerName = string.Format("{0}_{1}", _remoteEndPoint.Address.ToString().Replace(".", "-"), logMsg.LoggerName);
                     _notifiable.Notify(logMsg);
                 }
                 catch (Exception ex)

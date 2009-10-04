@@ -83,9 +83,7 @@ namespace Log2Console.Log
 			if (parent == null)
 				throw new ArgumentNullException();
 
-            //
             // Creating the logger item.
-            //
 			LoggerItem logger = new LoggerItem();
 			logger.Name = name;
 			logger.FullName = fullName;
@@ -93,14 +91,10 @@ namespace Log2Console.Log
 
 			logger._logListView = logger.Parent._logListView;
 
-            //
             // Adding the logger as a child of the parent logger.
-            //
 			logger.Parent.Loggers.Add(name, logger);
 
-            //
 			// Creating a child logger view and saving it in the new logger.
-            //
 			logger.LoggerView = parent.LoggerView.AddNew(name, logger);;
 			
 			// Group
@@ -138,10 +132,8 @@ namespace Log2Console.Log
 				_enabled = value;
                 LoggerView.Enabled = value;
 
-                //
                 // Now enable all child loggers if the settings are set to 
                 // recursivly enable/disable chid loggers.
-                //
                 if (UserSettings.Instance.RecursivlyEnableLoggers)
                 {
                     foreach (LoggerItem child in Loggers.Values)

@@ -24,18 +24,25 @@ Global
 		SccLocalPath3 = L2C_Setup
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CodeAnalysisDebug|Any CPU = CodeAnalysisDebug|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29A745D4-5A2F-4170-A0F1-54C77F151892}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29A745D4-5A2F-4170-A0F1-54C77F151892}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
 		{29A745D4-5A2F-4170-A0F1-54C77F151892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29A745D4-5A2F-4170-A0F1-54C77F151892}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29A745D4-5A2F-4170-A0F1-54C77F151892}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29A745D4-5A2F-4170-A0F1-54C77F151892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE81C506-55E4-417E-B1D6-09453F89C7CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19438485-B918-42F2-8DC7-F352D24AC55E}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug
+		{19438485-B918-42F2-8DC7-F352D24AC55E}.CodeAnalysisDebug|Any CPU.Build.0 = Debug
 		{19438485-B918-42F2-8DC7-F352D24AC55E}.Debug|Any CPU.ActiveCfg = Debug
 		{19438485-B918-42F2-8DC7-F352D24AC55E}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
