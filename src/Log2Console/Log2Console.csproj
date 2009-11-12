@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EE81C506-55E4-417E-B1D6-09453F89C7CD}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -15,10 +15,14 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
     <TargetZone>LocalIntranet</TargetZone>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Log2Console.snk</AssemblyOriginatorKeyFile>
@@ -118,9 +122,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\ReceiversForm.resx">
       <DependentUpon>ReceiversForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\SelectReceiverForm.resx">
       <DependentUpon>SelectReceiverForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\SettingsForm.resx">
       <SubType>Designer</SubType>

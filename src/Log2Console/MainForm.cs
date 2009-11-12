@@ -26,15 +26,17 @@ namespace Log2Console
         private readonly IFloaty _logDetailsPanelFloaty;
         private readonly IFloaty _loggersPanelFloaty;
 
-		private string _msgDetailText = String.Empty;
-		private LoggerItem _lastHighlightedLogger;
-		private LoggerItem _lastHighlightedLogMsgs;
+        private string _msgDetailText = String.Empty;
+        private LoggerItem _lastHighlightedLogger;
+        private LoggerItem _lastHighlightedLogMsgs;
         private bool _ignoreEvents;
         private bool _pauseLog;
 
-		delegate void NotifyLogMsgCallback(LogMessage logMsg);
-		delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
+        delegate void NotifyLogMsgCallback(LogMessage logMsg);
+        delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
 
+        // Specific event handler on minimized action
+        public event EventHandler Minimize;
 
 
         public MainForm()
@@ -45,9 +47,11 @@ namespace Log2Console
 
             levelComboBox.SelectedIndex = 0;
 
+            this.Minimize += new EventHandler(this.mainForm_Minimize);
 
-			// Init Log Manager Singleton
-			LogManager.Instance.Initialize(new TreeViewLoggerView(loggerTreeView), logListView);
+
+            // Init Log Manager Singleton
+            LogManager.Instance.Initialize(new TreeViewLoggerView(loggerTreeView), logListView);
 
 
             _dockExtender = new DockExtender(this);
@@ -71,6 +75,26 @@ namespace Log2Console
             // Initialize Receivers
             foreach (IReceiver receiver in UserSettings.Instance.Receivers)
                 InitializeReceiver(receiver);
+        }
+
+        /// <summary>
+        /// Catch on minimize event
+        /// @author : Asbjørn Ulsberg -=|=- asbjornu@hotmail.com
+        /// </summary>
+        /// <param name="msg"></param>
+        protected override void WndProc(ref Message msg)
+        {
+            const int WM_SIZE = 0x0005;
+            const int SIZE_MINIMIZED = 1;
+
+            if ((msg.Msg == WM_SIZE)
+                && ((int)msg.WParam == SIZE_MINIMIZED)
+                && (this.Minimize != null))
+            {
+                this.Minimize(this, EventArgs.Empty);
+            }
+
+            base.WndProc(ref msg);
         }
 
         protected override void OnMove(EventArgs e)
@@ -121,46 +145,46 @@ namespace Log2Console
             this.Opacity = (double)UserSettings.Instance.Transparency / 100;
             this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
 
-			this.TopMost = UserSettings.Instance.AlwaysOnTop;
+            this.TopMost = UserSettings.Instance.AlwaysOnTop;
             pinOnTopBtn.Checked = UserSettings.Instance.AlwaysOnTop;
 
-			logListView.Font = UserSettings.Instance.LogListFont;
-			logDetailTextBox.Font = UserSettings.Instance.LogDetailFont;
-			loggerTreeView.Font = UserSettings.Instance.LoggerTreeFont;
+            logListView.Font = UserSettings.Instance.LogListFont;
+            logDetailTextBox.Font = UserSettings.Instance.LogDetailFont;
+            loggerTreeView.Font = UserSettings.Instance.LoggerTreeFont;
 
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Trace].Color = UserSettings.Instance.TraceLevelColor;
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Debug].Color = UserSettings.Instance.DebugLevelColor;
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Info].Color = UserSettings.Instance.InfoLevelColor;
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Warn].Color = UserSettings.Instance.WarnLevelColor;
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Error].Color = UserSettings.Instance.ErrorLevelColor;
-			LogLevels.Instance.LogLevelInfos[(int)LogLevel.Fatal].Color = UserSettings.Instance.FatalLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Trace].Color = UserSettings.Instance.TraceLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Debug].Color = UserSettings.Instance.DebugLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Info].Color = UserSettings.Instance.InfoLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Warn].Color = UserSettings.Instance.WarnLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Error].Color = UserSettings.Instance.ErrorLevelColor;
+            LogLevels.Instance.LogLevelInfos[(int)LogLevel.Fatal].Color = UserSettings.Instance.FatalLevelColor;
 
-			levelComboBox.SelectedIndex = (int) UserSettings.Instance.LogLevelInfo.Level;
+            levelComboBox.SelectedIndex = (int)UserSettings.Instance.LogLevelInfo.Level;
 
-			if (logListView.ShowGroups != UserSettings.Instance.GroupLogMessages)
-			{
-				if (noCheck)
-				{
-					logListView.ShowGroups = UserSettings.Instance.GroupLogMessages;
-				}
-				else
-				{
-					DialogResult res = MessageBox.Show(
-						this,
-						"You changed the Message Grouping setting, the Log Message List must be cleared, OK?",
-						this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (logListView.ShowGroups != UserSettings.Instance.GroupLogMessages)
+            {
+                if (noCheck)
+                {
+                    logListView.ShowGroups = UserSettings.Instance.GroupLogMessages;
+                }
+                else
+                {
+                    DialogResult res = MessageBox.Show(
+                        this,
+                        "You changed the Message Grouping setting, the Log Message List must be cleared, OK?",
+                        this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
-					if (res == DialogResult.OK)
-					{
-						ClearAll();
-						logListView.ShowGroups = UserSettings.Instance.GroupLogMessages;
-					}
-					else
-					{
-						UserSettings.Instance.GroupLogMessages = !UserSettings.Instance.GroupLogMessages;
-					}
-				}
-			}
+                    if (res == DialogResult.OK)
+                    {
+                        ClearAll();
+                        logListView.ShowGroups = UserSettings.Instance.GroupLogMessages;
+                    }
+                    else
+                    {
+                        UserSettings.Instance.GroupLogMessages = !UserSettings.Instance.GroupLogMessages;
+                    }
+                }
+            }
 
             if (noCheck)
             {
@@ -183,9 +207,11 @@ namespace Log2Console
             }
             catch (Exception ex)
             {
-                try {
+                try
+                {
                     receiver.Terminate();
-                } catch {}
+                }
+                catch { }
 
                 ShowErrorBox("Failed to Initialize Receiver: " + ex.Message);
             }
@@ -205,27 +231,27 @@ namespace Log2Console
         }
 
         private void Quit()
-		{
+        {
             Close();
         }
 
-		private void ClearLogMessages()
-		{
-		    SetLogMessageDetail(null);
-			LogManager.Instance.ClearLogMessages();
-		}
-
-		private void ClearLoggers()
+        private void ClearLogMessages()
         {
             SetLogMessageDetail(null);
-			LogManager.Instance.ClearAll();
-		}
+            LogManager.Instance.ClearLogMessages();
+        }
 
-		private void ClearAll()
-		{
-			ClearLogMessages();
-			ClearLoggers();
-		}
+        private void ClearLoggers()
+        {
+            SetLogMessageDetail(null);
+            LogManager.Instance.ClearAll();
+        }
+
+        private void ClearAll()
+        {
+            ClearLogMessages();
+            ClearLoggers();
+        }
 
         protected void ShowBalloonTip(string msg)
         {
@@ -235,24 +261,24 @@ namespace Log2Console
             appNotifyIcon.ShowBalloonTip(3000);
         }
 
-		private void ShowErrorBox(string msg)
-		{
-			MessageBox.Show(this, msg, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
+        private void ShowErrorBox(string msg)
+        {
+            MessageBox.Show(this, msg, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
         private void ShowSettingsForm()
         {
             // Make a copy of the settings in case the user cancels.
             UserSettings copy = UserSettings.Instance.Clone();
-			SettingsForm form = new SettingsForm(copy);
+            SettingsForm form = new SettingsForm(copy);
             if (form.ShowDialog(this) != DialogResult.OK)
                 return;
             else
                 UserSettings.Instance = copy;
 
-			UserSettings.Instance.Save();
+            UserSettings.Instance.Save();
             ApplySettings(false);
-		}
+        }
 
         private void ShowReceiversForm()
         {
@@ -292,73 +318,75 @@ namespace Log2Console
             this.Visible = true;
             this.Activate();
             this.BringToFront();
-		}
+            if (this.WindowState == FormWindowState.Minimized)
+                this.WindowState = _windowRestorer.WindowState;
+        }
 
-		#region ILogMessageNotifiable Members
+        #region ILogMessageNotifiable Members
 
-		/// <summary>
-		/// Transforms the notification into an asynchronous call.
-		/// The actual method called to add log messages is 'AddLogMessages'.
-		/// </summary>
-		public void Notify(LogMessage[] logMsgs)
-		{
-			// InvokeRequired required compares the thread ID of the
-			// calling thread to the thread ID of the creating thread.
-			// If these threads are different, it returns true.
-			if (logListView.InvokeRequired)
-			{
-				NotifyLogMsgsCallback d = AddLogMessages;
-				Invoke(d, new object[] { logMsgs });
-			}
-			else
-			{
-				AddLogMessages(logMsgs);
-			}
-		}
-
-		/// <summary>
-		/// Transforms the notification into an asynchronous call.
-		/// The actual method called to add a log message is 'AddLogMessage'.
-		/// </summary>
-		public void Notify(LogMessage logMsg)
+        /// <summary>
+        /// Transforms the notification into an asynchronous call.
+        /// The actual method called to add log messages is 'AddLogMessages'.
+        /// </summary>
+        public void Notify(LogMessage[] logMsgs)
         {
             // InvokeRequired required compares the thread ID of the
             // calling thread to the thread ID of the creating thread.
             // If these threads are different, it returns true.
             if (logListView.InvokeRequired)
             {
-				NotifyLogMsgCallback d = AddLogMessage;
+                NotifyLogMsgsCallback d = AddLogMessages;
+                Invoke(d, new object[] { logMsgs });
+            }
+            else
+            {
+                AddLogMessages(logMsgs);
+            }
+        }
+
+        /// <summary>
+        /// Transforms the notification into an asynchronous call.
+        /// The actual method called to add a log message is 'AddLogMessage'.
+        /// </summary>
+        public void Notify(LogMessage logMsg)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            if (logListView.InvokeRequired)
+            {
+                NotifyLogMsgCallback d = AddLogMessage;
                 Invoke(d, new object[] { logMsg });
             }
             else
             {
-				AddLogMessage(logMsg);
+                AddLogMessage(logMsg);
             }
         }
 
         #endregion
 
-		/// <summary>
-		/// Adds a new log message, synchronously.
-		/// </summary>
-		private void AddLogMessages(LogMessage[] logMsgs)
+        /// <summary>
+        /// Adds a new log message, synchronously.
+        /// </summary>
+        private void AddLogMessages(LogMessage[] logMsgs)
         {
             if (_pauseLog)
                 return;
 
-			logListView.BeginUpdate();
+            logListView.BeginUpdate();
 
-			foreach (LogMessage msg in logMsgs)
-				AddLogMessage(msg);
+            foreach (LogMessage msg in logMsgs)
+                AddLogMessage(msg);
 
-			logListView.EndUpdate();
-		}
+            logListView.EndUpdate();
+        }
 
-		/// <summary>
-		/// Adds a new log message, synchronously.
-		/// </summary>
-		private void AddLogMessage(LogMessage logMsg)
-		{
+        /// <summary>
+        /// Adds a new log message, synchronously.
+        /// </summary>
+        private void AddLogMessage(LogMessage logMsg)
+        {
             if (_pauseLog)
                 return;
 
@@ -368,8 +396,8 @@ namespace Log2Console
 
             if (!this.Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
                 ShowBalloonTip("A new message has been received...");
-            
-		}
+
+        }
 
         private void quitBtn_Click(object sender, EventArgs e)
         {
@@ -378,7 +406,7 @@ namespace Log2Console
 
         private void logListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-			RemovedLoggerHighlight();
+            RemovedLoggerHighlight();
 
             LogMessageItem logMsgItem = null;
             if (logListView.SelectedItems.Count > 0)
@@ -386,12 +414,12 @@ namespace Log2Console
 
             SetLogMessageDetail(logMsgItem);
 
-			// Highlight Logger in the Tree View
-			if ((logMsgItem != null) && (UserSettings.Instance.HighlightLogger))
-			{
-				logMsgItem.Parent.Highlight = true;
-				_lastHighlightedLogger = logMsgItem.Parent;
-			}
+            // Highlight Logger in the Tree View
+            if ((logMsgItem != null) && (UserSettings.Instance.HighlightLogger))
+            {
+                logMsgItem.Parent.Highlight = true;
+                _lastHighlightedLogger = logMsgItem.Parent;
+            }
         }
 
         private void SetLogMessageDetail(LogMessageItem logMsgItem)
@@ -431,15 +459,15 @@ namespace Log2Console
             logDetailTextBox.Text = _msgDetailText;
         }
 
-		private void logDetailTextBox_TextChanged(object sender, EventArgs e)
-		{
-			// Disable Edition without making it Read Only (better rendering...), see above
-			logDetailTextBox.Text = _msgDetailText;
-		}
+        private void logDetailTextBox_TextChanged(object sender, EventArgs e)
+        {
+            // Disable Edition without making it Read Only (better rendering...), see above
+            logDetailTextBox.Text = _msgDetailText;
+        }
 
         private void clearBtn_Click(object sender, EventArgs e)
         {
-			ClearLogMessages();
+            ClearLogMessages();
         }
 
         private void closeLoggersPanelBtn_Click(object sender, EventArgs e)
@@ -465,7 +493,7 @@ namespace Log2Console
 
         private void clearLoggersBtn_Click(object sender, EventArgs e)
         {
-			ClearLoggers();
+            ClearLoggers();
         }
 
         private void closeLogDetailPanelBtn_Click(object sender, EventArgs e)
@@ -517,6 +545,11 @@ namespace Log2Console
             RestoreWindow();
         }
 
+        private void mainForm_Minimize(object sender, EventArgs e)
+        {
+            this.Visible = false;
+        }
+
         private void restoreTrayMenuItem_Click(object sender, EventArgs e)
         {
             RestoreWindow();
@@ -539,27 +572,27 @@ namespace Log2Console
 
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
-			LogManager.Instance.SearchText(searchTextBox.Text);
+            LogManager.Instance.SearchText(searchTextBox.Text);
         }
 
         private void zoomOutLogListBtn_Click(object sender, EventArgs e)
-		{
-			ZoomControlFont(logListView, false);
+        {
+            ZoomControlFont(logListView, false);
         }
 
         private void zoomInLogListBtn_Click(object sender, EventArgs e)
         {
-			ZoomControlFont(logListView, true);
+            ZoomControlFont(logListView, true);
         }
 
         private void zoomOutLogDetailsBtn_Click(object sender, EventArgs e)
-		{
-			ZoomControlFont(logDetailTextBox, false);
+        {
+            ZoomControlFont(logDetailTextBox, false);
         }
 
         private void zoomInLogDetailsBtn_Click(object sender, EventArgs e)
-		{
-			ZoomControlFont(logDetailTextBox, true);
+        {
+            ZoomControlFont(logDetailTextBox, true);
         }
 
         private void pinOnTopBtn_Click(object sender, EventArgs e)
@@ -572,17 +605,17 @@ namespace Log2Console
             this.TopMost = pinOnTopBtn.Checked;
         }
 
-		private static void ZoomControlFont(Control ctrl, bool zoomIn)
-		{
-			// Limit to a minimum size
-			float newSize = Math.Max(0.5f, ctrl.Font.SizeInPoints + (zoomIn ? +1 : -1));
-			ctrl.Font = new Font(ctrl.Font.FontFamily, newSize);
-		}
+        private static void ZoomControlFont(Control ctrl, bool zoomIn)
+        {
+            // Limit to a minimum size
+            float newSize = Math.Max(0.5f, ctrl.Font.SizeInPoints + (zoomIn ? +1 : -1));
+            ctrl.Font = new Font(ctrl.Font.FontFamily, newSize);
+        }
 
-		private void loggerTreeView_AfterCheck(object sender, TreeViewEventArgs e)
-		{
-			using (new AutoWaitCursor())
-			{
+        private void loggerTreeView_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            using (new AutoWaitCursor())
+            {
                 //
                 // If we are suppose to ignore events right now, then just
                 // return.
@@ -609,56 +642,56 @@ namespace Log2Console
                 {
                     this._ignoreEvents = false;
                 }
-			}
-		}
+            }
+        }
 
-		private void levelComboBox_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (!this.IsHandleCreated)
-				return;
+        private void levelComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!this.IsHandleCreated)
+                return;
 
-			using (new AutoWaitCursor())
-			{
-				UserSettings.Instance.LogLevelInfo =
-					LogUtils.GetLogLevelInfo((LogLevel)levelComboBox.SelectedIndex);
-				LogManager.Instance.UpdateLogLevel();
-			}
-		}
+            using (new AutoWaitCursor())
+            {
+                UserSettings.Instance.LogLevelInfo =
+                    LogUtils.GetLogLevelInfo((LogLevel)levelComboBox.SelectedIndex);
+                LogManager.Instance.UpdateLogLevel();
+            }
+        }
 
-		private void loggerTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-		{
-			if ((e.Node == null) || ((e.Node.Tag as LoggerItem) == null))
-				return;
+        private void loggerTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if ((e.Node == null) || ((e.Node.Tag as LoggerItem) == null))
+                return;
 
-			if (UserSettings.Instance.HighlightLogMessages)
-			{
-				_lastHighlightedLogMsgs = e.Node.Tag as LoggerItem;
-				_lastHighlightedLogMsgs.HighlightLogMessages = true;
-			}
-		}
+            if (UserSettings.Instance.HighlightLogMessages)
+            {
+                _lastHighlightedLogMsgs = e.Node.Tag as LoggerItem;
+                _lastHighlightedLogMsgs.HighlightLogMessages = true;
+            }
+        }
 
-		private void loggerTreeView_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			RemovedLogMsgsHighlight();
-		}
+        private void loggerTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            RemovedLogMsgsHighlight();
+        }
 
-		private void RemovedLogMsgsHighlight()
-		{
-			if (_lastHighlightedLogMsgs != null)
-			{
-				_lastHighlightedLogMsgs.HighlightLogMessages = false;
-				_lastHighlightedLogMsgs = null;
-			}
-		}
+        private void RemovedLogMsgsHighlight()
+        {
+            if (_lastHighlightedLogMsgs != null)
+            {
+                _lastHighlightedLogMsgs.HighlightLogMessages = false;
+                _lastHighlightedLogMsgs = null;
+            }
+        }
 
-		private void RemovedLoggerHighlight()
-		{
-			if (_lastHighlightedLogger != null)
-			{
-				_lastHighlightedLogger.Highlight = false;
-				_lastHighlightedLogger = null;
-			}
-		}
+        private void RemovedLoggerHighlight()
+        {
+            if (_lastHighlightedLogger != null)
+            {
+                _lastHighlightedLogger.Highlight = false;
+                _lastHighlightedLogger = null;
+            }
+        }
 
         private void pauseBtn_Click(object sender, EventArgs e)
         {
@@ -682,7 +715,7 @@ namespace Log2Console
                 {
                     foreach (ListViewItem lvi in logListView.Items)
                     {
-                        string line = 
+                        string line =
                             String.Format("{0}\t{1}\t{2}\t{3}\t{4}",
                                 lvi.SubItems[0].Text, lvi.SubItems[1].Text, lvi.SubItems[2].Text, lvi.SubItems[3].Text, lvi.SubItems[4].Text);
                         ssw.WriteLine(line);
