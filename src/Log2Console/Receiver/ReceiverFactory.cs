@@ -126,6 +126,9 @@ namespace Log2Console.Receiver
             
             // WinDebug Receiver
             AddReceiver<WinDebugReceiver>();
+
+            //MSMQ Receiver
+            AddReceiver<MsmqReceiver>();
 		}
 
         private void AddReceiver<T>()
