@@ -15,14 +15,10 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
+    <SccProjectName>%24/log2console/src/Log2Console</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <SccAuxPath>https://tfs04.codeplex.com</SccAuxPath>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
     <TargetZone>LocalIntranet</TargetZone>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Log2Console.snk</AssemblyOriginatorKeyFile>
@@ -184,6 +180,9 @@
     </Compile>
     <Compile Include="UI\ControlExtenders\Overlay.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\FlickerFreeListView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\ToolStripControl.cs">
       <SubType>Component</SubType>

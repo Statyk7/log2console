@@ -28,8 +28,9 @@ namespace Log2Console
             lines.Add("This is an open source application written by Rémy Baudet (statyk7@gmail.com).");
             lines.Add("");
             lines.Add("Additional Developpers:");
-            lines.Add(" - Nicolas Lépinay (agentsmith7.0@gmail.com)");
-            lines.Add(" - Darrel Miller");
+            lines.Add(" - Darrel Miller (DarrelMiller on CodePlex");
+            lines.Add(" - calhuskerfan (on CodePlex)");
+            lines.Add(" - vertigo00oo (on CodePlex)");
             lines.Add("");
             lines.Add("Credits:");
             lines.Add(" - Boomy Icons by Milosz Wlazlo (http://miloszwl.deviantart.com)");
