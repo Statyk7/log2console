@@ -7,15 +7,21 @@
 "LanguageId" = "3:1033"
 "CodePage" = "3:1252"
 "UILanguageId" = "3:1033"
-"SccProjectName" = "8:"
-"SccLocalPath" = "8:"
-"SccAuxPath" = "8:"
-"SccProvider" = "8:"
+"SccProjectName" = "8:$/log2console/src/L2C_Setup"
+"SccLocalPath" = "8:."
+"SccAuxPath" = "8:https://tfs04.codeplex.com"
+"SccProvider" = "8:{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}"
     "Hierarchy"
     {
         "Entry"
         {
-        "MsmKey" = "8:_5B788734FEB774BC5B24AF50706D9ED3"
+        "MsmKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
+        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
         "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -28,13 +34,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5B788734FEB774BC5B24AF50706D9ED3"
+        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
+        "OwnerKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -72,7 +84,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\L2C_Setup.msi"
+        "OutputFilename" = "8:Release\\Log2Console_Setup.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -127,14 +139,45 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_5B788734FEB774BC5B24AF50706D9ED3"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_07A8C654BC422BD8FBCA0FFE4B30292F"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_07A8C654BC422BD8FBCA0FFE4B30292F"
+                    {
+                    "Name" = "8:System.Core.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.Core.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BFDD154CC4913D68FFED580C9B509715"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5B788734FEB774BC5B24AF50706D9ED3"
+                    "_BFDD154CC4913D68FFED580C9B509715"
                     {
                     "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
@@ -215,7 +258,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Log2Console"
         "ProductCode" = "8:{E2E053DE-983B-4104-AA76-C36DC887658E}"
-        "PackageCode" = "8:{AAF104A9-52C1-4FDD-A61D-DE3F2D26BF60}"
+        "PackageCode" = "8:{F0FB35F8-FA1A-4602-AE62-780CE3A4023B}"
         "UpgradeCode" = "8:{76F2BD5A-4763-4A97-B4BF-F3F475A62908}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -387,7 +430,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_2452C58922E841A1B837AB83EE9DB38E"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Progression"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
@@ -431,7 +474,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_276FE044F8504A889C919011699D7DA3"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Dossier d'installation"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
@@ -453,7 +496,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_345E5116AF474AFFB8951F0277BB2078"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmer l'installation"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
@@ -475,7 +518,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_B3D30F39D1C0467693EFAFAA11015AEA"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Bienvenue"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
@@ -532,7 +575,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4204344E5DD4486BA4680C22C6ED2F96"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Terminé"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
@@ -576,7 +619,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_CBC11F08CCE84162ADE1DC9360E664EA"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Terminé"
+                    "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
@@ -607,7 +650,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_836B160E9CC74B73B085E5C702382C0C"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Progression"
+                    "DisplayName" = "8:Progress"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
@@ -651,7 +694,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_10FFFE7235FA44C687BE8513A225CC78"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Bienvenue"
+                    "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
@@ -699,7 +742,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_176E73AE6BF546DF94E16F42FD1FC3FF"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Dossier d'installation"
+                    "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -734,7 +777,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_B9CDAEA344F346639AC9AA74F7B25355"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirmer l'installation"
+                    "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -763,7 +806,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F7B0A84139D343738E0EC5103E542FF3"
             {
-            "SourcePath" = "8:..\\Log2Console\\obj\\Debug\\Log2Console.exe"
+            "SourcePath" = "8:..\\Log2Console\\obj\\Release\\Log2Console.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"

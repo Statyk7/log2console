@@ -57,7 +57,7 @@ namespace Log2Console
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.pinOnTopBtn = new System.Windows.Forms.ToolStripButton();
             this.loggerTreeView = new System.Windows.Forms.TreeView();
-            this.logListView = new System.Windows.Forms.ListView();
+            this.logListView = new Log2Console.UI.FlickerFreeListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
@@ -729,7 +729,7 @@ namespace Log2Console
         private System.Windows.Forms.ColumnHeader loggerColumnHeader;
         private System.Windows.Forms.ColumnHeader threadColumnHeader;
         private System.Windows.Forms.ColumnHeader msgColumnHeader;
-        private System.Windows.Forms.ListView logListView;
+        private Log2Console.UI.FlickerFreeListView logListView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
