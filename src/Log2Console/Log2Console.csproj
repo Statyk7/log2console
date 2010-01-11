@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="Receiver\BaseReceiver.cs" />
     <Compile Include="Receiver\DebugMonitor.cs" />
+    <Compile Include="Receiver\EventLogReceiver.cs" />
     <Compile Include="Receiver\FileReceiver.cs" />
     <Compile Include="Receiver\IReceiver.cs" />
     <Compile Include="Receiver\MsmqReceiver.cs" />
