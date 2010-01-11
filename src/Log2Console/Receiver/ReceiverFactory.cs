@@ -106,44 +106,39 @@ namespace Log2Console.Receiver
 	{
 		private static ReceiverFactory _instance;
 
-		private readonly Dictionary<string, Type> _receiverTypes;
+        private readonly Dictionary<string, Type> _receiverTypes = new Dictionary<string, Type>();
+
+
+	    private static readonly string ReceiverInterfaceName = typeof(IReceiver).FullName;
 
 
 		private ReceiverFactory()
 		{
-			_receiverTypes = new Dictionary<string, Type>();
+            // Get all the possible receivers by enumerating all the types implementing the interface
+		    Assembly assembly = Assembly.GetAssembly(typeof(IReceiver));
+            Type[] types = assembly.GetTypes();
+            foreach (Type type in types)
+            {
+                // Skip abstract types
+                if (type.IsAbstract)
+                    continue;
 
-			// TODO: Populate using reflection onto assembly
+                Type[] findInterfaces = type.FindInterfaces((typeObj, o) => (typeObj.ToString() == ReceiverInterfaceName), null);
+                if (findInterfaces.Length < 1)
+                    continue;
 
-			// Remoting Receiver
-            AddReceiver<RemotingReceiver>();
-            
-            // UDP Receiver
-			AddReceiver<UdpReceiver>();
-            
-            // File Receiver
-            AddReceiver<FileReceiver>();
-            
-            // WinDebug Receiver
-            AddReceiver<WinDebugReceiver>();
-
-            //MSMQ Receiver
-            AddReceiver<MsmqReceiver>();
+                AddReceiver(type);
+            }
 		}
 
-        private void AddReceiver<T>()
+        private void AddReceiver(Type type)
         {
-			Type type = typeof(T);
 			_receiverTypes.Add(type.FullName, type);
         }
 
 		public static ReceiverFactory Instance
 		{
-			get {
-				if (_instance == null)
-					_instance = new ReceiverFactory();
-				return _instance;
-			}
+			get { return _instance ?? (_instance = new ReceiverFactory()); }
 		}
 
 		public Dictionary<string, Type> ReceiverTypes
@@ -156,7 +151,7 @@ namespace Log2Console.Receiver
 		{
 			IReceiver receiver = null;
 
-			Type type = null;
+			Type type;
 			if (_receiverTypes.TryGetValue(typeStr, out type))
 			{
 				receiver = 

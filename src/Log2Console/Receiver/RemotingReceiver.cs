@@ -43,8 +43,8 @@ namespace Log2Console.Receiver
             get { return _port; }
             set { _port = value; }
 		}
-		
-		[Category("Configuration")]
+
+        [Category("Behavior")]
 		[DisplayName("Append Host Name to Logger")]
 		[Description("Append the remote Host Name to the Logger Name.")]
 		public bool AppendHostNameToLogger
