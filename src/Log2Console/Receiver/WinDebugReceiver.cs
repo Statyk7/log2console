@@ -10,6 +10,7 @@ using Log2Console.Log;
 namespace Log2Console.Receiver
 {
     [Serializable]
+    [DisplayName("WinDebug (OutputDebugString)")]
     public class WinDebugReceiver : BaseReceiver
     {
         #region Overrides of BaseReceiver
@@ -51,7 +52,7 @@ namespace Log2Console.Receiver
             logMsg.Level = LogLevels.Instance[LogLevel.Debug];
             logMsg.ThreadName = pid.ToString();
             logMsg.TimeStamp = DateTime.Now;
-            _notifiable.Notify(logMsg);
+            Notifiable.Notify(logMsg);
         }
 
         private static string GetProcessName(int pid)

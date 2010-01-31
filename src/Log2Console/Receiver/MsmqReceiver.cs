@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading;
@@ -7,10 +6,12 @@ using System.Messaging;
 
 using Log2Console.Log;
 
+
 namespace Log2Console.Receiver
 {
 
     [Serializable]
+    [DisplayName("Windows Message Queue (MSMQ)")]
     public class MsmqReceiver : BaseReceiver
     {
         [NonSerialized]
@@ -19,7 +20,7 @@ namespace Log2Console.Receiver
         [NonSerialized]
         private Timer _queueCreationCheckTimer;
 
-        [NonSerialized] private int _queueCheckTimerDelayAndInterval = 5000;
+        [NonSerialized] private const int QueueCheckTimerDelayAndInterval = 5000;
 
 
         private string _queueName = @".\private$\log";
@@ -81,8 +82,6 @@ namespace Log2Console.Receiver
         }
 
 
-
-
         /// <summary>
         /// 
         /// </summary>
@@ -99,9 +98,9 @@ namespace Log2Console.Receiver
                     /*
                      * Start the queue check timer.  Should the time be configurable?
                      */
-                    _queueCreationCheckTimer = new Timer(this.QueueCreationCheckTimerFunction, this,
-                              _queueCheckTimerDelayAndInterval,
-                              _queueCheckTimerDelayAndInterval);
+                    _queueCreationCheckTimer = new Timer(QueueCreationCheckTimerFunction, this,
+                                                         QueueCheckTimerDelayAndInterval,
+                                                         QueueCheckTimerDelayAndInterval);
                     return;
                 }
             }
@@ -126,12 +125,12 @@ namespace Log2Console.Receiver
                     // End the asynchronous receive operation.
                     Message m = ((MessageQueue)source).EndReceive(asyncResult.AsyncResult);
 
-                    if (_notifiable != null)
+                    if (Notifiable != null)
                     {
                         string loggingEvent = System.Text.Encoding.ASCII.GetString(((MemoryStream)m.BodyStream).ToArray());
                         LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "MSMQLogger");
                         logMsg.LoggerName = string.Format("{0}_{1}", this.QueueName, logMsg.LoggerName);
-                        _notifiable.Notify(logMsg);
+                        Notifiable.Notify(logMsg);
                     }
 
 
@@ -155,7 +154,7 @@ namespace Log2Console.Receiver
                                 logs[i] = logMsg;
                             }
 
-                            _notifiable.Notify(logs);
+                            Notifiable.Notify(logs);
                         }
                     }
 
@@ -193,18 +192,17 @@ namespace Log2Console.Receiver
         /// 
         /// </summary>
         /// <param name="state"></param>
-        private void QueueCreationCheckTimerFunction(object state)
+        private static void QueueCreationCheckTimerFunction(object state)
         {
             //TODOCJH:  If this timer gets called then we did not finish the job before the maximum allowable time.
             //_logger.Fatal("JobMaxExecutionTimerFunction");
-            if (MessageQueue.Exists((state as MsmqReceiver).QueueName))
+
+            MsmqReceiver rcv = state as MsmqReceiver;
+            if ((rcv != null) && MessageQueue.Exists(rcv.QueueName))
             {
-                (state as MsmqReceiver)._queueCreationCheckTimer.Change(System.Threading.Timeout.Infinite,
-                                                        System.Threading.Timeout.Infinite);
-
-                (state as MsmqReceiver)._queueCreationCheckTimer.Dispose();
-
-                (state as MsmqReceiver).Start();
+                rcv._queueCreationCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                rcv._queueCreationCheckTimer.Dispose();
+                rcv.Start();
             }
         }
     }

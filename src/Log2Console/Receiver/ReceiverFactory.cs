@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using System.Xml;
@@ -12,6 +13,20 @@ namespace Log2Console.Receiver
     public static class ReceiverUtils
     {
         static readonly DateTime s1970 = new DateTime(1970, 1, 1);
+
+
+        public static string GetTypeDescription(Type type)
+        {
+            object[] attributes = type.GetCustomAttributes(true);
+            foreach (object attribute in attributes)
+            {
+                DisplayNameAttribute da = attribute as DisplayNameAttribute;
+                if (da != null)
+                    return da.DisplayName;
+            }
+
+            return type.ToString();
+        }
 
 
         /// <summary>
@@ -104,9 +119,20 @@ namespace Log2Console.Receiver
 
 	public class ReceiverFactory
 	{
+	    public class ReceiverInfo
+        {
+            public string Name;
+            public Type Type;
+
+            public override string ToString()
+            {
+                return Name;
+            }
+        }
+
 		private static ReceiverFactory _instance;
 
-        private readonly Dictionary<string, Type> _receiverTypes = new Dictionary<string, Type>();
+        private readonly Dictionary<string, ReceiverInfo> _receiverTypes = new Dictionary<string, ReceiverInfo>();
 
 
 	    private static readonly string ReceiverInterfaceName = typeof(IReceiver).FullName;
@@ -133,7 +159,11 @@ namespace Log2Console.Receiver
 
         private void AddReceiver(Type type)
         {
-			_receiverTypes.Add(type.FullName, type);
+            ReceiverInfo info = new ReceiverInfo();
+            info.Name = ReceiverUtils.GetTypeDescription(type);
+            info.Type = type;
+
+			_receiverTypes.Add(type.FullName, info);
         }
 
 		public static ReceiverFactory Instance
@@ -141,7 +171,7 @@ namespace Log2Console.Receiver
 			get { return _instance ?? (_instance = new ReceiverFactory()); }
 		}
 
-		public Dictionary<string, Type> ReceiverTypes
+        public Dictionary<string, ReceiverInfo> ReceiverTypes
 		{
 			get { return _receiverTypes; }
 		}
@@ -151,12 +181,10 @@ namespace Log2Console.Receiver
 		{
 			IReceiver receiver = null;
 
-			Type type;
-			if (_receiverTypes.TryGetValue(typeStr, out type))
+            ReceiverInfo info;
+			if (_receiverTypes.TryGetValue(typeStr, out info))
 			{
-				receiver = 
-					Assembly.GetExecutingAssembly().CreateInstance(typeStr)
-						as IReceiver;
+			    receiver = Activator.CreateInstance(info.Type) as IReceiver;
 			}
 
 			return receiver;

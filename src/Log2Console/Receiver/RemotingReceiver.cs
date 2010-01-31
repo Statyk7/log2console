@@ -16,6 +16,7 @@ using Log2Console.Log;
 namespace Log2Console.Receiver
 {
     [Serializable]
+    [DisplayName(".NET Remoting")]
     public class RemotingReceiver : BaseReceiver, RemotingAppender.IRemoteLoggingSink, ISerializable
     {
         private const string RemotingReceiverChannelName = "RemotingReceiverChannel";
@@ -189,14 +190,14 @@ namespace Log2Console.Receiver
 
         public void LogEvents(LoggingEvent[] events)
         {
-			if ((events == null) || (events.Length == 0) || (_notifiable == null))
+			if ((events == null) || (events.Length == 0) || (Notifiable == null))
                 return;
 
 			LogMessage[] logMsgs = new LogMessage[events.Length];
 			for (int i = 0; i < events.Length; i++)
 				logMsgs[i] = CreateLogMessage(events[i]);
 
-			_notifiable.Notify(logMsgs);
+			Notifiable.Notify(logMsgs);
         }
 
         #endregion Implementation of IRemoteLoggingSink

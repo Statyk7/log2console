@@ -57,12 +57,6 @@ namespace Log2Console
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.pinOnTopBtn = new System.Windows.Forms.ToolStripButton();
             this.loggerTreeView = new System.Windows.Forms.TreeView();
-            this.logListView = new Log2Console.UI.FlickerFreeListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
             this.timeColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.levelColumnHeader = new System.Windows.Forms.ColumnHeader();
             this.loggerColumnHeader = new System.Windows.Forms.ColumnHeader();
@@ -96,6 +90,13 @@ namespace Log2Console
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.copyLogDetailBtn = new System.Windows.Forms.ToolStripButton();
             this.logDetailSplitter = new System.Windows.Forms.Splitter();
+            this.versionLabel = new System.Windows.Forms.ToolStripLabel();
+            this.logListView = new Log2Console.UI.FlickerFreeListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
             this.mainToolStrip.SuspendLayout();
             this.loggerPanel.SuspendLayout();
             this.loggerInnerPanel.SuspendLayout();
@@ -133,7 +134,8 @@ namespace Log2Console
             this.toolStripSeparator4,
             this.aboutBtn,
             this.toolStripSeparator12,
-            this.pinOnTopBtn});
+            this.pinOnTopBtn,
+            this.versionLabel});
             this.mainToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
@@ -367,53 +369,6 @@ namespace Log2Console
             this.loggerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.loggerTreeView_NodeMouseDoubleClick);
             this.loggerTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.loggerTreeView_AfterCheck);
             this.loggerTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.loggerTreeView_AfterSelect);
-            // 
-            // logListView
-            // 
-            this.logListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
-            this.logListView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.logListView.FullRowSelect = true;
-            this.logListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.logListView.HideSelection = false;
-            this.logListView.Location = new System.Drawing.Point(0, 25);
-            this.logListView.MultiSelect = false;
-            this.logListView.Name = "logListView";
-            this.logListView.ShowItemToolTips = true;
-            this.logListView.Size = new System.Drawing.Size(881, 324);
-            this.logListView.TabIndex = 0;
-            this.logListView.UseCompatibleStateImageBehavior = false;
-            this.logListView.View = System.Windows.Forms.View.Details;
-            this.logListView.SelectedIndexChanged += new System.EventHandler(this.logListView_SelectedIndexChanged);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Time";
-            this.columnHeader1.Width = 120;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Level";
-            this.columnHeader2.Width = 48;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Logger";
-            this.columnHeader3.Width = 92;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Thread";
-            this.columnHeader4.Width = 52;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Message";
-            this.columnHeader5.Width = 540;
             // 
             // timeColumnHeader
             // 
@@ -685,6 +640,61 @@ namespace Log2Console
             this.logDetailSplitter.TabIndex = 8;
             this.logDetailSplitter.TabStop = false;
             // 
+            // versionLabel
+            // 
+            this.versionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(42, 22);
+            this.versionLabel.Text = "Version";
+            // 
+            // logListView
+            // 
+            this.logListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5});
+            this.logListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logListView.FullRowSelect = true;
+            this.logListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.logListView.HideSelection = false;
+            this.logListView.Location = new System.Drawing.Point(0, 25);
+            this.logListView.MultiSelect = false;
+            this.logListView.Name = "logListView";
+            this.logListView.ShowItemToolTips = true;
+            this.logListView.Size = new System.Drawing.Size(881, 324);
+            this.logListView.TabIndex = 0;
+            this.logListView.UseCompatibleStateImageBehavior = false;
+            this.logListView.View = System.Windows.Forms.View.Details;
+            this.logListView.SelectedIndexChanged += new System.EventHandler(this.logListView_SelectedIndexChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Time";
+            this.columnHeader1.Width = 120;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Level";
+            this.columnHeader2.Width = 48;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Logger";
+            this.columnHeader3.Width = 92;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Thread";
+            this.columnHeader4.Width = 52;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Message";
+            this.columnHeader5.Width = 540;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -787,6 +797,7 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         private System.Windows.Forms.ToolStripButton saveBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+        private System.Windows.Forms.ToolStripLabel versionLabel;
     }
 }
 

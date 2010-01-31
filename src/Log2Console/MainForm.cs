@@ -36,7 +36,7 @@ namespace Log2Console
         delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
 
         // Specific event handler on minimized action
-        public event EventHandler Minimize;
+        public event EventHandler Minimized;
 
 
         public MainForm()
@@ -47,7 +47,7 @@ namespace Log2Console
 
             levelComboBox.SelectedIndex = 0;
 
-            this.Minimize += new EventHandler(this.mainForm_Minimize);
+            Minimized += OnMinimized;
 
 
             // Init Log Manager Singleton
@@ -59,17 +59,24 @@ namespace Log2Console
             // Dockable Log Detail View
             _logDetailsPanelFloaty = _dockExtender.Attach(logDetailPanel, logDetailToolStrip, logDetailSplitter);
             _logDetailsPanelFloaty.DontHideHandle = true;
-            _logDetailsPanelFloaty.Docking += new EventHandler(floaty_Docking);
+            _logDetailsPanelFloaty.Docking += OnFloatyDocking;
 
             // Dockable Logger Tree
             _loggersPanelFloaty = _dockExtender.Attach(loggerPanel, loggersToolStrip, loggerSplitter);
             _loggersPanelFloaty.DontHideHandle = true;
-            _loggersPanelFloaty.Docking += new EventHandler(floaty_Docking);
+            _loggersPanelFloaty.Docking += OnFloatyDocking;
 
             // Settings
-            UserSettings.Load();
+            bool ok = UserSettings.Load();
+            if (!ok)
+            {
+                // Initialize default layout
+                UserSettings.Instance.Layout.Initialize(DesktopBounds, WindowState, true, true);
+            }
+
             _windowRestorer = new WindowRestorer(this, UserSettings.Instance.Layout.WindowPosition,
                                                        UserSettings.Instance.Layout.WindowState);
+
             ApplySettings(true);
 
             // Initialize Receivers
@@ -89,9 +96,9 @@ namespace Log2Console
 
             if ((msg.Msg == WM_SIZE)
                 && ((int)msg.WParam == SIZE_MINIMIZED)
-                && (this.Minimize != null))
+                && (Minimized != null))
             {
-                this.Minimize(this, EventArgs.Empty);
+                Minimized(this, EventArgs.Empty);
             }
 
             base.WndProc(ref msg);
@@ -126,31 +133,33 @@ namespace Log2Console
 
         protected override void OnLoad(EventArgs e)
         {
-            // Set Window title
-            this.Text = AboutForm.AssemblyTitle + " - v" + AboutForm.AssemblyVersion;
+            // Display Version
+            versionLabel.Text = AboutForm.AssemblyTitle + " v" + AboutForm.AssemblyVersion;
 
             DoubleBuffered = true;
             base.OnLoad(e);
         }
 
-        private void floaty_Docking(object sender, EventArgs e)
+        private void OnFloatyDocking(object sender, EventArgs e)
         {
             // make sure the ZOrder remains intact
             logListView.BringToFront();
-            this.BringToFront();
+            BringToFront();
         }
 
         private void ApplySettings(bool noCheck)
         {
-            this.Opacity = (double)UserSettings.Instance.Transparency / 100;
-            this.ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
+            Opacity = (double)UserSettings.Instance.Transparency / 100;
+            ShowInTaskbar = !UserSettings.Instance.HideTaskbarIcon;
 
-            this.TopMost = UserSettings.Instance.AlwaysOnTop;
+            TopMost = UserSettings.Instance.AlwaysOnTop;
             pinOnTopBtn.Checked = UserSettings.Instance.AlwaysOnTop;
 
             logListView.Font = UserSettings.Instance.LogListFont;
             logDetailTextBox.Font = UserSettings.Instance.LogDetailFont;
             loggerTreeView.Font = UserSettings.Instance.LoggerTreeFont;
+
+            logListView.BackColor = UserSettings.Instance.LogListBackColor;
 
             LogLevels.Instance.LogLevelInfos[(int)LogLevel.Trace].Color = UserSettings.Instance.TraceLevelColor;
             LogLevels.Instance.LogLevelInfos[(int)LogLevel.Debug].Color = UserSettings.Instance.DebugLevelColor;
@@ -172,7 +181,7 @@ namespace Log2Console
                     DialogResult res = MessageBox.Show(
                         this,
                         "You changed the Message Grouping setting, the Log Message List must be cleared, OK?",
-                        this.Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                        Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
                     if (res == DialogResult.OK)
                     {
@@ -188,8 +197,8 @@ namespace Log2Console
 
             if (noCheck)
             {
-                this.DesktopBounds = UserSettings.Instance.Layout.WindowPosition;
-                this.WindowState = UserSettings.Instance.Layout.WindowState;
+                DesktopBounds = UserSettings.Instance.Layout.WindowPosition;
+                WindowState = UserSettings.Instance.Layout.WindowState;
 
                 ShowDetailsPanel(UserSettings.Instance.Layout.ShowLogDetailView);
                 ShowLoggersPanel(UserSettings.Instance.Layout.ShowLoggerTree);
@@ -263,7 +272,7 @@ namespace Log2Console
 
         private void ShowErrorBox(string msg)
         {
-            MessageBox.Show(this, msg, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, msg, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void ShowSettingsForm()
@@ -273,10 +282,10 @@ namespace Log2Console
             SettingsForm form = new SettingsForm(copy);
             if (form.ShowDialog(this) != DialogResult.OK)
                 return;
-            else
-                UserSettings.Instance = copy;
 
+            UserSettings.Instance = copy;
             UserSettings.Instance.Save();
+
             ApplySettings(false);
         }
 
@@ -310,16 +319,16 @@ namespace Log2Console
 
         private void RestoreWindow()
         {
-            //
             // Make the form visible and activate it. We need to bring the form
             // the front so the user will see it. Otherwise the user would have
             // to find it in the task bar and click on it.
-            //
-            this.Visible = true;
-            this.Activate();
-            this.BringToFront();
-            if (this.WindowState == FormWindowState.Minimized)
-                this.WindowState = _windowRestorer.WindowState;
+
+            Visible = true;
+            Activate();
+            BringToFront();
+
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = _windowRestorer.WindowState;
         }
 
         #region ILogMessageNotifiable Members
@@ -394,7 +403,7 @@ namespace Log2Console
 
             LogManager.Instance.ProcessLogMessage(logMsg);
 
-            if (!this.Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
+            if (!Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
                 ShowBalloonTip("A new message has been received...");
 
         }
@@ -545,9 +554,10 @@ namespace Log2Console
             RestoreWindow();
         }
 
-        private void mainForm_Minimize(object sender, EventArgs e)
+        private void OnMinimized(object sender, EventArgs e)
         {
-            this.Visible = false;
+            if (!ShowInTaskbar)
+                Visible = false;
         }
 
         private void restoreTrayMenuItem_Click(object sender, EventArgs e)
@@ -602,7 +612,7 @@ namespace Log2Console
 
             // Save and apply setting
             UserSettings.Instance.AlwaysOnTop = pinOnTopBtn.Checked;
-            this.TopMost = pinOnTopBtn.Checked;
+            TopMost = pinOnTopBtn.Checked;
         }
 
         private static void ZoomControlFont(Control ctrl, bool zoomIn)
@@ -620,7 +630,7 @@ namespace Log2Console
                 // If we are suppose to ignore events right now, then just
                 // return.
                 //
-                if (this._ignoreEvents) return;
+                if (_ignoreEvents) return;
 
                 try
                 {
@@ -630,7 +640,7 @@ namespace Log2Console
                     // during a recursive call. To avoid more processing than necessary, we should
                     // set a flag and clear it when we're done.
                     //
-                    this._ignoreEvents = true;
+                    _ignoreEvents = true;
 
                     //
                     // Enable/disable the logger item that is represented by the
@@ -640,14 +650,14 @@ namespace Log2Console
                 }
                 finally
                 {
-                    this._ignoreEvents = false;
+                    _ignoreEvents = false;
                 }
             }
         }
 
         private void levelComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!this.IsHandleCreated)
+            if (!IsHandleCreated)
                 return;
 
             using (new AutoWaitCursor())
