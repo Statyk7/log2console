@@ -1,11 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 using Log2Console.Log;
-using System.Collections.Generic;
-using System.Text;
 
 
 namespace Log2Console.Receiver
@@ -15,16 +14,18 @@ namespace Log2Console.Receiver
     /// Ideally the log events should use the log4j XML Schema layout.
     /// </summary>
     [Serializable]
+    [DisplayName("Log File (Flat or Log4j XML Formatted)")]
     public class FileReceiver : BaseReceiver
     {
         [NonSerialized]
-        private FileSystemWatcher _fileWatcher = null;
+        private FileSystemWatcher _fileWatcher;
         [NonSerialized]
-        private StreamReader _fileReader = null;
+        private StreamReader _fileReader;
         [NonSerialized]
-        private long _lastFileLength = 0;
+        private long _lastFileLength;
 
         private string _fileToWatch = String.Empty;
+        private bool _showFromBeginning;
 
 
         [Category("Configuration")]
@@ -33,6 +34,24 @@ namespace Log2Console.Receiver
         {
             get { return _fileToWatch; }
             set { _fileToWatch = value; }
+        }
+        
+        [Category("Configuration")]
+        [DisplayName("Show from Beginning")]
+        [Description("Show file contents from the beginning (not just newly appended lines)")]
+        [DefaultValue(false)]
+        public bool ShowFromBeginning
+        {
+            get { return _showFromBeginning; }
+            set
+            {
+                _showFromBeginning = value;
+ 
+                if (value && _lastFileLength == 0)
+                {
+                    ReadFile();
+                }
+            }
         }
 
 
@@ -62,7 +81,7 @@ namespace Log2Console.Receiver
             _fileReader =
                 new StreamReader(new FileStream(_fileToWatch, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 
-            _lastFileLength = _fileReader.BaseStream.Length;
+            _lastFileLength = _showFromBeginning ? 0 : _fileReader.BaseStream.Length;
 
             string path = Path.GetDirectoryName(_fileToWatch);
             string filename = Path.GetFileName(_fileToWatch);
@@ -87,25 +106,38 @@ namespace Log2Console.Receiver
 
             _lastFileLength = 0;
         }
+        
+        public override void Attach(ILogMessageNotifiable notifiable)
+        {
+            base.Attach(notifiable);
+            
+            if (_showFromBeginning)
+                ReadFile();
+        }
 
         #endregion
 
 
-        void OnFileChanged(object sender, FileSystemEventArgs e)
+        private void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             if (e.ChangeType != WatcherChangeTypes.Changed)
                 return;
 
+            ReadFile();
+        }
+
+        private void ReadFile()
+        {
             if ((_fileReader == null) || (_fileReader.BaseStream.Length == _lastFileLength))
                 return;
 
             // Seek to the last file length
             _fileReader.BaseStream.Seek(_lastFileLength, SeekOrigin.Begin);
 
-            List<LogMessage> logMsgs = new List<LogMessage>();
             // Get last added lines
-            string line = "";
+            string line;
             var sb = new StringBuilder();
+            List<LogMessage> logMsgs = new List<LogMessage>();
             
             while ((line = _fileReader.ReadLine()) != null)
             {
@@ -122,7 +154,7 @@ namespace Log2Console.Receiver
 
             }
             // Notify the UI with the set of messages
-            _notifiable.Notify(logMsgs.ToArray());
+            Notifiable.Notify(logMsgs.ToArray());
 
             // Update the last file length
             _lastFileLength = _fileReader.BaseStream.Position;

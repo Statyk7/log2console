@@ -32,7 +32,7 @@
             this.receiversListView = new System.Windows.Forms.ListView();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.addReceiverBtn = new System.Windows.Forms.ToolStripButton();
+            this.addReceiverCombo = new System.Windows.Forms.ToolStripDropDownButton();
             this.removeReceiverBtn = new System.Windows.Forms.ToolStripButton();
             this.label2 = new System.Windows.Forms.Label();
             this.sampleClientConfigTextBox = new System.Windows.Forms.TextBox();
@@ -80,22 +80,22 @@
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addReceiverBtn,
+            this.addReceiverCombo,
             this.removeReceiverBtn});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(108, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(148, 25);
             this.toolStrip1.TabIndex = 0;
             // 
-            // addReceiverBtn
+            // addReceiverCombo
             // 
-            this.addReceiverBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.addReceiverBtn.Image = ((System.Drawing.Image)(resources.GetObject("addReceiverBtn.Image")));
-            this.addReceiverBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.addReceiverBtn.Name = "addReceiverBtn";
-            this.addReceiverBtn.Size = new System.Drawing.Size(42, 22);
-            this.addReceiverBtn.Text = "Add...";
-            this.addReceiverBtn.Click += new System.EventHandler(this.addReceiverBtn_Click);
+            this.addReceiverCombo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.addReceiverCombo.Image = ((System.Drawing.Image)(resources.GetObject("addReceiverCombo.Image")));
+            this.addReceiverCombo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.addReceiverCombo.Name = "addReceiverCombo";
+            this.addReceiverCombo.Size = new System.Drawing.Size(51, 22);
+            this.addReceiverCombo.Text = "Add...";
+            this.addReceiverCombo.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.addReceiverCombo_DropDownItemClicked);
             // 
             // removeReceiverBtn
             // 
@@ -112,7 +112,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(229, 268);
+            this.label2.Location = new System.Drawing.Point(229, 223);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(139, 13);
             this.label2.TabIndex = 7;
@@ -122,12 +122,12 @@
             // 
             this.sampleClientConfigTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.sampleClientConfigTextBox.Location = new System.Drawing.Point(229, 284);
+            this.sampleClientConfigTextBox.Location = new System.Drawing.Point(229, 239);
             this.sampleClientConfigTextBox.Multiline = true;
             this.sampleClientConfigTextBox.Name = "sampleClientConfigTextBox";
             this.sampleClientConfigTextBox.ReadOnly = true;
             this.sampleClientConfigTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.sampleClientConfigTextBox.Size = new System.Drawing.Size(481, 129);
+            this.sampleClientConfigTextBox.Size = new System.Drawing.Size(481, 174);
             this.sampleClientConfigTextBox.TabIndex = 6;
             // 
             // receiverPropertyGrid
@@ -137,7 +137,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.receiverPropertyGrid.Location = new System.Drawing.Point(229, 12);
             this.receiverPropertyGrid.Name = "receiverPropertyGrid";
-            this.receiverPropertyGrid.Size = new System.Drawing.Size(481, 253);
+            this.receiverPropertyGrid.Size = new System.Drawing.Size(481, 195);
             this.receiverPropertyGrid.TabIndex = 5;
             this.receiverPropertyGrid.ToolbarVisible = false;
             // 
@@ -197,12 +197,12 @@
         private System.Windows.Forms.ListView receiversListView;
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripButton addReceiverBtn;
         private System.Windows.Forms.ToolStripButton removeReceiverBtn;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox sampleClientConfigTextBox;
         private System.Windows.Forms.PropertyGrid receiverPropertyGrid;
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.ToolStripDropDownButton addReceiverCombo;
     }
 }

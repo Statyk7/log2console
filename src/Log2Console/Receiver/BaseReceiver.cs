@@ -9,24 +9,24 @@ namespace Log2Console.Receiver
     public abstract class BaseReceiver : MarshalByRefObject, IReceiver
     {
         [NonSerialized]
-        protected ILogMessageNotifiable _notifiable = null;
+        protected ILogMessageNotifiable Notifiable;
 
 
         #region IReceiver Members
 
-        public abstract string  SampleClientConfig { get; }
+        public abstract string SampleClientConfig { get; }
 
         public abstract void Initialize();
         public abstract void Terminate();
 
-        public void Attach(ILogMessageNotifiable notifiable)
+        public virtual void Attach(ILogMessageNotifiable notifiable)
         {
-            _notifiable = notifiable;
+            Notifiable = notifiable;
         }
 
-        public void Detach()
+        public virtual void Detach()
         {
-            _notifiable = null;
+            Notifiable = null;
         }
 
         #endregion

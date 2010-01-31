@@ -20,6 +20,14 @@ namespace Log2Console.Settings
 
         public bool ShowLogDetailView { get; set; }
         public bool ShowLoggerTree { get; set; }
+
+        public void Initialize(Rectangle position, FormWindowState state, bool detailView, bool loggerTree)
+        {
+            WindowPosition = position;
+            WindowState = state;
+            ShowLogDetailView = detailView;
+            ShowLoggerTree = loggerTree;
+        }
     }
 
 
@@ -54,6 +62,8 @@ namespace Log2Console.Settings
 		private Font _logListFont = null;
 		private Font _logDetailFont = null;
 		private Font _loggerTreeFont = null;
+
+	    private Color _logListBackColor = Color.Empty;
 
 		private Color _traceLevelColor = DefaultTraceLevelColor;
 		private Color _debugLevelColor = DefaultDebugLevelColor;
@@ -105,13 +115,15 @@ namespace Log2Console.Settings
             set { _instance = value; }
 		}
 
-        public static void Load()
+        public static bool Load()
         {
+            bool ok = false;
+
             _instance = new UserSettings();
 
         	string settingsFilePath = GetSettingsFilePath();
 			if (!File.Exists(settingsFilePath))
-				return;
+				return ok;
 
             try
             {
@@ -129,16 +141,25 @@ namespace Log2Console.Settings
                         // During 1st load, layout is set to null...
                         if ((_instance != null) && (_instance._layout == null))
 							_instance._layout = new LayoutSettings();
+
+                        ok = true;
                     }
                 }
             }
             catch (Exception)
             {
-                // The settings file might be corrupted, delete it...
-                try {
+                // The settings file might be corrupted or from too different version, delete it...
+                try
+                {
 					File.Delete(settingsFilePath);
-                } catch {}
+                }
+                catch
+                {
+                    ok = false;
+                }
             }
+
+            return ok;
 		}
 
 		private static string GetSettingsFilePath()
@@ -329,6 +350,15 @@ namespace Log2Console.Settings
 		{
 			get { return _loggerTreeFont; }
 			set { _loggerTreeFont = value; }
+		}
+
+		[Category("Colors")]
+		[Description("Set the Background Color of the Log List View.")]
+		[DisplayName("Log List View Background Color")]
+        public Color LogListBackColor
+		{
+            get { return _logListBackColor; }
+            set { _logListBackColor = value; }
 		}
 
 

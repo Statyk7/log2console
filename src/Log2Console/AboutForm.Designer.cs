@@ -138,7 +138,7 @@ namespace Log2Console
             this.labelLink.Size = new System.Drawing.Size(271, 17);
             this.labelLink.TabIndex = 22;
             this.labelLink.TabStop = true;
-            this.labelLink.Text = "http://www.codeplex.com/log2console/";
+            this.labelLink.Text = "http://log2console.codeplex.com";
             this.labelLink.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription

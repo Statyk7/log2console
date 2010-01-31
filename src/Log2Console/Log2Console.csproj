@@ -121,10 +121,6 @@
       <DependentUpon>ReceiversForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\SelectReceiverForm.resx">
-      <DependentUpon>SelectReceiverForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Settings\SettingsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SettingsForm.cs</DependentUpon>
@@ -160,12 +156,6 @@
     </Compile>
     <Compile Include="Settings\ReceiversForm.Designer.cs">
       <DependentUpon>ReceiversForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\SelectReceiverForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Settings\SelectReceiverForm.Designer.cs">
-      <DependentUpon>SelectReceiverForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\SettingsForm.cs">
       <SubType>Form</SubType>

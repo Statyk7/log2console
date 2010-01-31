@@ -10,15 +10,17 @@ using Log2Console.Log;
 namespace Log2Console.Receiver
 {
     [Serializable]
+    [DisplayName("UDP (IP v4 and v6)")]
     public class UdpReceiver : BaseReceiver
     {
         [NonSerialized]
-        private Thread _worker = null;
+        private Thread _worker;
         [NonSerialized]
-        private UdpClient _udpClient = null;
+        private UdpClient _udpClient;
         [NonSerialized]
-        private IPEndPoint _remoteEndPoint = null;
+        private IPEndPoint _remoteEndPoint;
 
+        private bool _ipv6;
 		private int _port = 7071;
         private string _address = String.Empty;
 
@@ -29,6 +31,14 @@ namespace Log2Console.Receiver
 		{
 			get { return _port; }
 			set { _port = value; }
+		}
+
+        [Category("Configuration")]
+		[DisplayName("Use IPv6 Addresses")]
+        public bool IpV6
+		{
+            get { return _ipv6; }
+            set { _ipv6 = value; }
 		}
 
         [Category("Configuration")]
@@ -64,7 +74,7 @@ namespace Log2Console.Receiver
 
             // Init connexion here, before starting the thread, to know the status now
             _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            _udpClient = new UdpClient(_port);
+            _udpClient = _ipv6 ? new UdpClient(_port, AddressFamily.InterNetworkV6) : new UdpClient(_port);
 
             if (!String.IsNullOrEmpty(_address))
                 _udpClient.JoinMulticastGroup(IPAddress.Parse(_address));
@@ -104,12 +114,12 @@ namespace Log2Console.Receiver
 
                     Console.WriteLine(loggingEvent);
 
-                    if (_notifiable == null)
+                    if (Notifiable == null)
                         continue;
 
                     LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "UdpLogger");
                     logMsg.LoggerName = string.Format("{0}_{1}", _remoteEndPoint.Address.ToString().Replace(".", "-"), logMsg.LoggerName);
-                    _notifiable.Notify(logMsg);
+                    Notifiable.Notify(logMsg);
                 }
                 catch (Exception ex)
                 {

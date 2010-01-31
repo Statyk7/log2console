@@ -8,6 +8,7 @@ using Log2Console.Log;
 namespace Log2Console.Receiver
 {
     [Serializable]
+    [DisplayName("Windows Event Log")]
     public class EventLogReceiver : BaseReceiver
     {
         [NonSerialized]
@@ -114,7 +115,7 @@ namespace Log2Console.Receiver
             if (!String.IsNullOrEmpty(entryWrittenEventArgs.Entry.UserName))
                 logMsg.Properties.Add("User Name", entryWrittenEventArgs.Entry.UserName);
 
-            _notifiable.Notify(logMsg);
+            Notifiable.Notify(logMsg);
         }
 
         private static LogLevel GetLogLevel(EventLogEntryType entryType)

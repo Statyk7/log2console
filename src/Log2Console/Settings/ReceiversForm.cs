@@ -20,7 +20,15 @@ namespace Log2Console.Settings
 
             InitializeComponent();
 
-            // Populate Receivers
+            // Populate Receiver Types
+            Dictionary<string, ReceiverFactory.ReceiverInfo> receiverTypes = ReceiverFactory.Instance.ReceiverTypes;
+            foreach (KeyValuePair<string, ReceiverFactory.ReceiverInfo> kvp in receiverTypes)
+            {
+                ToolStripItem item = addReceiverCombo.DropDownItems.Add(kvp.Value.Name);
+                item.Tag = kvp.Value;
+            }
+
+            // Populate Existing Receivers
             foreach (IReceiver receiver in receivers)
                 AddReceiver(receiver);
         }
@@ -28,22 +36,23 @@ namespace Log2Console.Settings
         private void AddReceiver(IReceiver receiver)
         {
             Type receiverType = receiver.GetType();
-            ListViewItem lvi = receiversListView.Items.Add(receiverType.FullName);
+            ListViewItem lvi = receiversListView.Items.Add(ReceiverUtils.GetTypeDescription(receiverType));
             lvi.Tag = receiver;
             lvi.Selected = true;
         }
 
-        private void addReceiverBtn_Click(object sender, EventArgs e)
+
+        private void addReceiverCombo_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            SelectReceiverForm form = new SelectReceiverForm();
-            if (form.ShowDialog(this) != DialogResult.OK)
-                return;
+            ReceiverFactory.ReceiverInfo info = e.ClickedItem.Tag as ReceiverFactory.ReceiverInfo;
+            if (info != null)
+            {
+                // Instantiates a new receiver based on the selected type
+                IReceiver receiver = ReceiverFactory.Instance.Create(info.Type.FullName);
 
-            // Instantiates a new receiver based on the selected type
-            IReceiver receiver = ReceiverFactory.Instance.Create(form.SelectedReceiverTypeName);
-
-            AddedReceivers.Add(receiver);
-            AddReceiver(receiver);
+                AddedReceivers.Add(receiver);
+                AddReceiver(receiver);
+            }
         }
 
         private void removeReceiverBtn_Click(object sender, EventArgs e)
@@ -52,7 +61,7 @@ namespace Log2Console.Settings
             if (receiver == null)
                 return;
 
-            DialogResult dr = MessageBox.Show(this, "Confirm delete?", "Confirmation", MessageBoxButtons.YesNo,
+            DialogResult dr = MessageBox.Show(this, "Confirm Delete?", "Confirmation", MessageBoxButtons.YesNo,
                                               MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
             if (dr != DialogResult.Yes)
                 return;
