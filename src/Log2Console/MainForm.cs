@@ -5,12 +5,16 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using Microsoft.WindowsAPICodePack.Taskbar;
+
 using ControlExtenders;
 
 using Log2Console.Log;
 using Log2Console.Receiver;
 using Log2Console.Settings;
 using Log2Console.UI;
+
+using Timer = System.Threading.Timer;
 
 // Configure log4net using the .config file
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -20,6 +24,7 @@ namespace Log2Console
 {
     public partial class MainForm : Form, ILogMessageNotifiable
     {
+        private readonly bool _firstStartup;
         private readonly WindowRestorer _windowRestorer;
 
         private readonly DockExtender _dockExtender;
@@ -31,6 +36,16 @@ namespace Log2Console
         private LoggerItem _lastHighlightedLogMsgs;
         private bool _ignoreEvents;
         private bool _pauseLog;
+
+        private Timer _taskbarProgressTimer;
+        private const int _taskbarProgressTimerPeriod = 2000;
+        private bool _addedLogMessage;
+        private readonly ThumbnailToolbarButton _pauseWinbarBtn;
+        private readonly ThumbnailToolbarButton _autoScrollWinbarBtn;
+        private readonly ThumbnailToolbarButton _clearAllWinbarBtn;
+
+        private readonly Queue<LogMessage> _eventQueue;
+        private Timer _logMsgTimer;
 
         delegate void NotifyLogMsgCallback(LogMessage logMsg);
         delegate void NotifyLogMsgsCallback(LogMessage[] logMsgs);
@@ -48,7 +63,7 @@ namespace Log2Console
             levelComboBox.SelectedIndex = 0;
 
             Minimized += OnMinimized;
-
+            
 
             // Init Log Manager Singleton
             LogManager.Instance.Initialize(new TreeViewLoggerView(loggerTreeView), logListView);
@@ -67,22 +82,60 @@ namespace Log2Console
             _loggersPanelFloaty.Docking += OnFloatyDocking;
 
             // Settings
-            bool ok = UserSettings.Load();
-            if (!ok)
+            _firstStartup = !UserSettings.Load();
+            if (_firstStartup)
             {
                 // Initialize default layout
-                UserSettings.Instance.Layout.Initialize(DesktopBounds, WindowState, true, true);
+                UserSettings.Instance.Layout.Set(DesktopBounds, WindowState, logDetailPanel, loggerPanel);
+
+                // Force panel to visible
+                UserSettings.Instance.Layout.ShowLogDetailView = true;
+                UserSettings.Instance.Layout.ShowLoggerTree = true;
             }
 
             _windowRestorer = new WindowRestorer(this, UserSettings.Instance.Layout.WindowPosition,
                                                        UserSettings.Instance.Layout.WindowState);
 
+            // Windows 7 CodePack (Taskbar icons and progress)
+            {
+                // Taskbar Progress
+                TaskbarManager.Instance.ApplicationId = Text;
+                _taskbarProgressTimer = new Timer(OnTaskbarProgressTimer, null, _taskbarProgressTimerPeriod, _taskbarProgressTimerPeriod);
+
+                // Pause Btn
+                _pauseWinbarBtn = new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon()),
+                                                             pauseBtn.ToolTipText);
+                _pauseWinbarBtn.Click += (sender, args) => pauseBtn_Click(sender, null);
+
+                // Auto Scroll Btn
+                _autoScrollWinbarBtn =
+                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) autoLogToggleBtn.Image).GetHicon()),
+                                               autoLogToggleBtn.ToolTipText);
+                _autoScrollWinbarBtn.Click += (sender, args) => autoLogToggleBtn_Click(sender, null);
+
+                // Clear All Btn
+                _clearAllWinbarBtn =
+                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) clearLoggersBtn.Image).GetHicon()),
+                                               clearLoggersBtn.ToolTipText);
+                _clearAllWinbarBtn.Click += (sender, args) => ClearAll();
+
+                // Add Btns
+                TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle, 
+                    _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
+            }
+
             ApplySettings(true);
+
+            _eventQueue = new Queue<LogMessage>();
 
             // Initialize Receivers
             foreach (IReceiver receiver in UserSettings.Instance.Receivers)
                 InitializeReceiver(receiver);
+
+            // Start the timer to process event logs in batch mode
+            _logMsgTimer = new Timer(OnLogMessageTimer, null, 1000, 100);
         }
+
 
         /// <summary>
         /// Catch on minimize event
@@ -120,12 +173,36 @@ namespace Log2Console
                 _windowRestorer.TrackWindow();
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            if (_firstStartup)
+            {
+                MessageBox.Show(
+                    this,
+                    @"Welcome to Log2Console! You must configure some Receivers in order to use the tool.",
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ShowReceiversForm();
+            }
+        }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            UserSettings.Instance.Layout.WindowPosition = _windowRestorer.WindowPosition;
-            UserSettings.Instance.Layout.WindowState = _windowRestorer.WindowState;
-            UserSettings.Instance.Layout.ShowLogDetailView = logDetailPanel.Visible;
-            UserSettings.Instance.Layout.ShowLoggerTree = loggerPanel.Visible;
+            _logMsgTimer.Dispose();
+            _logMsgTimer = null;
+
+            _taskbarProgressTimer.Dispose();
+            _taskbarProgressTimer = null;
+
+            if (UserSettings.Instance.Layout.LogListViewColumnsWidths == null)
+                UserSettings.Instance.Layout.LogListViewColumnsWidths = new int[logListView.Columns.Count];
+            for (int i = 0; i < logListView.Columns.Count; i++)
+            {
+                UserSettings.Instance.Layout.LogListViewColumnsWidths[i] = logListView.Columns[i].Width;
+            }
+
+            UserSettings.Instance.Layout.Set(
+                _windowRestorer.WindowPosition, _windowRestorer.WindowState, logDetailPanel, loggerPanel);
 
             UserSettings.Instance.Save();
             UserSettings.Instance.Close();
@@ -134,7 +211,7 @@ namespace Log2Console
         protected override void OnLoad(EventArgs e)
         {
             // Display Version
-            versionLabel.Text = AboutForm.AssemblyTitle + " v" + AboutForm.AssemblyVersion;
+            versionLabel.Text = AboutForm.AssemblyTitle + @" v" + AboutForm.AssemblyVersion;
 
             DoubleBuffered = true;
             base.OnLoad(e);
@@ -154,6 +231,7 @@ namespace Log2Console
 
             TopMost = UserSettings.Instance.AlwaysOnTop;
             pinOnTopBtn.Checked = UserSettings.Instance.AlwaysOnTop;
+            autoLogToggleBtn.Checked = UserSettings.Instance.AutoScrollToLastLog;
 
             logListView.Font = UserSettings.Instance.LogListFont;
             logDetailTextBox.Font = UserSettings.Instance.LogDetailFont;
@@ -180,7 +258,7 @@ namespace Log2Console
                 {
                     DialogResult res = MessageBox.Show(
                         this,
-                        "You changed the Message Grouping setting, the Log Message List must be cleared, OK?",
+                        @"You changed the Message Grouping setting, the Log Message List must be cleared, OK?",
                         Text, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
                     if (res == DialogResult.OK)
@@ -195,13 +273,25 @@ namespace Log2Console
                 }
             }
 
+            // Layout
             if (noCheck)
             {
                 DesktopBounds = UserSettings.Instance.Layout.WindowPosition;
                 WindowState = UserSettings.Instance.Layout.WindowState;
 
                 ShowDetailsPanel(UserSettings.Instance.Layout.ShowLogDetailView);
+                logDetailPanel.Size = UserSettings.Instance.Layout.LogDetailViewSize;
+
                 ShowLoggersPanel(UserSettings.Instance.Layout.ShowLoggerTree);
+                loggerPanel.Size = UserSettings.Instance.Layout.LoggerTreeSize;
+
+                if (UserSettings.Instance.Layout.LogListViewColumnsWidths != null)
+                {
+                    for (int i = 0; i < UserSettings.Instance.Layout.LogListViewColumnsWidths.Length; i++)
+                    {
+                        logListView.Columns[i].Width = UserSettings.Instance.Layout.LogListViewColumnsWidths[i];
+                    }
+                }
             }
         }
 
@@ -339,17 +429,25 @@ namespace Log2Console
         /// </summary>
         public void Notify(LogMessage[] logMsgs)
         {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (logListView.InvokeRequired)
+            //// InvokeRequired required compares the thread ID of the
+            //// calling thread to the thread ID of the creating thread.
+            //// If these threads are different, it returns true.
+            //if (logListView.InvokeRequired)
+            //{
+            //    NotifyLogMsgsCallback d = AddLogMessages;
+            //    Invoke(d, new object[] { logMsgs });
+            //}
+            //else
+            //{
+            //    AddLogMessages(logMsgs);
+            //}
+            
+            lock (_eventQueue)
             {
-                NotifyLogMsgsCallback d = AddLogMessages;
-                Invoke(d, new object[] { logMsgs });
-            }
-            else
-            {
-                AddLogMessages(logMsgs);
+                foreach (var logMessage in logMsgs)
+                {
+                    _eventQueue.Enqueue(logMessage);
+                }
             }
         }
 
@@ -359,17 +457,22 @@ namespace Log2Console
         /// </summary>
         public void Notify(LogMessage logMsg)
         {
-            // InvokeRequired required compares the thread ID of the
-            // calling thread to the thread ID of the creating thread.
-            // If these threads are different, it returns true.
-            if (logListView.InvokeRequired)
+            //// InvokeRequired required compares the thread ID of the
+            //// calling thread to the thread ID of the creating thread.
+            //// If these threads are different, it returns true.
+            //if (logListView.InvokeRequired)
+            //{
+            //    NotifyLogMsgCallback d = AddLogMessage;
+            //    Invoke(d, new object[] { logMsg });
+            //}
+            //else
+            //{
+            //    AddLogMessage(logMsg);
+            //}
+
+            lock (_eventQueue)
             {
-                NotifyLogMsgCallback d = AddLogMessage;
-                Invoke(d, new object[] { logMsg });
-            }
-            else
-            {
-                AddLogMessage(logMsg);
+                _eventQueue.Enqueue(logMsg);
             }
         }
 
@@ -378,7 +481,7 @@ namespace Log2Console
         /// <summary>
         /// Adds a new log message, synchronously.
         /// </summary>
-        private void AddLogMessages(LogMessage[] logMsgs)
+        private void AddLogMessages(IEnumerable<LogMessage> logMsgs)
         {
             if (_pauseLog)
                 return;
@@ -401,11 +504,61 @@ namespace Log2Console
 
             RemovedLogMsgsHighlight();
 
+            _addedLogMessage = true;
+
             LogManager.Instance.ProcessLogMessage(logMsg);
 
             if (!Visible && UserSettings.Instance.NotifyNewLogWhenHidden)
                 ShowBalloonTip("A new message has been received...");
+        }
 
+
+        private void OnLogMessageTimer(object sender)
+        {
+            LogMessage[] messages;
+
+            lock (_eventQueue)
+            {
+                // Do a local copy to minimize the lock
+                messages = _eventQueue.ToArray();
+                _eventQueue.Clear();
+            }
+
+            // Process logs if any
+            if (messages.Length > 0)
+            {
+                // InvokeRequired required compares the thread ID of the
+                // calling thread to the thread ID of the creating thread.
+                // If these threads are different, it returns true.
+                if (logListView.InvokeRequired)
+                {
+                    NotifyLogMsgsCallback d = AddLogMessages;
+                    Invoke(d, new object[] { messages });
+                }
+                else
+                {
+                    AddLogMessages(messages);
+                }
+            }
+        }
+
+
+        private void OnTaskbarProgressTimer(object o)
+        {
+            try
+            {
+                TaskbarManager.Instance.SetProgressState(_addedLogMessage
+                                                             ? TaskbarProgressBarState.Indeterminate
+                                                             : TaskbarProgressBarState.NoProgress);
+            }
+            catch (Exception)
+            {
+                // Not running on Win 7?
+            }
+            finally 
+            {
+                _addedLogMessage = false;
+            }
         }
 
         private void quitBtn_Click(object sender, EventArgs e)
@@ -452,7 +605,7 @@ namespace Log2Console
                 }
 
                 // Append message
-                sb.AppendLine(logMsgItem.Message.Message);
+                sb.AppendLine(logMsgItem.Message.Message.Replace("\n", "\r\n"));
 
                 // Append exception
                 if (UserSettings.Instance.ShowMsgDetailsException && !String.IsNullOrEmpty(logMsgItem.Message.ExceptionString))
@@ -582,7 +735,10 @@ namespace Log2Console
 
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
-            LogManager.Instance.SearchText(searchTextBox.Text);
+            using (new AutoWaitCursor())
+            {
+                LogManager.Instance.SearchText(searchTextBox.Text);
+            }
         }
 
         private void zoomOutLogListBtn_Click(object sender, EventArgs e)
@@ -622,30 +778,52 @@ namespace Log2Console
             ctrl.Font = new Font(ctrl.Font.FontFamily, newSize);
         }
 
+
+        private void deleteLoggerTreeMenuItem_Click(object sender, EventArgs e)
+        {
+            LoggerItem logger = (LoggerItem) loggerTreeView.SelectedNode.Tag;
+
+            if (logger != null)
+            {
+                logger.Remove();
+            }
+        }
+
+        private void deleteAllLoggerTreeMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearAll();
+        }
+
+        private void loggerTreeView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // Select the clicked node
+                loggerTreeView.SelectedNode = loggerTreeView.GetNodeAt(e.X, e.Y);
+
+                deleteLoggerTreeMenuItem.Enabled = (loggerTreeView.SelectedNode != null);
+                
+                loggerTreeContextMenuStrip.Show(loggerTreeView, e.Location);
+            }
+        }
+
         private void loggerTreeView_AfterCheck(object sender, TreeViewEventArgs e)
         {
+            // If we are suppose to ignore events right now, then just return.
+            if (_ignoreEvents)
+                return;
+
+            // Set a flag to ignore future events while processing this event. We have
+            // to do this because it may be possbile that this event gets fired again
+            // during a recursive call. To avoid more processing than necessary, we should
+            // set a flag and clear it when we're done.
+            _ignoreEvents = true;
+
             using (new AutoWaitCursor())
             {
-                //
-                // If we are suppose to ignore events right now, then just
-                // return.
-                //
-                if (_ignoreEvents) return;
-
                 try
                 {
-                    //
-                    // Set a flag to ignore future events while processing this event. We have
-                    // to do this because it may be possbile that this event gets fired again
-                    // during a recursive call. To avoid more processing than necessary, we should
-                    // set a flag and clear it when we're done.
-                    //
-                    _ignoreEvents = true;
-
-                    //
-                    // Enable/disable the logger item that is represented by the
-                    // checked node.
-                    //
+                    // Enable/disable the logger item that is represented by the checked node.
                     (e.Node.Tag as LoggerItem).Enabled = e.Node.Checked;
                 }
                 finally
@@ -708,7 +886,37 @@ namespace Log2Console
             _pauseLog = !_pauseLog;
 
             pauseBtn.Image = _pauseLog ? Properties.Resources.Go16 : Properties.Resources.Pause16;
+            pauseBtn.Checked = _pauseLog;
+
+            _pauseWinbarBtn.Icon = Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon());
+
+            TaskbarManager.Instance.SetOverlayIcon(
+                _pauseLog ? Icon.FromHandle(Properties.Resources.Pause16.GetHicon()) : null, String.Empty);
         }
+
+        private void goToFirstLogBtn_Click(object sender, EventArgs e)
+        {
+            if (logListView.Items.Count == 0)
+                return;
+
+            logListView.Items[0].EnsureVisible();
+        }
+
+        private void goToLastLogBtn_Click(object sender, EventArgs e)
+        {
+            if (logListView.Items.Count == 0)
+                return;
+
+            logListView.Items[logListView.Items.Count - 1].EnsureVisible();
+        }
+
+        private void autoLogToggleBtn_Click(object sender, EventArgs e)
+        {
+            UserSettings.Instance.AutoScrollToLastLog = !UserSettings.Instance.AutoScrollToLastLog;
+
+            autoLogToggleBtn.Checked = UserSettings.Instance.AutoScrollToLastLog;
+        }
+
 
         /// <summary>
         /// Quick and dirty implementation of an export function...

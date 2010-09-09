@@ -35,8 +35,10 @@ namespace Log2Console.Settings
 
         private void AddReceiver(IReceiver receiver)
         {
-            Type receiverType = receiver.GetType();
-            ListViewItem lvi = receiversListView.Items.Add(ReceiverUtils.GetTypeDescription(receiverType));
+            string displayName = String.IsNullOrEmpty(receiver.DisplayName)
+                                     ? ReceiverUtils.GetTypeDescription(receiver.GetType())
+                                     : receiver.DisplayName;
+            ListViewItem lvi = receiversListView.Items.Add(displayName);
             lvi.Tag = receiver;
             lvi.Selected = true;
         }

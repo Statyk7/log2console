@@ -64,22 +64,26 @@ namespace Log2Console.UI
         public ILoggerView AddNew(string text, LoggerItem logger)
         {
             // Creating a new node.
-            TreeNode node = new TreeNode(text);
-            node.Checked = true;
-            node.Tag = logger;
+            TreeNode node = _isRoot ? _treeView.Nodes.Add(text, text) : _node.Nodes.Add(text, text);
 
-            if (_isRoot)
-            {
-                this._treeView.Nodes.Add(node);
-            }
-            else
-            {
-                this._node.Nodes.Add(node);
-            }
+            node.Tag = logger;
+            node.Checked = true;
 
             node.EnsureVisible();
 
-            return new TreeViewLoggerView(this._treeView, node);
+            return new TreeViewLoggerView(_treeView, node);
+        }
+
+        public void Remove(string text)
+        {
+            if (_isRoot)
+            {
+                _treeView.Nodes.RemoveByKey(text);
+            }
+            else
+            {
+                _node.Nodes.RemoveByKey(text);
+            }
         }
 
         /// <summary>
