@@ -36,6 +36,10 @@ namespace Log2Console
             this.levelComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.pauseBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
+            this.goToFirstLogBtn = new System.Windows.Forms.ToolStripButton();
+            this.autoLogToggleBtn = new System.Windows.Forms.ToolStripButton();
+            this.goToLastLogBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
             this.zoomOutLogListBtn = new System.Windows.Forms.ToolStripButton();
             this.zoomInLogListBtn = new System.Windows.Forms.ToolStripButton();
@@ -56,12 +60,13 @@ namespace Log2Console
             this.aboutBtn = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.pinOnTopBtn = new System.Windows.Forms.ToolStripButton();
+            this.versionLabel = new System.Windows.Forms.ToolStripLabel();
             this.loggerTreeView = new System.Windows.Forms.TreeView();
-            this.timeColumnHeader = new System.Windows.Forms.ColumnHeader();
-            this.levelColumnHeader = new System.Windows.Forms.ColumnHeader();
-            this.loggerColumnHeader = new System.Windows.Forms.ColumnHeader();
-            this.threadColumnHeader = new System.Windows.Forms.ColumnHeader();
-            this.msgColumnHeader = new System.Windows.Forms.ColumnHeader();
+            this.timeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.levelColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.loggerColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.threadColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.msgColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.loggerPanel = new System.Windows.Forms.Panel();
             this.loggerInnerPanel = new System.Windows.Forms.Panel();
             this.loggersToolStrip = new System.Windows.Forms.ToolStrip();
@@ -90,13 +95,16 @@ namespace Log2Console
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.copyLogDetailBtn = new System.Windows.Forms.ToolStripButton();
             this.logDetailSplitter = new System.Windows.Forms.Splitter();
-            this.versionLabel = new System.Windows.Forms.ToolStripLabel();
+            this.loggerTreeContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.deleteLoggerTreeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator16 = new System.Windows.Forms.ToolStripSeparator();
+            this.deleteAllLoggerTreeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logListView = new Log2Console.UI.FlickerFreeListView();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mainToolStrip.SuspendLayout();
             this.loggerPanel.SuspendLayout();
             this.loggerInnerPanel.SuspendLayout();
@@ -105,6 +113,7 @@ namespace Log2Console
             this.logDetailPanel.SuspendLayout();
             this.logDetailInnerPanel.SuspendLayout();
             this.logDetailToolStrip.SuspendLayout();
+            this.loggerTreeContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainToolStrip
@@ -115,6 +124,10 @@ namespace Log2Console
             this.levelComboBox,
             this.toolStripSeparator8,
             this.pauseBtn,
+            this.toolStripSeparator15,
+            this.goToFirstLogBtn,
+            this.autoLogToggleBtn,
+            this.goToLastLogBtn,
             this.toolStripSeparator13,
             this.zoomOutLogListBtn,
             this.zoomInLogListBtn,
@@ -190,7 +203,43 @@ namespace Log2Console
             this.pauseBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.pauseBtn.Name = "pauseBtn";
             this.pauseBtn.Size = new System.Drawing.Size(23, 22);
+            this.pauseBtn.ToolTipText = "Enable/Disable All Logs";
             this.pauseBtn.Click += new System.EventHandler(this.pauseBtn_Click);
+            // 
+            // toolStripSeparator15
+            // 
+            this.toolStripSeparator15.Name = "toolStripSeparator15";
+            this.toolStripSeparator15.Size = new System.Drawing.Size(6, 25);
+            // 
+            // goToFirstLogBtn
+            // 
+            this.goToFirstLogBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.goToFirstLogBtn.Image = global::Log2Console.Properties.Resources.backward16;
+            this.goToFirstLogBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.goToFirstLogBtn.Name = "goToFirstLogBtn";
+            this.goToFirstLogBtn.Size = new System.Drawing.Size(23, 22);
+            this.goToFirstLogBtn.ToolTipText = "Go to First Log Message";
+            this.goToFirstLogBtn.Click += new System.EventHandler(this.goToFirstLogBtn_Click);
+            // 
+            // autoLogToggleBtn
+            // 
+            this.autoLogToggleBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.autoLogToggleBtn.Image = global::Log2Console.Properties.Resources.movefile16;
+            this.autoLogToggleBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.autoLogToggleBtn.Name = "autoLogToggleBtn";
+            this.autoLogToggleBtn.Size = new System.Drawing.Size(23, 22);
+            this.autoLogToggleBtn.ToolTipText = "Toggle Auto Log to Last Log Message";
+            this.autoLogToggleBtn.Click += new System.EventHandler(this.autoLogToggleBtn_Click);
+            // 
+            // goToLastLogBtn
+            // 
+            this.goToLastLogBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.goToLastLogBtn.Image = global::Log2Console.Properties.Resources.forward16;
+            this.goToLastLogBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.goToLastLogBtn.Name = "goToLastLogBtn";
+            this.goToLastLogBtn.Size = new System.Drawing.Size(23, 22);
+            this.goToLastLogBtn.ToolTipText = "Go to Last Log Message";
+            this.goToLastLogBtn.Click += new System.EventHandler(this.goToLastLogBtn_Click);
             // 
             // toolStripSeparator13
             // 
@@ -353,6 +402,14 @@ namespace Log2Console
             this.pinOnTopBtn.Text = "Pin on Top";
             this.pinOnTopBtn.Click += new System.EventHandler(this.pinOnTopBtn_Click);
             // 
+            // versionLabel
+            // 
+            this.versionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.versionLabel.Name = "versionLabel";
+            this.versionLabel.Size = new System.Drawing.Size(42, 22);
+            this.versionLabel.Text = "Version";
+            // 
             // loggerTreeView
             // 
             this.loggerTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -366,9 +423,10 @@ namespace Log2Console
             this.loggerTreeView.ShowRootLines = false;
             this.loggerTreeView.Size = new System.Drawing.Size(237, 371);
             this.loggerTreeView.TabIndex = 1;
-            this.loggerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.loggerTreeView_NodeMouseDoubleClick);
             this.loggerTreeView.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.loggerTreeView_AfterCheck);
             this.loggerTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.loggerTreeView_AfterSelect);
+            this.loggerTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.loggerTreeView_NodeMouseDoubleClick);
+            this.loggerTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.loggerTreeView_MouseUp);
             // 
             // timeColumnHeader
             // 
@@ -455,8 +513,9 @@ namespace Log2Console
             this.clearLoggersBtn.Image = global::Log2Console.Properties.Resources.delete16;
             this.clearLoggersBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.clearLoggersBtn.Name = "clearLoggersBtn";
-            this.clearLoggersBtn.Size = new System.Drawing.Size(54, 22);
-            this.clearLoggersBtn.Text = "Clear";
+            this.clearLoggersBtn.Size = new System.Drawing.Size(71, 22);
+            this.clearLoggersBtn.Text = "Clear All";
+            this.clearLoggersBtn.ToolTipText = "Clear All Loggers and Log Messages";
             this.clearLoggersBtn.Click += new System.EventHandler(this.clearLoggersBtn_Click);
             // 
             // loggerSplitter
@@ -640,13 +699,33 @@ namespace Log2Console
             this.logDetailSplitter.TabIndex = 8;
             this.logDetailSplitter.TabStop = false;
             // 
-            // versionLabel
+            // loggerTreeContextMenuStrip
             // 
-            this.versionLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(42, 22);
-            this.versionLabel.Text = "Version";
+            this.loggerTreeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteLoggerTreeMenuItem,
+            this.toolStripSeparator16,
+            this.deleteAllLoggerTreeMenuItem});
+            this.loggerTreeContextMenuStrip.Name = "loggerTreeContextMenuStrip";
+            this.loggerTreeContextMenuStrip.Size = new System.Drawing.Size(164, 54);
+            // 
+            // deleteLoggerTreeMenuItem
+            // 
+            this.deleteLoggerTreeMenuItem.Name = "deleteLoggerTreeMenuItem";
+            this.deleteLoggerTreeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.deleteLoggerTreeMenuItem.Text = "Clear Logger";
+            this.deleteLoggerTreeMenuItem.Click += new System.EventHandler(this.deleteLoggerTreeMenuItem_Click);
+            // 
+            // toolStripSeparator16
+            // 
+            this.toolStripSeparator16.Name = "toolStripSeparator16";
+            this.toolStripSeparator16.Size = new System.Drawing.Size(160, 6);
+            // 
+            // deleteAllLoggerTreeMenuItem
+            // 
+            this.deleteAllLoggerTreeMenuItem.Name = "deleteAllLoggerTreeMenuItem";
+            this.deleteAllLoggerTreeMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.deleteAllLoggerTreeMenuItem.Text = "Clear All Loggers";
+            this.deleteAllLoggerTreeMenuItem.Click += new System.EventHandler(this.deleteAllLoggerTreeMenuItem_Click);
             // 
             // logListView
             // 
@@ -724,6 +803,7 @@ namespace Log2Console
             this.logDetailInnerPanel.PerformLayout();
             this.logDetailToolStrip.ResumeLayout(false);
             this.logDetailToolStrip.PerformLayout();
+            this.loggerTreeContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -798,6 +878,14 @@ namespace Log2Console
         private System.Windows.Forms.ToolStripButton saveBtn;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripLabel versionLabel;
+        private System.Windows.Forms.ToolStripButton autoLogToggleBtn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
+        private System.Windows.Forms.ToolStripButton goToFirstLogBtn;
+        private System.Windows.Forms.ToolStripButton goToLastLogBtn;
+        private System.Windows.Forms.ContextMenuStrip loggerTreeContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem deleteLoggerTreeMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator16;
+        private System.Windows.Forms.ToolStripMenuItem deleteAllLoggerTreeMenuItem;
     }
 }
 

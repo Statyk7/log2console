@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Migrated rules for Shell.ruleset" Description="This rule set was created from the CodeAnalysisRules property for the &quot;Debug (Any CPU)&quot; configuration in project &quot;D:\Dev\CodePlex\log2console\src\External\WindowsAPICodePack\Shell\Shell.csproj&quot;." ToolsVersion="10.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1000" Action="None" />
+    <Rule Id="CA1001" Action="None" />
+    <Rule Id="CA1002" Action="None" />
+    <Rule Id="CA1003" Action="None" />
+    <Rule Id="CA1004" Action="None" />
+    <Rule Id="CA1005" Action="None" />
+    <Rule Id="CA1006" Action="None" />
+    <Rule Id="CA1007" Action="None" />
+    <Rule Id="CA1010" Action="None" />
+    <Rule Id="CA1013" Action="None" />
+    <Rule Id="CA1016" Action="None" />
+    <Rule Id="CA1020" Action="None" />
+    <Rule Id="CA1021" Action="None" />
+    <Rule Id="CA1024" Action="None" />
+    <Rule Id="CA1033" Action="None" />
+    <Rule Id="CA1035" Action="None" />
+    <Rule Id="CA1047" Action="None" />
+    <Rule Id="CA1048" Action="None" />
+    <Rule Id="CA1049" Action="None" />
+    <Rule Id="CA1060" Action="None" />
+    <Rule Id="CA1061" Action="None" />
+    <Rule Id="CA1063" Action="None" />
+    <Rule Id="CA1064" Action="None" />
+    <Rule Id="CA1065" Action="None" />
+    <Rule Id="CA1302" Action="None" />
+    <Rule Id="CA1308" Action="None" />
+    <Rule Id="CA1400" Action="None" />
+    <Rule Id="CA1407" Action="None" />
+    <Rule Id="CA1409" Action="None" />
+    <Rule Id="CA1410" Action="None" />
+    <Rule Id="CA1411" Action="None" />
+    <Rule Id="CA1412" Action="None" />
+    <Rule Id="CA1414" Action="None" />
+    <Rule Id="CA1415" Action="None" />
+    <Rule Id="CA1717" Action="None" />
+    <Rule Id="CA1725" Action="None" />
+    <Rule Id="CA1726" Action="None" />
+    <Rule Id="CA1800" Action="None" />
+    <Rule Id="CA1801" Action="None" />
+    <Rule Id="CA1802" Action="None" />
+    <Rule Id="CA1804" Action="None" />
+    <Rule Id="CA1806" Action="None" />
+    <Rule Id="CA1809" Action="None" />
+    <Rule Id="CA1810" Action="None" />
+    <Rule Id="CA1816" Action="None" />
+    <Rule Id="CA1820" Action="None" />
+    <Rule Id="CA1821" Action="None" />
+    <Rule Id="CA1822" Action="None" />
+    <Rule Id="CA1823" Action="None" />
+    <Rule Id="CA1824" Action="None" />
+    <Rule Id="CA2003" Action="None" />
+    <Rule Id="CA2122" Action="None" />
+    <Rule Id="CA2200" Action="None" />
+    <Rule Id="CA2201" Action="None" />
+    <Rule Id="CA2205" Action="None" />
+    <Rule Id="CA2210" Action="None" />
+    <Rule Id="CA2212" Action="None" />
+    <Rule Id="CA2219" Action="None" />
+    <Rule Id="CA2222" Action="None" />
+    <Rule Id="CA2223" Action="None" />
+    <Rule Id="CA2226" Action="None" />
+    <Rule Id="CA2231" Action="None" />
+    <Rule Id="CA2232" Action="None" />
+    <Rule Id="CA2238" Action="None" />
+    <Rule Id="CA2239" Action="None" />
+    <Rule Id="CA2242" Action="None" />
+    <Rule Id="CA2243" Action="None" />
+  </Rules>
+</RuleSet>

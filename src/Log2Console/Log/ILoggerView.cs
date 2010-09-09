@@ -24,6 +24,12 @@ namespace Log2Console.Log
         ILoggerView AddNew(string text, LoggerItem logger);
 
         /// <summary>
+        /// Removes the logger view associated to the given text.
+        /// </summary>
+        void Remove(string text);
+
+
+        /// <summary>
         /// Gets or sets the text of the view. The text is what is shown to the user.
         /// </summary>
         /// <value>The text.</value>

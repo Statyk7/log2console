@@ -9,7 +9,7 @@
 "UILanguageId" = "3:1033"
 "SccProjectName" = "8:$/log2console/src/L2C_Setup"
 "SccLocalPath" = "8:."
-"SccAuxPath" = "8:https://tfs04.codeplex.com"
+"SccAuxPath" = "8:https://tfs.codeplex.com/tfs/tfs04"
 "SccProvider" = "8:{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}"
     "Hierarchy"
     {
@@ -40,13 +40,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
+        "OwnerKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
+        "OwnerKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -131,7 +131,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "Version" = "8:2.0.50727"
+                "FrameworkVersion" = "8:2.0.50727"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -146,11 +146,6 @@
             "AssemblyAsmDisplayName" = "8:System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_07A8C654BC422BD8FBCA0FFE4B30292F"
-                    {
-                    "Name" = "8:System.Core.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Core.dll"
             "TargetName" = "8:"
@@ -177,11 +172,6 @@
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BFDD154CC4913D68FFED580C9B509715"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -260,6 +250,7 @@
         "ProductCode" = "8:{E2E053DE-983B-4104-AA76-C36DC887658E}"
         "PackageCode" = "8:{F0FB35F8-FA1A-4602-AE62-780CE3A4023B}"
         "UpgradeCode" = "8:{76F2BD5A-4763-4A97-B4BF-F3F475A62908}"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"

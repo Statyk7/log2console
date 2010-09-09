@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2E1FB0DF-F9BB-4909-9F32-2D9D022A8E57}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Microsoft.WindowsAPICodePack</RootNamespace>
+    <AssemblyName>Microsoft.WindowsAPICodePack</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Microsoft.WindowsAPICodePack.XML</DocumentationFile>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisRuleSet>Migrated rules for Core.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppRestartRecovery\ApplicationRestartRecoveryManager.cs" />
+    <Compile Include="AppRestartRecovery\RecoveryData.cs" />
+    <Compile Include="AppRestartRecovery\RecoverySettings.cs" />
+    <Compile Include="AppRestartRecovery\RestartRestrictions.cs" />
+    <Compile Include="AppRestartRecovery\RestartSettings.cs" />
+    <Compile Include="Dialogs\Common\DialogControl.cs" />
+    <Compile Include="Dialogs\Common\DialogControlCollection.cs" />
+    <Compile Include="Dialogs\Common\DialogsDefaults.cs" />
+    <Compile Include="Dialogs\Common\IDialogControlHost.cs" />
+    <Compile Include="Interop\AppRestartRecovery\AppRestartRecoveryNativeMethods.cs" />
+    <Compile Include="Interop\CommonDllNames.cs" />
+    <Compile Include="Interop\CoreErrorHelper.cs" />
+    <Compile Include="Interop\CoreHelpers.cs" />
+    <Compile Include="Interop\CoreNativeMethods.cs" />
+    <Compile Include="Interop\Dialogs\DialogShowState.cs" />
+    <Compile Include="Interop\NetworkList\INetwork.cs" />
+    <Compile Include="Interop\NetworkList\INetworkConnection.cs" />
+    <Compile Include="Interop\NetworkList\INetworkListManager.cs" />
+    <Compile Include="Interop\NetworkList\NetworkListManagerClass.cs" />
+    <Compile Include="Interop\PowerManagement\PowerManagementNativeMethods.cs" />
+    <Compile Include="Interop\TaskDialogs\NativeTaskDialog.cs" />
+    <Compile Include="Interop\TaskDialogs\NativeTaskDialogSettings.cs" />
+    <Compile Include="Interop\TaskDialogs\TaskDialogNativeMethods.cs" />
+    <Compile Include="NetworkList\Network.cs" />
+    <Compile Include="NetworkList\NetworkCollection.cs" />
+    <Compile Include="NetworkList\NetworkConnection.cs" />
+    <Compile Include="NetworkList\NetworkConnectionCollection.cs" />
+    <Compile Include="NetworkList\NetworkListEnums.cs" />
+    <Compile Include="NetworkList\NetworkListManager.cs" />
+    <Compile Include="PowerManagement\BatteryState.cs" />
+    <Compile Include="PowerManagement\EventManager.cs" />
+    <Compile Include="PowerManagement\ExecutionState.cs" />
+    <Compile Include="PowerManagement\MessageManager.cs">
+    </Compile>
+    <Compile Include="PowerManagement\PersonalityGuids.cs" />
+    <Compile Include="PowerManagement\Power.cs" />
+    <Compile Include="PowerManagement\PowerManager.cs" />
+    <Compile Include="PowerManagement\PowerPersonality.cs" />
+    <Compile Include="PowerManagement\PowerSource.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertySystem\PropertyKey.cs" />
+    <Compile Include="PropertySystem\PropVariant.cs" />
+    <Compile Include="PropertySystem\PropVariantNativeMethods.cs" />
+    <Compile Include="SafeHandles\ZeroInvalidHandle.cs" />
+    <Compile Include="SafeHandles\SafeIconHandle.cs" />
+    <Compile Include="SafeHandles\SafeRegionHandle.cs" />
+    <Compile Include="SafeHandles\SafeWindowHandle.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialog.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogBar.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogButton.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogButtonBase.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogClosingEventArgs.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogCommandLink.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogControl.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogDefaults.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogExpandedInfoMode.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogHyperlinkClickedEventArgs.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogProgressBar.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogProgressBarState.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogRadioButton.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogResult.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogStandardButton.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogStandardIcon.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogStartupLocation.cs" />
+    <Compile Include="Dialogs\TaskDialogs\TaskDialogTickEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Migrated rules for Core.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
