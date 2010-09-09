@@ -25,6 +25,7 @@ namespace Log2Console
     public partial class MainForm : Form, ILogMessageNotifiable
     {
         private readonly bool _firstStartup;
+        private readonly bool _isWin7orLater;
         private readonly WindowRestorer _windowRestorer;
 
         private readonly DockExtender _dockExtender;
@@ -97,6 +98,7 @@ namespace Log2Console
                                                        UserSettings.Instance.Layout.WindowState);
 
             // Windows 7 CodePack (Taskbar icons and progress)
+            try
             {
                 // Taskbar Progress
                 TaskbarManager.Instance.ApplicationId = Text;
@@ -109,21 +111,28 @@ namespace Log2Console
 
                 // Auto Scroll Btn
                 _autoScrollWinbarBtn =
-                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) autoLogToggleBtn.Image).GetHicon()),
+                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)autoLogToggleBtn.Image).GetHicon()),
                                                autoLogToggleBtn.ToolTipText);
                 _autoScrollWinbarBtn.Click += (sender, args) => autoLogToggleBtn_Click(sender, null);
 
                 // Clear All Btn
                 _clearAllWinbarBtn =
-                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) clearLoggersBtn.Image).GetHicon()),
+                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)clearLoggersBtn.Image).GetHicon()),
                                                clearLoggersBtn.ToolTipText);
                 _clearAllWinbarBtn.Click += (sender, args) => ClearAll();
 
                 // Add Btns
-                TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle, 
+                TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle,
                     _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
-            }
 
+                _isWin7orLater = true;
+            }
+            catch (Exception)
+            {
+                // Not running on Win 7?
+                _isWin7orLater = false;
+            }
+            
             ApplySettings(true);
 
             _eventQueue = new Queue<LogMessage>();
@@ -188,24 +197,39 @@ namespace Log2Console
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            _logMsgTimer.Dispose();
-            _logMsgTimer = null;
-
-            _taskbarProgressTimer.Dispose();
-            _taskbarProgressTimer = null;
-
-            if (UserSettings.Instance.Layout.LogListViewColumnsWidths == null)
-                UserSettings.Instance.Layout.LogListViewColumnsWidths = new int[logListView.Columns.Count];
-            for (int i = 0; i < logListView.Columns.Count; i++)
+            try
             {
-                UserSettings.Instance.Layout.LogListViewColumnsWidths[i] = logListView.Columns[i].Width;
+                if (_logMsgTimer != null)
+                {
+                    _logMsgTimer.Dispose();
+                    _logMsgTimer = null;
+                }
+
+                if (_taskbarProgressTimer != null)
+                {
+                    _taskbarProgressTimer.Dispose();
+                    _taskbarProgressTimer = null;
+                }
+
+                if (UserSettings.Instance.Layout.LogListViewColumnsWidths == null)
+                {
+                    UserSettings.Instance.Layout.LogListViewColumnsWidths = new int[logListView.Columns.Count];
+                }
+
+                for (int i = 0; i < logListView.Columns.Count; i++)
+                {
+                    UserSettings.Instance.Layout.LogListViewColumnsWidths[i] = logListView.Columns[i].Width;
+                }
+
+                UserSettings.Instance.Layout.Set(
+                    _windowRestorer.WindowPosition, _windowRestorer.WindowState, logDetailPanel, loggerPanel);
+
+                UserSettings.Instance.Save();
+                UserSettings.Instance.Close();
             }
-
-            UserSettings.Instance.Layout.Set(
-                _windowRestorer.WindowPosition, _windowRestorer.WindowState, logDetailPanel, loggerPanel);
-
-            UserSettings.Instance.Save();
-            UserSettings.Instance.Close();
+            catch (Exception)
+            {
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -545,25 +569,25 @@ namespace Log2Console
 
         private void OnTaskbarProgressTimer(object o)
         {
-            try
+            if (_isWin7orLater)
             {
                 TaskbarManager.Instance.SetProgressState(_addedLogMessage
-                                                             ? TaskbarProgressBarState.Indeterminate
-                                                             : TaskbarProgressBarState.NoProgress);
+                                                                ? TaskbarProgressBarState.Indeterminate
+                                                                : TaskbarProgressBarState.NoProgress);
             }
-            catch (Exception)
-            {
-                // Not running on Win 7?
-            }
-            finally 
-            {
-                _addedLogMessage = false;
-            }
+            _addedLogMessage = false;
         }
 
         private void quitBtn_Click(object sender, EventArgs e)
         {
-            Quit();
+            try
+            {
+                Quit();
+            }
+            catch (Exception)
+            {
+                Environment.Exit(0);
+            }
         }
 
         private void logListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -730,7 +754,14 @@ namespace Log2Console
 
         private void exitTrayMenuItem_Click(object sender, EventArgs e)
         {
-            Quit();
+            try
+            {
+                Quit();
+            }
+            catch (Exception)
+            {
+                Environment.Exit(0);
+            }
         }
 
         private void searchTextBox_TextChanged(object sender, EventArgs e)
@@ -888,10 +919,13 @@ namespace Log2Console
             pauseBtn.Image = _pauseLog ? Properties.Resources.Go16 : Properties.Resources.Pause16;
             pauseBtn.Checked = _pauseLog;
 
-            _pauseWinbarBtn.Icon = Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon());
+            if (_isWin7orLater)
+            {
+                _pauseWinbarBtn.Icon = Icon.FromHandle(((Bitmap) pauseBtn.Image).GetHicon());
 
-            TaskbarManager.Instance.SetOverlayIcon(
-                _pauseLog ? Icon.FromHandle(Properties.Resources.Pause16.GetHicon()) : null, String.Empty);
+                TaskbarManager.Instance.SetOverlayIcon(
+                    _pauseLog ? Icon.FromHandle(Properties.Resources.Pause16.GetHicon()) : null, String.Empty);
+            }
         }
 
         private void goToFirstLogBtn_Click(object sender, EventArgs e)
