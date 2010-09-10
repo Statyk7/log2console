@@ -98,41 +98,40 @@ namespace Log2Console
                                                        UserSettings.Instance.Layout.WindowState);
 
             // Windows 7 CodePack (Taskbar icons and progress)
-            try
+            _isWin7orLater = TaskbarManager.IsPlatformSupported;
+
+            if (_isWin7orLater)
             {
-                // Taskbar Progress
-                TaskbarManager.Instance.ApplicationId = Text;
-                _taskbarProgressTimer = new Timer(OnTaskbarProgressTimer, null, _taskbarProgressTimerPeriod, _taskbarProgressTimerPeriod);
+                try
+                {
+                    // Taskbar Progress
+                    TaskbarManager.Instance.ApplicationId = Text;
+                    _taskbarProgressTimer = new Timer(OnTaskbarProgressTimer, null, _taskbarProgressTimerPeriod, _taskbarProgressTimerPeriod);
 
-                // Pause Btn
-                _pauseWinbarBtn = new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon()),
-                                                             pauseBtn.ToolTipText);
-                _pauseWinbarBtn.Click += (sender, args) => pauseBtn_Click(sender, null);
+                    // Pause Btn
+                    _pauseWinbarBtn = new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) pauseBtn.Image).GetHicon()), pauseBtn.ToolTipText);
+                    _pauseWinbarBtn.Click += pauseBtn_Click;
 
-                // Auto Scroll Btn
-                _autoScrollWinbarBtn =
-                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)autoLogToggleBtn.Image).GetHicon()),
-                                               autoLogToggleBtn.ToolTipText);
-                _autoScrollWinbarBtn.Click += (sender, args) => autoLogToggleBtn_Click(sender, null);
+                    // Auto Scroll Btn
+                    _autoScrollWinbarBtn =
+                        new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) autoLogToggleBtn.Image).GetHicon()), autoLogToggleBtn.ToolTipText);
+                    _autoScrollWinbarBtn.Click += autoLogToggleBtn_Click;
 
-                // Clear All Btn
-                _clearAllWinbarBtn =
-                    new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)clearLoggersBtn.Image).GetHicon()),
-                                               clearLoggersBtn.ToolTipText);
-                _clearAllWinbarBtn.Click += (sender, args) => ClearAll();
+                    // Clear All Btn
+                    _clearAllWinbarBtn =
+                        new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap) clearLoggersBtn.Image).GetHicon()), clearLoggersBtn.ToolTipText);
+                    _clearAllWinbarBtn.Click += clearAll_Click;
 
-                // Add Btns
-                TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle,
-                    _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
-
-                _isWin7orLater = true;
+                    // Add Btns
+                    TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle, _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
+                }
+                catch (Exception)
+                {
+                    // Not running on Win 7?
+                    _isWin7orLater = false;
+                }
             }
-            catch (Exception)
-            {
-                // Not running on Win 7?
-                _isWin7orLater = false;
-            }
-            
+
             ApplySettings(true);
 
             _eventQueue = new Queue<LogMessage>();
@@ -949,6 +948,11 @@ namespace Log2Console
             UserSettings.Instance.AutoScrollToLastLog = !UserSettings.Instance.AutoScrollToLastLog;
 
             autoLogToggleBtn.Checked = UserSettings.Instance.AutoScrollToLastLog;
+        }
+
+        private void clearAll_Click(object sender, EventArgs e)
+        {
+            ClearAll();
         }
 
 
