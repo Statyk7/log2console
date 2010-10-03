@@ -156,6 +156,8 @@
     <Compile Include="Receiver\MsmqReceiver.cs" />
     <Compile Include="Receiver\ReceiverFactory.cs" />
     <Compile Include="Receiver\RemotingReceiver.cs" />
+    <Compile Include="Receiver\SLPolicyServerReceiver.cs" />
+    <Compile Include="Receiver\TcpReceiver.cs" />
     <Compile Include="Receiver\UdpReceiver.cs" />
     <Compile Include="Receiver\WinDebugReceiver.cs" />
     <Compile Include="Settings\ReceiversForm.cs">
