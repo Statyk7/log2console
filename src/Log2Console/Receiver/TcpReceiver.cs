@@ -12,7 +12,7 @@ namespace Log2Console.Receiver
   public class TcpReceiver : BaseReceiver
   {
     #region Port Property
-    
+
     int _port = 4505;
     [Category("Configuration")]
     [DisplayName("TCP Port Number")]
@@ -26,7 +26,7 @@ namespace Log2Console.Receiver
     #endregion
 
     #region IpV6 Property
-    
+
     bool _ipv6;
     [Category("Configuration")]
     [DisplayName("Use IPv6 Addresses")]
@@ -38,7 +38,7 @@ namespace Log2Console.Receiver
     }
 
     #endregion
-    
+
     #region IReceiver Members
 
     [Browsable(false)]
@@ -72,9 +72,9 @@ namespace Log2Console.Receiver
 
     void AcceptAsyncCompleted(object sender, SocketAsyncEventArgs e)
     {
-      if (_socket == null) return;
+      if (_socket == null || e.SocketError != SocketError.Success) return;
 
-      new Thread(Start).Start(e.AcceptSocket);
+      new Thread(Start) { IsBackground = true }.Start(e.AcceptSocket);
 
       e.AcceptSocket = null;
       _socket.AcceptAsync(e);
