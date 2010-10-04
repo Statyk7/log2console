@@ -49,7 +49,7 @@ namespace Log2Console.Receiver
     public static LogMessage ParseLog4JXmlLogEvent(Stream logStream, string defaultLogger)
     {
       using (var reader = XmlReader.Create(logStream, XmlSettings, XmlContext))
-        return ParseLog4JXmlLogEvent(reader, defaultLogger);
+        return ParseLog4JXmlLogEvent(reader, defaultLogger, "");
     }
 
     /// <summary>
