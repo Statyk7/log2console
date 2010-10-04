@@ -66,7 +66,8 @@ namespace Log2Console.Settings
         private bool _groupLogMessages = false;
         private int _messageCycleCount = 0;
         private string _timeStampFormatString = "G";
-        
+
+        private Font _defaultFont = null;
         private Font _logListFont = null;
         private Font _logDetailFont = null;
         private Font _loggerTreeFont = null;
@@ -334,6 +335,14 @@ namespace Log2Console.Settings
             set { _msgDetailsException = value; }
         }
 
+        [Category("Fonts")]
+        [Description("Set the default Font.")]
+        [DisplayName("Default Font")]
+        public Font DefaultFont
+        {
+          get { return _defaultFont; }
+          set { _defaultFont = value; }
+        }
 
         [Category("Fonts")]
         [Description("Set the Font of the Log List View.")]
