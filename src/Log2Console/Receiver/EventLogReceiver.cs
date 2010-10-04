@@ -108,7 +108,7 @@ namespace Log2Console.Receiver
             logMsg.Message = entryWrittenEventArgs.Entry.Message;
             logMsg.TimeStamp = entryWrittenEventArgs.Entry.TimeGenerated;
             logMsg.Level = LogUtils.GetLogLevelInfo(GetLogLevel(entryWrittenEventArgs.Entry.EntryType));
-            logMsg.ThreadName = entryWrittenEventArgs.Entry.EventID.ToString();
+            logMsg.ThreadName = entryWrittenEventArgs.Entry.InstanceId.ToString();
 
             if (!String.IsNullOrEmpty(entryWrittenEventArgs.Entry.Category))
                 logMsg.Properties.Add("Category", entryWrittenEventArgs.Entry.Category);
