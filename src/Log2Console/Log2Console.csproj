@@ -29,7 +29,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <PublishUrl>ftp://remserver/htdocs/log2console/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -49,6 +49,7 @@
     <ApplicationVersion>0.2.2907.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,19 +78,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutForm.cs">
@@ -98,6 +93,7 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Linq\Linq.cs" />
     <Compile Include="Log\ILoggerView.cs" />
     <Compile Include="Log\ILogManager.cs" />
     <Compile Include="Log\ILogMessageNotifiable.cs" />
@@ -112,6 +108,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Win32ApiCodePack\CommonDllNames.cs" />
+    <Compile Include="Win32ApiCodePack\Core.cs" />
+    <Compile Include="Win32ApiCodePack\TabbedThumbnailNativeMethods.cs" />
+    <Compile Include="Win32ApiCodePack\TaskbarManager.cs" />
+    <Compile Include="Win32ApiCodePack\TaskbarNativeMethods.cs" />
+    <Compile Include="Win32ApiCodePack\TaskbarProgressBarState.cs" />
+    <Compile Include="Win32ApiCodePack\TaskbarWindow.cs" />
+    <Compile Include="Win32ApiCodePack\TaskbarWindowManager.cs" />
+    <Compile Include="Win32ApiCodePack\ThumbnailToolbarButton.cs" />
+    <Compile Include="Win32ApiCodePack\ThumbnailToolbarManager.cs" />
+    <Compile Include="Win32ApiCodePack\ThumbnailToolbarProxyWindow.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutForm.cs</DependentUpon>
@@ -238,16 +245,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\External\WindowsAPICodePack\Core\Core.csproj">
-      <Project>{2E1FB0DF-F9BB-4909-9F32-2D9D022A8E57}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\External\WindowsAPICodePack\Shell\Shell.csproj">
-      <Project>{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D}</Project>
-      <Name>Shell</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
