@@ -15,13 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
-        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
+        "MsmKey" = "8:_DBBCC83608FCF265A2037FF0AE033030"
         "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -40,13 +34,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_07A8C654BC422BD8FBCA0FFE4B30292F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BFDD154CC4913D68FFED580C9B509715"
+        "OwnerKey" = "8:_DBBCC83608FCF265A2037FF0AE033030"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -103,11 +91,6 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
-                    {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
-                    }
                 }
             }
         }
@@ -131,7 +114,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:2.0.50727"
+                "FrameworkVersion" = "8:.NETFramework,Version=v2.0"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -139,39 +122,18 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_07A8C654BC422BD8FBCA0FFE4B30292F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                }
-            "SourcePath" = "8:System.Core.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BFDD154CC4913D68FFED580C9B509715"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DBBCC83608FCF265A2037FF0AE033030"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_DBBCC83608FCF265A2037FF0AE033030"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
@@ -248,7 +210,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Log2Console"
         "ProductCode" = "8:{E2E053DE-983B-4104-AA76-C36DC887658E}"
-        "PackageCode" = "8:{F0FB35F8-FA1A-4602-AE62-780CE3A4023B}"
+        "PackageCode" = "8:{9843A7EB-5F55-436A-B446-805A2B03DAE5}"
         "UpgradeCode" = "8:{76F2BD5A-4763-4A97-B4BF-F3F475A62908}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

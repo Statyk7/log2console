@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
+
 using Log2Console.Settings;
+
 
 namespace Log2Console
 {
@@ -35,6 +37,7 @@ namespace Log2Console
       lines.Add(" - vertigo00oo (on CodePlex)");
       lines.Add(" - RobSmyth (on CodePlex)");
       lines.Add(" - Florent Lopez aka \"Shift F12\" (Yakoo on CodePlex)");
+      lines.Add(" - Alexey \"Lex\" Lavnikov (LexLavnikov on CodePlex)");
       lines.Add("");
       lines.Add("Credits:");
       lines.Add(" - Boomy Icons by Milosz Wlazlo (http://miloszwl.deviantart.com)");
