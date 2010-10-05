@@ -95,7 +95,7 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
     /// Sets the handle of the window whose taskbar button will be used
     /// to display progress.
     /// </summary>
-    internal IntPtr OwnerHandle
+    IntPtr OwnerHandle
     {
       get
       {
@@ -105,8 +105,6 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
 
           if (currentProcess.MainWindowHandle != IntPtr.Zero)
             _ownerHandle = currentProcess.MainWindowHandle;
-          else
-            throw new InvalidOperationException("A valid active Window is needed to update the Taskbar");
         }
 
         return _ownerHandle;
@@ -138,14 +136,16 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
     {
       CoreHelpers.ThrowIfNotWin7();
 
-      TaskbarList.SetProgressState(OwnerHandle, (TBPFLAG)state);
+      if (OwnerHandle != IntPtr.Zero)
+        TaskbarList.SetProgressState(OwnerHandle, (TBPFLAG)state);
     }
 
     public void SetOverlayIcon(Icon icon, string accessibilityText)
     {
       CoreHelpers.ThrowIfNotWin7();
 
-      TaskbarList.SetOverlayIcon(OwnerHandle, icon != null ? icon.Handle : IntPtr.Zero, accessibilityText);
+      if (OwnerHandle != IntPtr.Zero)
+        TaskbarList.SetOverlayIcon(OwnerHandle, icon != null ? icon.Handle : IntPtr.Zero, accessibilityText);
     }
   }
 }
