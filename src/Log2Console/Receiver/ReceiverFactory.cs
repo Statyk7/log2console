@@ -48,8 +48,11 @@ namespace Log2Console.Receiver
     /// </summary>
     public static LogMessage ParseLog4JXmlLogEvent(Stream logStream, string defaultLogger)
     {
+      // In case of ungraceful disconnect 
+      // logStream is closed and XmlReader throws the exception,
+      // which we handle in TcpReceiver
       using (var reader = XmlReader.Create(logStream, XmlSettings, XmlContext))
-        return ParseLog4JXmlLogEvent(reader, defaultLogger, "");
+        return ParseLog4JXmlLogEvent(reader, defaultLogger);
     }
 
     /// <summary>
@@ -57,8 +60,24 @@ namespace Log2Console.Receiver
     /// </summary>
     public static LogMessage ParseLog4JXmlLogEvent(string logEvent, string defaultLogger)
     {
-      using (var reader = new XmlTextReader(logEvent, XmlNodeType.Element, XmlContext))
-        return ParseLog4JXmlLogEvent(reader, defaultLogger, logEvent);
+      try
+      {
+        using (var reader = new XmlTextReader(logEvent, XmlNodeType.Element, XmlContext))
+          return ParseLog4JXmlLogEvent(reader, defaultLogger);
+      }
+      catch (Exception e)
+      {
+        return new LogMessage
+        {
+          // Create a simple log message with some default values
+          LoggerName = defaultLogger,
+          ThreadName = "NA",
+          Message = logEvent,
+          TimeStamp = DateTime.Now,
+          Level = LogLevels.Instance[LogLevel.Info],
+          ExceptionString = e.Message
+        };
+      }
     }
 
     /// <summary>
@@ -77,67 +96,55 @@ namespace Log2Console.Receiver
     /// 
     /// Implementation inspired from: http://geekswithblogs.net/kobush/archive/2006/04/20/75717.aspx
     /// 
-    public static LogMessage ParseLog4JXmlLogEvent(XmlReader reader, string defaultLogger, string logEvent = null)
+    public static LogMessage ParseLog4JXmlLogEvent(XmlReader reader, string defaultLogger)
     {
       var logMsg = new LogMessage();
 
-      try
+      reader.Read();
+      if ((reader.MoveToContent() != XmlNodeType.Element) || (reader.Name != "log4j:event"))
+        throw new Exception("The Log Event is not a valid log4j Xml block.");
+
+      logMsg.LoggerName = reader.GetAttribute("logger");
+      logMsg.Level = LogLevels.Instance[reader.GetAttribute("level")];
+      logMsg.ThreadName = reader.GetAttribute("thread");
+
+      long timeStamp;
+      if (long.TryParse(reader.GetAttribute("timestamp"), out timeStamp))
+        logMsg.TimeStamp = s1970.AddMilliseconds(timeStamp).ToLocalTime();
+
+      int eventDepth = reader.Depth;
+      reader.Read();
+      while (reader.Depth > eventDepth)
       {
-        reader.Read();
-        if ((reader.MoveToContent() != XmlNodeType.Element) || (reader.Name != "log4j:event"))
-          throw new Exception("The Log Event is not a valid log4j Xml block.");
-
-        logMsg.LoggerName = reader.GetAttribute("logger");
-        logMsg.Level = LogLevels.Instance[reader.GetAttribute("level")];
-        logMsg.ThreadName = reader.GetAttribute("thread");
-
-        long timeStamp;
-        if (long.TryParse(reader.GetAttribute("timestamp"), out timeStamp))
-          logMsg.TimeStamp = s1970.AddMilliseconds(timeStamp).ToLocalTime();
-
-        int eventDepth = reader.Depth;
-        reader.Read();
-        while (reader.Depth > eventDepth)
+        if (reader.MoveToContent() == XmlNodeType.Element)
         {
-          if (reader.MoveToContent() == XmlNodeType.Element)
+          switch (reader.Name)
           {
-            switch (reader.Name)
-            {
-              case "log4j:message":
-                logMsg.Message = reader.ReadString();
-                break;
+            case "log4j:message":
+              logMsg.Message = reader.ReadString();
+              break;
 
-              case "log4j:throwable":
-                logMsg.Message += Environment.NewLine + reader.ReadString();
-                break;
+            case "log4j:throwable":
+              logMsg.Message += Environment.NewLine + reader.ReadString();
+              break;
 
-              case "log4j:locationInfo":
-                break;
+            case "log4j:locationInfo":
+              break;
 
-              case "log4j:properties":
+            case "log4j:properties":
+              reader.Read();
+              while (reader.MoveToContent() == XmlNodeType.Element
+                     && reader.Name == "log4j:data")
+              {
+                string name = reader.GetAttribute("name");
+                string value = reader.GetAttribute("value");
+                logMsg.Properties[name] = value;
                 reader.Read();
-                while (reader.MoveToContent() == XmlNodeType.Element
-                       && reader.Name == "log4j:data")
-                {
-                  string name = reader.GetAttribute("name");
-                  string value = reader.GetAttribute("value");
-                  logMsg.Properties[name] = value;
-                  reader.Read();
-                }
-                break;
-            }
+              }
+              break;
           }
-          reader.Read();
         }
-      }
-      catch (Exception /*ex*/)
-      {
-        // Create a simple log message with some default values
-        logMsg.LoggerName = defaultLogger;
-        logMsg.ThreadName = "NA";
-        logMsg.Message = logEvent;
-        logMsg.TimeStamp = DateTime.Now;
-        logMsg.Level = LogLevels.Instance[LogLevel.Info];
+        reader.Read();
       }
 
       return logMsg;
