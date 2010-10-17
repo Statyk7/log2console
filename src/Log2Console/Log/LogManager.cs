@@ -608,7 +608,7 @@ namespace Log2Console.Log
 
         public void ClearLogMessages()
         {
-            RootLoggerItem.ClearLogMessages();
+            RootLoggerItem.ClearAllLogMessages();
         }
 
         public void ProcessLogMessage(LogMessage logMsg)
