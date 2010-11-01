@@ -112,7 +112,7 @@ namespace Log2Console.Receiver
         try
         {
           byte[] buffer = _udpClient.Receive(ref _remoteEndPoint);
-          string loggingEvent = System.Text.Encoding.ASCII.GetString(buffer);
+          string loggingEvent = System.Text.Encoding.UTF8.GetString(buffer);
 
           Console.WriteLine(loggingEvent);
 
