@@ -129,7 +129,7 @@ namespace Log2Console.Receiver
                     {
                         string loggingEvent = System.Text.Encoding.ASCII.GetString(((MemoryStream)m.BodyStream).ToArray());
                         LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "MSMQLogger");
-                        logMsg.LoggerName = string.Format("{0}_{1}", this.QueueName, logMsg.LoggerName);
+                        logMsg.LoggerName = string.Format("{0}_{1}", QueueName.TrimStart('.'), logMsg.LoggerName);
                         Notifiable.Notify(logMsg);
                     }
 
@@ -150,7 +150,7 @@ namespace Log2Console.Receiver
                                 string loggingEvent =
                                     System.Text.Encoding.ASCII.GetString(((MemoryStream) thisone.BodyStream).ToArray());
                                 LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "MSMQLogger");
-                                logMsg.LoggerName = string.Format("{0}_{1}", this.QueueName, logMsg.LoggerName);
+                                logMsg.LoggerName = string.Format("{0}_{1}", QueueName.TrimStart('.'), logMsg.LoggerName);
                                 logs[i] = logMsg;
                             }
 
