@@ -93,6 +93,7 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ICSharpCodeExtension\Actions\CaretActionsExtension.cs" />
     <Compile Include="Linq\Linq.cs" />
     <Compile Include="Log\ILoggerView.cs" />
     <Compile Include="Log\ILogManager.cs" />
@@ -108,6 +109,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Receiver\CsvFileReceiver.cs" />
     <Compile Include="Win32ApiCodePack\CommonDllNames.cs" />
     <Compile Include="Win32ApiCodePack\Core.cs" />
     <Compile Include="Win32ApiCodePack\TabbedThumbnailNativeMethods.cs" />
@@ -245,6 +247,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj">
+      <Project>{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}</Project>
+      <Name>ICSharpCode.TextEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RichTextBoxLinks\RichTextBoxLinks.csproj">
+      <Project>{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}</Project>
+      <Name>RichTextBoxLinks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

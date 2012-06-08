@@ -11,13 +11,15 @@ namespace Log2Console.Settings
   {
     public List<IReceiver> AddedReceivers { get; protected set; }
     public List<IReceiver> RemovedReceivers { get; protected set; }
+    public IReceiver SelectedReceiver { get; protected set; }
 
-    public ReceiversForm(IEnumerable<IReceiver> receivers)
+    public ReceiversForm(IEnumerable<IReceiver> receivers, bool quickFileOpen = false)
     {
       AddedReceivers = new List<IReceiver>();
       RemovedReceivers = new List<IReceiver>();
 
       InitializeComponent();
+        removeReceiverBtn.Visible = !quickFileOpen;
 
       Font = UserSettings.Instance.DefaultFont ?? Font;
 
@@ -25,11 +27,20 @@ namespace Log2Console.Settings
       Dictionary<string, ReceiverFactory.ReceiverInfo> receiverTypes = ReceiverFactory.Instance.ReceiverTypes;
       foreach (KeyValuePair<string, ReceiverFactory.ReceiverInfo> kvp in receiverTypes)
       {
-        ToolStripItem item = addReceiverCombo.DropDownItems.Add(kvp.Value.Name);
-        item.Tag = kvp.Value;
+          ToolStripItem item = null;
+
+          if (quickFileOpen)
+          {
+              if (kvp.Value.Type == typeof (CsvFileReceiver))
+                  item = addReceiverCombo.DropDownItems.Add(kvp.Value.Name);
+          }
+          else
+              item = addReceiverCombo.DropDownItems.Add(kvp.Value.Name);
+
+          if (item != null) item.Tag = kvp.Value;
       }
 
-      // Populate Existing Receivers
+        // Populate Existing Receivers
       foreach (IReceiver receiver in receivers)
         AddReceiver(receiver);
     }
@@ -85,7 +96,10 @@ namespace Log2Console.Settings
       receiverPropertyGrid.SelectedObject = receiver;
 
       if (receiver != null)
-        sampleClientConfigTextBox.Text = receiver.SampleClientConfig;
+      {
+          sampleClientConfigTextBox.Text = receiver.SampleClientConfig;
+          SelectedReceiver = receiver;
+      }
     }
 
     private ListViewItem GetSelectedItem()

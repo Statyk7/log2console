@@ -23,6 +23,7 @@ namespace Log2Console.Receiver
     private bool _ipv6;
     private int _port = 7071;
     private string _address = String.Empty;
+    private int _bufferSize = 10000;
 
 
     [Category("Configuration")]
@@ -51,6 +52,14 @@ namespace Log2Console.Receiver
       set { _address = value; }
     }
 
+    [Category("Configuration")]
+    [DisplayName("Receive Buffer Size")]
+    public int BufferSize
+    {
+        get { return _bufferSize; }
+        set { _bufferSize = value; }
+    }
+
 
     #region IReceiver Members
 
@@ -77,7 +86,7 @@ namespace Log2Console.Receiver
       // Init connexion here, before starting the thread, to know the status now
       _remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
       _udpClient = _ipv6 ? new UdpClient(_port, AddressFamily.InterNetworkV6) : new UdpClient(_port);
-
+        _udpClient.Client.ReceiveBufferSize = _bufferSize;
       if (!String.IsNullOrEmpty(_address))
         _udpClient.JoinMulticastGroup(IPAddress.Parse(_address));
 
@@ -104,7 +113,11 @@ namespace Log2Console.Receiver
 
     #endregion
 
-
+      public void Clear()
+      {
+          count = 0;
+      }
+    private int count = 0;
     private void Start()
     {
       while ((_udpClient != null) && (_remoteEndPoint != null))
@@ -114,7 +127,8 @@ namespace Log2Console.Receiver
           byte[] buffer = _udpClient.Receive(ref _remoteEndPoint);
           string loggingEvent = System.Text.Encoding.UTF8.GetString(buffer);
 
-          Console.WriteLine(loggingEvent);
+          //Console.WriteLine(loggingEvent);
+          //  Console.WriteLine("Count: " + count++);
 
           if (Notifiable == null)
             continue;

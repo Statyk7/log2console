@@ -521,18 +521,75 @@ namespace Log2Console.Log
                 parentName = Parent.Parent.Name;
 
             // Create List View Item
-            Item = new ListViewItem(logMsg.TimeStamp.ToString(UserSettings.Instance.TimeStampFormatString));
-            Item.SubItems.Add(logMsg.Level.Name);
-            Item.SubItems.Add(parentName);
-            Item.SubItems.Add(logMsg.ThreadName);
+            var items = new ListViewItem.ListViewSubItem[UserSettings.Instance.ColumnConfiguration.Length];
+            string toolTip = string.Empty;
 
-            string msg = logMsg.Message.Replace("\r\n", " ");
-            msg = msg.Replace("\n", " ");
-            Item.SubItems.Add(msg);
-            Item.ToolTipText = msg;
+            //Add all the Standard Fields to the ListViewItem
+            for (int i=0; i<UserSettings.Instance.ColumnConfiguration.Length; i++)
+            {
+                items[i] = new ListViewItem.ListViewSubItem();
+                var fieldType = UserSettings.Instance.ColumnConfiguration[i];
 
-            Item.ForeColor = logMsg.Level.Color;
-            Item.Tag = this;
+                switch (fieldType.Field)
+                {
+                    case LogMessageField.SequenceNr:
+                        items[i].Text = logMsg.SequenceNr.ToString();
+                        break;
+                    case LogMessageField.LoggerName:
+                        items[i].Text = logMsg.LoggerName;
+                        break;
+                    case LogMessageField.Level:
+                        items[i].Text = logMsg.Level.Name;
+                        break;
+                    case LogMessageField.Message:
+                        string msg = logMsg.Message.Replace("\r\n", " ");
+                        msg = msg.Replace("\n", " ");
+                        items[i].Text = msg;
+                        toolTip = msg;
+                        break;
+                    case LogMessageField.ThreadName:
+                        items[i].Text = logMsg.ThreadName;
+                        break;
+                    case LogMessageField.TimeStamp:
+                        items[i].Text = logMsg.TimeStamp.ToString(UserSettings.Instance.TimeStampFormatString);
+                        break;
+                    case LogMessageField.Exception:
+                        string exception = logMsg.ExceptionString.Replace("\r\n", " ");
+                        exception = exception.Replace("\n", " ");
+                        items[i].Text = exception;
+                        break;
+                    case LogMessageField.CallSiteClass:
+                        items[i].Text = logMsg.CallSiteClass;
+                        break;
+                    case LogMessageField.CallSiteMethod:
+                        items[i].Text = logMsg.CallSiteMethod;
+                        break;
+                    case LogMessageField.SourceFileName:
+                        items[i].Text = logMsg.SourceFileName;
+                        break;
+                    case LogMessageField.SourceFileLineNr:
+                        items[i].Text = logMsg.SourceFileLineNr.ToString();
+                        break;
+                    case LogMessageField.Properties:
+                        break;                    
+                }
+            }
+
+            //Add all the Properties in the Message to the ListViewItem
+            foreach (var property in logMsg.Properties)
+            {
+                string propertyKey = property.Key;
+                if (UserSettings.Instance.ColumnProperties.ContainsKey(propertyKey))
+                {
+                    int propertyColumnNumber = UserSettings.Instance.ColumnProperties[propertyKey];
+                    if(propertyColumnNumber < items.Length)
+                    {
+                        items[propertyColumnNumber].Text = property.Value;
+                    }
+                }
+            }
+
+            Item = new ListViewItem(items, 0) {ToolTipText = toolTip, ForeColor = logMsg.Level.Color, Tag = this};
         }
 
         internal void Highlight(bool state)
@@ -615,6 +672,8 @@ namespace Log2Console.Log
         {
             // Check 1st in the global LoggerPath/Logger dictionary
             LoggerItem logger;
+            logMsg.CheckNull();
+
             if (!_fullPathLoggers.TryGetValue(logMsg.LoggerName, out logger))
             {
                 // Not found, create one

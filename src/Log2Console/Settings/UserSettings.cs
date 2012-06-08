@@ -38,6 +38,67 @@ namespace Log2Console.Settings
         }
     }
 
+    [Serializable]
+    public class FieldType
+    {
+        /// <summary>
+        /// Gets or sets the type of field.
+        /// </summary>
+        /// <value>
+        /// The field.
+        /// </value>
+        [Category("Field Configuration")]
+        [DisplayName("Field Type")]
+        [Description("The Type of the Field")]
+        public LogMessageField Field { get; set; }
+
+        /// <summary>
+        /// If the Field is of type Property, specify the name of the Property
+        /// </summary>
+        /// <value>
+        /// The property.
+        /// </value>
+        [Category("Field Configuration")]
+        [DisplayName("Property")]
+        [Description("The Name of the Property")]
+        public string Property { get; set; }
+
+        /// <summary>
+        /// The Display / Column name of the Field
+        /// </summary>
+        /// <value>
+        /// The name of the field.
+        /// </value>
+        [Category("Field Configuration")]
+        [DisplayName("Name")]
+        [Description("The Name of the Column")]
+        public string Name { get; set; }
+
+        public FieldType()
+        {            
+        }
+
+        public FieldType(LogMessageField field, string name, string property = null)
+        {
+            Field = field;
+            Name = name;
+            Property = property;
+        }
+    }
+
+    [Serializable]
+    public class SourceFileLocation
+    {
+        [Category("Source Location Mapping")]
+        [DisplayName("Log File Source Code Path")]
+        [Description("The Base Path of the Source Code in the Log File")]
+        public string LogSource{ get; set; }
+
+        [Category("Source Location Mapping")]
+        [DisplayName("Local Source Code Path")]
+        [Description("The Base Path of the Source Code on the Local Computer")]
+        public string LocalSource { get; set; }
+    }
 
     [Serializable]
     public sealed class UserSettings
@@ -53,6 +114,14 @@ namespace Log2Console.Settings
         private const string SettingsFileName = "UserSettings.dat";
 
         [NonSerialized]
+        private Dictionary<string, int> _columnProperties = new Dictionary<string, int>();
+
+        [NonSerialized] 
+        private Dictionary<string, FieldType> _csvHeaderFieldTypes;
+
+        [NonSerialized] 
+        private Dictionary<string, string> _sourceCodeLocationMap;
+
         private static UserSettings _instance;
 
         private bool _recursivlyEnableLoggers = true;
@@ -62,6 +131,31 @@ namespace Log2Console.Settings
         private uint _transparency = 100;
         private bool _highlightLogger = true;
         private bool _highlightLogMessages = true;
+
+        private FieldType[] _columnConfiguration = new[]
+                                                       {
+                                                           new FieldType(LogMessageField.SequenceNr, "Nr"),
+                                                           new FieldType(LogMessageField.TimeStamp, "Time"),
+                                                           new FieldType(LogMessageField.Level, "Level"),
+                                                           new FieldType(LogMessageField.ThreadName, "Thread"),
+                                                           new FieldType(LogMessageField.CallSiteClass, "Class"),
+                                                           new FieldType(LogMessageField.CallSiteMethod, "Method"),
+                                                           new FieldType(LogMessageField.Message, "Message"),
+                                                       };
+
+        private FieldType[] _csvColumnHeaderFields = new FieldType[]
+                                                         {
+                                                             new FieldType(LogMessageField.SequenceNr, "sequence"),
+                                                             new FieldType(LogMessageField.TimeStamp, "time"),
+                                                             new FieldType(LogMessageField.Level, "level"),
+                                                             new FieldType(LogMessageField.ThreadName, "thread"),
+                                                             new FieldType(LogMessageField.CallSiteClass, "class"),
+                                                             new FieldType(LogMessageField.CallSiteMethod, "method"),
+                                                             new FieldType(LogMessageField.Message, "message"),
+                                                             new FieldType(LogMessageField.Exception, "exception"),
+                                                             new FieldType(LogMessageField.SourceFileName, "file")
+                                                         };
+        private SourceFileLocation[] _sourceLocationMapConfiguration;
         private bool _autoScrollToLastLog = true;
         private bool _groupLogMessages = false;
         private int _messageCycleCount = 0;
@@ -202,7 +296,7 @@ namespace Log2Console.Settings
                 receiver.Terminate();
             }
             _receivers.Clear();
-        }
+        }        
 
         [Category("Appearance")]
         [Description("Hides the taskbar icon, only the tray icon will remain visible.")]
@@ -246,7 +340,47 @@ namespace Log2Console.Settings
         {
             get { return _highlightLogMessages; }
             set { _highlightLogMessages = value; }
+        }        
+
+        [Category("Columns")]
+        [DisplayName("Column Settings")]
+        [Description("Configure which Columns to Display")]        
+        public FieldType[] ColumnConfiguration
+        {
+            get { return _columnConfiguration; }
+            set
+            {
+                _columnConfiguration = value;
+                UpdateColumnPropeties();
+            }
         }
+
+        [Category("Columns")]
+        [DisplayName("CSV File Header Column Settings")]
+        [Description("Configures which columns maps to which fields when auto detecting the CSV structure based on the header")]        
+        public FieldType[] CsvHeaderColumns
+        {
+            get { return _csvColumnHeaderFields; }
+            set
+            {
+                _csvColumnHeaderFields = value;
+                UpdateCsvColumnHeader();
+            }
+        }
+
+        [Category("Source File Configuration")]
+        [DisplayName("Source Location")]
+        [Description("Map the Log File Location to the Local Source Code Location")]
+        public SourceFileLocation[] SourceLocationMapConfiguration
+        {
+            get { return _sourceLocationMapConfiguration; }
+            set
+            {
+                _sourceLocationMapConfiguration = value;
+                UpdateSourceCodeLocationMap();
+            }
+        }
+
 
         [Category("Notification")]
         [Description("A balloon tip will be displayed when a new log message arrives and the window is hidden.")]
@@ -458,6 +592,77 @@ namespace Log2Console.Settings
         {
             get { return _layout; }
             set { _layout = value; }
+        }
+
+        [Browsable(false)]
+        public Dictionary<string, int> ColumnProperties
+        {
+            get
+            {
+                if (_columnProperties == null)
+                    UpdateColumnPropeties();
+                return _columnProperties;
+            }
+            set { _columnProperties = value; }
+        }
+
+        [Browsable(false)]
+        public Dictionary<string, FieldType> CsvHeaderFieldTypes
+        {
+            get
+            {
+                if (_csvHeaderFieldTypes == null)
+                    UpdateCsvColumnHeader();
+                return _csvHeaderFieldTypes;
+            }
+            set { _csvHeaderFieldTypes = value; }
+        }
+
+        [Browsable(false)]
+        public Dictionary<string, string> SourceFileLocationMap
+        {
+            get
+            {
+                if (_sourceCodeLocationMap == null)
+                    UpdateSourceCodeLocationMap();
+                return _sourceCodeLocationMap;
+            }
+            set { _sourceCodeLocationMap = value; }
+        }
+
+        private void UpdateColumnPropeties()
+        {
+            _columnProperties = new Dictionary<string, int>();
+            for(int i=0; i<ColumnConfiguration.Length; i++)
+            {
+                try
+                {
+                    if (ColumnConfiguration[i].Field == LogMessageField.Properties)
+                        _columnProperties.Add(ColumnConfiguration[i].Property, i);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error Configuring Columns");
+                }
+            }
+        }
+
+        private void UpdateCsvColumnHeader()
+        {
+            _csvHeaderFieldTypes = new Dictionary<string, FieldType>();
+            foreach (var column in CsvHeaderColumns)
+            {
+                _csvHeaderFieldTypes.Add(column.Name, column);
+            }
+        }
+
+        private void UpdateSourceCodeLocationMap()
+        {
+            _sourceCodeLocationMap = new Dictionary<string, string>();
+            foreach (var map in SourceLocationMapConfiguration)
+            {
+                _sourceCodeLocationMap.Add(map.LogSource, map.LocalSource);
+            }
         }
     }
 }

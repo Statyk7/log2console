@@ -37,6 +37,16 @@ namespace Log2Console.Receiver
       set { _ipv6 = value; }
     }
 
+    private int _bufferSize = 10000;
+    [Category("Configuration")]
+    [DisplayName("Receive Buffer Size")]
+    [DefaultValue(10000)]
+    public int BufferSize
+    {
+        get { return _bufferSize; }
+        set { _bufferSize = value; }
+    }
+
     #endregion
 
     #region IReceiver Members
@@ -63,6 +73,7 @@ namespace Log2Console.Receiver
       _socket.ExclusiveAddressUse = true;
       _socket.Bind(new IPEndPoint(_ipv6 ? IPAddress.IPv6Any : IPAddress.Any, _port));
       _socket.Listen(100);
+      _socket.ReceiveBufferSize = _bufferSize;
 
       var args = new SocketAsyncEventArgs();
       args.Completed += AcceptAsyncCompleted;
