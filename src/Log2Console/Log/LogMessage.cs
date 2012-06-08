@@ -61,12 +61,16 @@ namespace Log2Console.Log
 
     public static bool operator ==(LogLevelInfo first, LogLevelInfo second)
     {
-      return (first.Value == second.Value);
+        if (((object) first == null) || ((object) second == null))
+            return (((object) first == null) && ((object) second == null));
+        return (first.Value == second.Value);
     }
 
     public static bool operator !=(LogLevelInfo first, LogLevelInfo second)
     {
-      return (first.Value != second.Value);
+        if (((object) first == null) || ((object) second == null))
+            return !(((object) first == null) && ((object) second == null));
+        return first.Value != second.Value;
     }
   }
 
@@ -169,35 +173,106 @@ namespace Log2Console.Log
     }
   }
 
-  public class LogMessage
-  {
-    /// <summary>
-    /// Logger Name.
-    /// </summary>
-    public string LoggerName;
-    /// <summary>
-    /// Log Level.
-    /// </summary>
-    public LogLevelInfo Level;
-    /// <summary>
-    /// Log Message.
-    /// </summary>
-    public string Message;
-    /// <summary>
-    /// Thread Name.
-    /// </summary>
-    public string ThreadName;
-    /// <summary>
-    /// Time Stamp.
-    /// </summary>
-    public DateTime TimeStamp;
-    /// <summary>
-    /// Properties collection.
-    /// </summary>
-    public Dictionary<string, string> Properties = new Dictionary<string, string>();
-    /// <summary>
-    /// An exception message to associate to this message.
-    /// </summary>
-    public string ExceptionString;
-  }
+
+    public enum LogMessageField
+    {
+        SequenceNr,
+        LoggerName,
+        Level,
+        Message,
+        ThreadName,
+        TimeStamp,
+        Exception,
+        CallSiteClass,
+        CallSiteMethod,
+        SourceFileName,
+        SourceFileLineNr,
+        Properties
+    }
+
+    public class LogMessage
+    {
+        /// <summary>
+        /// The Line Number of the Log Message
+        /// </summary>
+        public ulong SequenceNr;
+
+        /// <summary>
+        /// Logger Name.
+        /// </summary>
+        public string LoggerName;
+
+        /// <summary>
+        /// Log Level.
+        /// </summary>
+        public LogLevelInfo Level;
+
+        /// <summary>
+        /// Log Message.
+        /// </summary>
+        public string Message;
+
+        /// <summary>
+        /// Thread Name.
+        /// </summary>
+        public string ThreadName;
+
+        /// <summary>
+        /// Time Stamp.
+        /// </summary>
+        public DateTime TimeStamp;
+
+        /// <summary>
+        /// Properties collection.
+        /// </summary>
+        public Dictionary<string, string> Properties = new Dictionary<string, string>();
+
+        /// <summary>
+        /// An exception message to associate to this message.
+        /// </summary>
+        public string ExceptionString;
+
+        /// <summary>
+        /// The CallSite Class
+        /// </summary>
+        public string CallSiteClass;
+
+
+        /// <summary>
+        /// The CallSite Method in which the Log is made
+        /// </summary>
+        public string CallSiteMethod;
+
+        /// <summary>
+        /// The Name of the Source File
+        /// </summary>
+        public string SourceFileName;
+
+        /// <summary>
+        /// The Line of the Source File
+        /// </summary>
+        public uint SourceFileLineNr;
+
+        public void CheckNull()
+        {
+            if (string.IsNullOrEmpty(LoggerName))
+                LoggerName = "Unknown";
+            if (string.IsNullOrEmpty(Message))
+                Message = "Unknown";
+            if (string.IsNullOrEmpty(ThreadName))
+                ThreadName = string.Empty;
+            if (string.IsNullOrEmpty(ExceptionString))
+                ExceptionString = string.Empty;
+            if (string.IsNullOrEmpty(ExceptionString))
+                ExceptionString = string.Empty;
+            if (string.IsNullOrEmpty(CallSiteClass))
+                CallSiteClass = string.Empty;
+            if (string.IsNullOrEmpty(CallSiteMethod))
+                CallSiteMethod = string.Empty;
+            if (string.IsNullOrEmpty(SourceFileName))
+                SourceFileName = string.Empty;
+            if (Level == null)
+                Level = LogLevels.Instance[(LogLevel.Error)];
+        }
+    }
 }

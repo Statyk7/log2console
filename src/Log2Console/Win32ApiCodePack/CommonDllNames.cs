@@ -1,7 +1,7 @@
 namespace Microsoft.WindowsAPICodePack.Internal
 {
   /// <summary>
-  /// Class to hold string references to common interop DLLs.
+  /// CallSiteClass to hold string references to common interop DLLs.
   /// </summary>
   internal static class CommonDllNames
   {

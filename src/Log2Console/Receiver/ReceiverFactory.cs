@@ -40,6 +40,7 @@ namespace Log2Console.Receiver
       var nt = new NameTable();
       var nsmanager = new XmlNamespaceManager(nt);
       nsmanager.AddNamespace("log4j", "http://jakarta.apache.org/log4j/");
+      nsmanager.AddNamespace("nlog", "http://nlog-project.org");
       return new XmlParserContext(nt, nsmanager, "elem", XmlSpace.None, Encoding.UTF8);
     }
 
@@ -116,38 +117,60 @@ namespace Log2Console.Receiver
       reader.Read();
       while (reader.Depth > eventDepth)
       {
-        if (reader.MoveToContent() == XmlNodeType.Element)
-        {
-          switch (reader.Name)
+          if (reader.MoveToContent() == XmlNodeType.Element)
           {
-            case "log4j:message":
-              logMsg.Message = reader.ReadString();
-              break;
-
-            case "log4j:throwable":
-              logMsg.Message += Environment.NewLine + reader.ReadString();
-              break;
-
-            case "log4j:locationInfo":
-              break;
-
-            case "log4j:properties":
-              reader.Read();
-              while (reader.MoveToContent() == XmlNodeType.Element
-                     && reader.Name == "log4j:data")
+              switch (reader.Name)
               {
-                string name = reader.GetAttribute("name");
-                string value = reader.GetAttribute("value");
-                logMsg.Properties[name] = value;
-                reader.Read();
+                  case "log4j:message":
+                      logMsg.Message = reader.ReadString();
+                      break;
+
+                  case "log4j:throwable":
+                      logMsg.Message += Environment.NewLine + reader.ReadString();
+                      break;
+
+                  case "log4j:locationInfo":
+                      logMsg.CallSiteClass = reader.GetAttribute("class");
+                      logMsg.CallSiteMethod = reader.GetAttribute("method");
+                      logMsg.SourceFileName = reader.GetAttribute("file");
+                      uint sourceFileLine;
+                      if (uint.TryParse(reader.GetAttribute("line"), out sourceFileLine))
+                          logMsg.SourceFileLineNr = sourceFileLine;
+                      break;
+                  case "nlog:eventSequenceNumber":
+                      ulong sequenceNumber;
+                      if (ulong.TryParse(reader.ReadString(), out sequenceNumber))
+                          logMsg.SequenceNr = sequenceNumber;
+                      break;
+                  case "nlog:locationInfo":
+                      break;
+
+                  case "log4j:properties":
+                      reader.Read();
+                      while (reader.MoveToContent() == XmlNodeType.Element
+                             && reader.Name == "log4j:data")
+                      {
+                          string name = reader.GetAttribute("name");
+                          string value = reader.GetAttribute("value");
+                          if (name != null && name.ToLower().Equals("exceptions"))
+                          {
+                              logMsg.ExceptionString = value;
+                          }
+                          else
+                          {
+                              logMsg.Properties[name] = value;
+                          }
+
+                          reader.Read();
+                      }
+
+                      break;
               }
-              break;
           }
-        }
-        reader.Read();
+          reader.Read();
       }
 
-      return logMsg;
+        return logMsg;
     }
   }
 
