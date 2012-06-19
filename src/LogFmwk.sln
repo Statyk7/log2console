@@ -15,7 +15,34 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "External\WindowsAP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestNLog", "TestNLog\TestNLog.csproj", "{7C4E8E11-81E3-4297-A4D9-6F6DB90C8EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.TextEditor", "ICSharpCode.TextEditor\ICSharpCode.TextEditor.csproj", "{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RichTextBoxLinks", "RichTextBoxLinks\RichTextBoxLinks.csproj", "{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}"
+EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs04
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Log2Console\\Log2Console.csproj
+		SccProjectName1 = Log2Console
+		SccLocalPath1 = Log2Console
+		SccProjectUniqueName2 = Test\\Test.csproj
+		SccProjectName2 = Test
+		SccLocalPath2 = Test
+		SccProjectUniqueName3 = L2C_Setup\\L2C_Setup.vdproj
+		SccProjectName3 = L2C_Setup
+		SccLocalPath3 = L2C_Setup
+		SccProjectUniqueName4 = External\\WindowsAPICodePack\\Core\\Core.csproj
+		SccProjectTopLevelParentUniqueName4 = LogFmwk.sln
+		SccProjectName4 = External/WindowsAPICodePack/Core
+		SccLocalPath4 = External\\WindowsAPICodePack\\Core
+		SccProjectUniqueName5 = External\\WindowsAPICodePack\\Shell\\Shell.csproj
+		SccProjectTopLevelParentUniqueName5 = LogFmwk.sln
+		SccProjectName5 = External/WindowsAPICodePack/Shell
+		SccLocalPath5 = External\\WindowsAPICodePack\\Shell
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysisDebug|Any CPU = CodeAnalysisDebug|Any CPU
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +81,18 @@ Global
 		{7C4E8E11-81E3-4297-A4D9-6F6DB90C8EF7}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
 		{7C4E8E11-81E3-4297-A4D9-6F6DB90C8EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7C4E8E11-81E3-4297-A4D9-6F6DB90C8EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D18BE89-D210-49EB-A9DD-2246FBB3DF6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,28 +100,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2E1FB0DF-F9BB-4909-9F32-2D9D022A8E57} = {3E29A216-D8DA-4858-9EB0-D9C0C565C50B}
 		{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D} = {3E29A216-D8DA-4858-9EB0-D9C0C565C50B}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs04
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Log2Console\\Log2Console.csproj
-		SccProjectName1 = Log2Console
-		SccLocalPath1 = Log2Console
-		SccProjectUniqueName2 = Test\\Test.csproj
-		SccProjectName2 = Test
-		SccLocalPath2 = Test
-		SccProjectUniqueName3 = L2C_Setup\\L2C_Setup.vdproj
-		SccProjectName3 = L2C_Setup
-		SccLocalPath3 = L2C_Setup
-		SccProjectUniqueName4 = External\\WindowsAPICodePack\\Core\\Core.csproj
-		SccProjectTopLevelParentUniqueName4 = LogFmwk.sln
-		SccProjectName4 = External/WindowsAPICodePack/Core
-		SccLocalPath4 = External\\WindowsAPICodePack\\Core
-		SccProjectUniqueName5 = External\\WindowsAPICodePack\\Shell\\Shell.csproj
-		SccProjectTopLevelParentUniqueName5 = LogFmwk.sln
-		SccProjectName5 = External/WindowsAPICodePack/Shell
-		SccLocalPath5 = External\\WindowsAPICodePack\\Shell
 	EndGlobalSection
 EndGlobal

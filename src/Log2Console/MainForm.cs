@@ -802,7 +802,7 @@ namespace Log2Console
                     int lineSignatureLength = lineSignature.Length;
                     var lineNrString = line.Substring(lineIndex + lineSignatureLength,
                                                         line.Length - lineIndex - lineSignatureLength);
-
+                    lineNrString = lineNrString.TrimEnd(new[] { ',' });
                     if (!string.IsNullOrEmpty(lineNrString))
                     {
                         uint parsedLineNr;
