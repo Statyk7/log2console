@@ -741,25 +741,25 @@ namespace Log2Console
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message, "Error opening source file");
+            MessageBox.Show(string.Format("Message: {0}, Stack Trace: {1}", ex.Message, ex.StackTrace), "Error opening source file");
         }
     }
 
     private string TryToLocateSourceFile(string file)
     {
-
-        foreach (var sourceMap in UserSettings.Instance.SourceLocationMapConfiguration)
-        {
-            if(file.StartsWith(sourceMap.LogSource))
+        if (UserSettings.Instance.SourceLocationMapConfiguration != null)
+            foreach (var sourceMap in UserSettings.Instance.SourceLocationMapConfiguration)
             {
-                file = sourceMap.LocalSource + file.Remove(0, sourceMap.LogSource.Length);
-                return file;
+                if(file.StartsWith(sourceMap.LogSource))
+                {
+                    file = sourceMap.LocalSource + file.Remove(0, sourceMap.LogSource.Length);
+                    return file;
+                }
             }
-        }
         return null;
     }
 
-    private void PopulateExceptions(string exceptions)
+      private void PopulateExceptions(string exceptions)
     {
         if(string.IsNullOrEmpty(exceptions))
         {
