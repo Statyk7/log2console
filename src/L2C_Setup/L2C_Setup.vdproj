@@ -15,7 +15,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_DBBCC83608FCF265A2037FF0AE033030"
+        "MsmKey" = "8:_315F5B273991C533EFDBF97386AC7477"
+        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_446F24C085B877AD50F4E8E96DE6C6C0"
+        "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6746441DB39D6C127C543162419CA076"
         "OwnerKey" = "8:_F7B0A84139D343738E0EC5103E542FF3"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -34,7 +46,19 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_DBBCC83608FCF265A2037FF0AE033030"
+        "OwnerKey" = "8:_446F24C085B877AD50F4E8E96DE6C6C0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_315F5B273991C533EFDBF97386AC7477"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6746441DB39D6C127C543162419CA076"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -64,6 +88,16 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
                 }
             }
         }
@@ -122,14 +156,76 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DBBCC83608FCF265A2037FF0AE033030"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_315F5B273991C533EFDBF97386AC7477"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ICSharpCode.TextEditor, Version=3.2.1.6466, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_315F5B273991C533EFDBF97386AC7477"
+                    {
+                    "Name" = "8:ICSharpCode.TextEditor.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ICSharpCode.TextEditor.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_446F24C085B877AD50F4E8E96DE6C6C0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:RichTextBoxLinks, Version=1.0.5652.25306, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_446F24C085B877AD50F4E8E96DE6C6C0"
+                    {
+                    "Name" = "8:RichTextBoxLinks.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:RichTextBoxLinks.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6746441DB39D6C127C543162419CA076"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_DBBCC83608FCF265A2037FF0AE033030"
+                    "_6746441DB39D6C127C543162419CA076"
                     {
                     "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
@@ -210,7 +306,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Log2Console"
         "ProductCode" = "8:{E2E053DE-983B-4104-AA76-C36DC887658E}"
-        "PackageCode" = "8:{9843A7EB-5F55-436A-B446-805A2B03DAE5}"
+        "PackageCode" = "8:{F3C2AB1D-98BD-48B7-B8C4-15404975E45B}"
         "UpgradeCode" = "8:{76F2BD5A-4763-4A97-B4BF-F3F475A62908}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -759,7 +855,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F7B0A84139D343738E0EC5103E542FF3"
             {
-            "SourcePath" = "8:..\\Log2Console\\obj\\Release\\Log2Console.exe"
+            "SourcePath" = "8:..\\Log2Console\\obj\\Debug\\Log2Console.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_4205BB6E826D4AA1943459A15D10D631"

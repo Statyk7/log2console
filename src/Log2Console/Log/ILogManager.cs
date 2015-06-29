@@ -26,6 +26,11 @@ namespace Log2Console.Log
         void ClearLogMessages();
 
         /// <summary>
+        /// Deactivate the all logger managed by the log manager.
+        /// </summary>
+        void DeactivateLogger();
+
+        /// <summary>
         /// Processes the log message.
         /// </summary>
         /// <param name="logMsg">The log MSG.</param>

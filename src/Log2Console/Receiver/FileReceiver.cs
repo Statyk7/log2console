@@ -207,6 +207,7 @@ namespace Log2Console.Receiver
                 if (_fileFormat == FileFormatEnums.Flat)
                 {
                     LogMessage logMsg = new LogMessage();
+                    logMsg.RootLoggerName = _loggerName;
                     logMsg.LoggerName = _fullLoggerName;
                     logMsg.ThreadName = "NA";
                     logMsg.Message = line;

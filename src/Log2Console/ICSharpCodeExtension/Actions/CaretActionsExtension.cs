@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using ICSharpCode.TextEditor;
+﻿using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Actions;
-using ICSharpCode.TextEditor.Document;
 
 namespace Log2Console.ICSharpCodeExtension.Actions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
-
     public class GotoLineNumber : AbstractEditAction
     {
         private readonly int _line;

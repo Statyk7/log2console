@@ -206,12 +206,19 @@ namespace Log2Console.Receiver
         protected LogMessage CreateLogMessage(LoggingEvent logEvent)
         {
             LogMessage logMsg = new LogMessage();
+            if (_appendHostNameToLogger && logEvent.Properties.Contains(LoggingEvent.HostNameProperty))
+            {
+                logMsg.RootLoggerName = logEvent.Properties[LoggingEvent.HostNameProperty].ToString();
+                logMsg.LoggerName = String.Format("[Host: {0}].{1}", logEvent.Properties[LoggingEvent.HostNameProperty],
+                    logEvent.LoggerName);
+            }
+            else
+            {
+                logMsg.RootLoggerName = logEvent.LoggerName;
+                logMsg.LoggerName = logEvent.LoggerName;
+            }
 
-			logMsg.LoggerName = _appendHostNameToLogger && logEvent.Properties.Contains(LoggingEvent.HostNameProperty)
-        	                    	? String.Format("[Host: {0}].{1}", logEvent.Properties[LoggingEvent.HostNameProperty], logEvent.LoggerName)
-        	                    	: logEvent.LoggerName;
-
-        	logMsg.ThreadName = logEvent.ThreadName;
+            logMsg.ThreadName = logEvent.ThreadName;
             logMsg.Message = logEvent.RenderedMessage;
             logMsg.TimeStamp = logEvent.TimeStamp;
             logMsg.Level = LogUtils.GetLogLevelInfo(logEvent.Level.Value);

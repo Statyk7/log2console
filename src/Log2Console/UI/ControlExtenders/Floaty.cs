@@ -116,21 +116,21 @@ namespace ControlExtenders
 
         private void InitializeComponent()
         {
-            this.SuspendLayout();
+            SuspendLayout();
             // 
             // Floaty
             // 
-            this.ClientSize = new System.Drawing.Size(178, 122);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.MaximizeBox = false;
-            this.Name = "Floaty";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.ResumeLayout(false);
-            this._dockOnInside = true;
-            this._dockOnHostOnly = true; // keep it simple for now
-            this._dontHideHandle = false;
+            ClientSize = new Size(178, 122);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            MaximizeBox = false;
+            Name = "Floaty";
+            ShowIcon = false;
+            ShowInTaskbar = false;
+            StartPosition = FormStartPosition.Manual;
+            ResumeLayout(false);
+            _dockOnInside = true;
+            _dockOnHostOnly = true; // keep it simple for now
+            _dontHideHandle = false;
         }
 
         #endregion initialization
@@ -171,16 +171,6 @@ namespace ControlExtenders
             base.WndProc(ref m);
         }
 
-        protected override void OnResizeBegin(EventArgs e)
-        {
-            base.OnResizeBegin(e);
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            
-            base.OnResize(e);
-        }
 
         protected override void OnResizeEnd(EventArgs e)
         {
@@ -222,7 +212,7 @@ namespace ControlExtenders
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
-            this.Hide(); // hide but don't close
+            Hide(); // hide but don't close
             base.OnClosing(e);
         }
 
@@ -232,7 +222,7 @@ namespace ControlExtenders
         // override base method, this control only allows one way of showing.
         public new void Show()
         {
-            if (!this.Visible && _isFloating)
+            if (!Visible && _isFloating)
                 base.Show(_dockState.OrgDockHost);
 
             _dockState.Container.Show();
@@ -240,7 +230,7 @@ namespace ControlExtenders
 
         public new void Hide()
         {
-            if (this.Visible)
+            if (Visible)
                 base.Hide();
 
             _dockState.Container.Hide();
@@ -342,8 +332,8 @@ namespace ControlExtenders
             if (rx > 0 && rx < ry && rx < 0.25 && ry < 0.75 && ry > 0.25)
             {
                 r.Width = r.Width / 2;
-                if (r.Width > this.Width)
-                    r.Width = this.Width;
+                if (r.Width > Width)
+                    r.Width = Width;
 
                 _dockExtender.Overlay.Dock = DockStyle.Left; // dock to left
             }
@@ -352,8 +342,8 @@ namespace ControlExtenders
             if (rx < 1 && rx > ry && rx > 0.75 && ry < 0.75 && ry > 0.25)
             {
                 r.Width = r.Width / 2;
-                if (r.Width > this.Width)
-                    r.Width = this.Width;
+                if (r.Width > Width)
+                    r.Width = Width;
                 r.X = rc.X + rc.Width - r.Width;
                 _dockExtender.Overlay.Dock = DockStyle.Right;
             }
@@ -362,8 +352,8 @@ namespace ControlExtenders
             if (ry > 0 && ry < rx && ry < 0.25 && rx < 0.75 && rx > 0.25)
             {
                 r.Height = r.Height / 2;
-                if (r.Height > this.Height)
-                    r.Height = this.Height;
+                if (r.Height > Height)
+                    r.Height = Height;
                 _dockExtender.Overlay.Dock = DockStyle.Top;
             }
 
@@ -371,8 +361,8 @@ namespace ControlExtenders
             if (ry < 1 && ry > rx && ry > 0.75 && rx < 0.75 && rx > 0.25)
             {
                 r.Height = r.Height / 2;
-                if (r.Height > this.Height)
-                    r.Height = this.Height;
+                if (r.Height > Height)
+                    r.Height = Height;
                 r.Y = rc.Y + rc.Height - r.Height;
                 _dockExtender.Overlay.Dock = DockStyle.Bottom;
             }
@@ -447,11 +437,11 @@ namespace ControlExtenders
             ps.Y -= offsety;
 
 
-            this.Bounds = new Rectangle(ps, sz);
+            Bounds = new Rectangle(ps, sz);
             _isFloating = true;
             Show();
             // enable the mousemove events of the new floating form, start dragging the form immediately
-            SendMessage(this.Handle.ToInt32(), WM_SYSCOMMAND, SC_MOVE | 0x02, 0);
+            SendMessage(Handle.ToInt32(), WM_SYSCOMMAND, SC_MOVE | 0x02, 0);
         }
 
         /// <summary>
@@ -461,7 +451,7 @@ namespace ControlExtenders
         {
             // bring dockhost to front first to prevent flickering
             _dockState.OrgDockHost.TopLevelControl.BringToFront();
-            this.Hide();
+            Hide();
             _dockState.Container.Visible = false; // hide it temporarely
             _dockState.Container.Parent = _dockState.OrgDockingParent;
             _dockState.Container.Dock = _dockState.OrgDockStyle;
