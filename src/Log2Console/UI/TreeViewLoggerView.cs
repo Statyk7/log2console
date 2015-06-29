@@ -10,15 +10,15 @@ namespace Log2Console.UI
     {
         public TreeViewLoggerView(TreeView treeView)
         {
-            this._treeView = treeView;
-            this._isRoot = true;
+            _treeView = treeView;
+            _isRoot = true;
         }
 
         private TreeViewLoggerView(TreeView treeView, TreeNode node)
         {
-            this._treeView = treeView;
-            this._node = node;
-            this._isRoot = false;
+            _treeView = treeView;
+            _node = node;
+            _isRoot = false;
         }
 
 
@@ -29,28 +29,28 @@ namespace Log2Console.UI
         /// </summary>
         public void Clear()
         {
-            if (this._isRoot)
+            if (_isRoot)
             {
                 try
                 {
-                    this._treeView.BeginUpdate();
-                    this._treeView.Nodes.Clear();
+                    _treeView.BeginUpdate();
+                    _treeView.Nodes.Clear();
                 }
                 finally
                 {
-                    this._treeView.EndUpdate();
+                    _treeView.EndUpdate();
                 }
             }
             else
             {
                 try
                 {
-                    this._node.TreeView.BeginUpdate();
-                    this._node.Nodes.Clear();
+                    _node.TreeView.BeginUpdate();
+                    _node.Nodes.Clear();
                 }
                 finally
                 {
-                    this._node.TreeView.EndUpdate();
+                    _node.TreeView.EndUpdate();
                 }
             }
         }
@@ -68,9 +68,16 @@ namespace Log2Console.UI
 
             node.Tag = logger;
             node.Checked = true;
-
-            node.EnsureVisible();
-
+            if (_node != null && _node.Level == 0)
+            {
+                _node.ExpandAll();
+            }
+          //  node.EnsureVisible();
+            //if (_node != null)
+            //{
+            //    _node.Collapse(false);
+            //}
+            
             return new TreeViewLoggerView(_treeView, node);
         }
 
@@ -94,13 +101,13 @@ namespace Log2Console.UI
         {
             get
             {
-                return (this._isRoot ? "(root)" : this._node.Text);
+                return (_isRoot ? "(root)" : _node.Text);
             }
             set
             {
-                if (!this._isRoot)
+                if (!_isRoot)
                 {
-                    this._node.Text = value;
+                    _node.Text = value;
                 }
             }
         }
@@ -114,16 +121,16 @@ namespace Log2Console.UI
         {
             get
             {
-                return (this._isRoot ? false : this._node.BackColor == Color.LightBlue);
+                return (_isRoot ? false : _node.BackColor == Color.LightBlue);
             }
             set
             {
-                if (!this._isRoot)
+                if (!_isRoot)
                 {
                     if (value)
-                        this._node.BackColor = Color.LightBlue;
+                        _node.BackColor = Color.LightBlue;
                     else
-                        this._node.BackColor = Color.Transparent;
+                        _node.BackColor = Color.Transparent;
                 }
             }
         }
@@ -136,13 +143,13 @@ namespace Log2Console.UI
         {
             get
             {
-                return (this._isRoot ? true : this._node.Checked);
+                return (_isRoot ? true : _node.Checked);
             }
             set
             {
-                if (!this._isRoot)
+                if (!_isRoot)
                 {
-                    this._node.Checked = value;
+                    _node.Checked = value;
                 }
             }
         }
@@ -156,7 +163,7 @@ namespace Log2Console.UI
         private TreeNode _node;
         private bool _isRoot = false;
 
-        #endregion 
+        #endregion
 
 
     }

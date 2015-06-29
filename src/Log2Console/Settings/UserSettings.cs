@@ -12,93 +12,7 @@ using Log2Console.Receiver;
 
 namespace Log2Console.Settings
 {
-    [Serializable]
-    public sealed class LayoutSettings
-    {
-        public Rectangle WindowPosition { get; set; }
-        public FormWindowState WindowState { get; set; }
-
-        public bool ShowLogDetailView { get; set; }
-        public Size LogDetailViewSize { get; set; }
-
-        public bool ShowLoggerTree { get; set; }
-        public Size LoggerTreeSize { get; set; }
-
-        public int[] LogListViewColumnsWidths { get; set; }
-
-
-        public void Set(Rectangle position, FormWindowState state, Control detailView, Control loggerTree)
-        {
-            WindowPosition = position;
-            WindowState = state;
-            ShowLogDetailView = detailView.Visible;
-            LogDetailViewSize = detailView.Size;
-            ShowLoggerTree = loggerTree.Visible;
-            LoggerTreeSize = loggerTree.Size;
-        }
-    }
-
-    [Serializable]
-    public class FieldType
-    {
-        /// <summary>
-        /// Gets or sets the type of field.
-        /// </summary>
-        /// <value>
-        /// The field.
-        /// </value>
-        [Category("Field Configuration")]
-        [DisplayName("Field Type")]
-        [Description("The Type of the Field")]
-        public LogMessageField Field { get; set; }
-
-        /// <summary>
-        /// If the Field is of type Property, specify the name of the Property
-        /// </summary>
-        /// <value>
-        /// The property.
-        /// </value>
-        [Category("Field Configuration")]
-        [DisplayName("Property")]
-        [Description("The Name of the Property")]
-        public string Property { get; set; }
-
-        /// <summary>
-        /// The Display / Column name of the Field
-        /// </summary>
-        /// <value>
-        /// The name of the field.
-        /// </value>
-        [Category("Field Configuration")]
-        [DisplayName("Name")]
-        [Description("The Name of the Column")]
-        public string Name { get; set; }
-
-        public FieldType()
-        {            
-        }
-
-        public FieldType(LogMessageField field, string name, string property = null)
-        {
-            Field = field;
-            Name = name;
-            Property = property;
-        }
-    }
-
-    [Serializable]
-    public class SourceFileLocation
-    {
-        [Category("Source Location Mapping")]
-        [DisplayName("Log File Source Code Path")]
-        [Description("The Base Path of the Source Code in the Log File")]
-        public string LogSource{ get; set; }
-
-        [Category("Source Location Mapping")]
-        [DisplayName("Local Source Code Path")]
-        [Description("The Base Path of the Source Code on the Local Computer")]
-        public string LocalSource { get; set; }
-    }
+   
 
     [Serializable]
     public sealed class UserSettings
@@ -109,6 +23,37 @@ namespace Log2Console.Settings
         internal static readonly Color DefaultWarnLevelColor = Color.Orange;
         internal static readonly Color DefaultErrorLevelColor = Color.Red;
         internal static readonly Color DefaultFatalLevelColor = Color.Purple;
+
+        private static readonly FieldType[] DefaultColumnConfiguration =
+        {
+            new FieldType(LogMessageField.TimeStamp, "Time"),
+            new FieldType(LogMessageField.Level, "Level"),
+            new FieldType(LogMessageField.RootLoggerName, "RootLoggerName"),
+            new FieldType(LogMessageField.ThreadName, "Thread"),
+            new FieldType(LogMessageField.Message, "Message"),
+        };
+
+        private static readonly FieldType[] DefaultDetailsMessageConfiguration =
+        {
+            new FieldType(LogMessageField.TimeStamp, "Time"),
+            new FieldType(LogMessageField.Level, "Level"),
+            new FieldType(LogMessageField.RootLoggerName, "RootLoggerName"),
+            new FieldType(LogMessageField.ThreadName, "Thread"),
+            new FieldType(LogMessageField.Message, "Message"),
+        };
+
+        private static readonly FieldType[] DefaultCsvColumnHeaderConfiguration =
+        {
+            new FieldType(LogMessageField.SequenceNr, "sequence"),
+            new FieldType(LogMessageField.TimeStamp, "time"),
+            new FieldType(LogMessageField.Level, "level"),
+            new FieldType(LogMessageField.ThreadName, "thread"),
+            new FieldType(LogMessageField.CallSiteClass, "class"),
+            new FieldType(LogMessageField.CallSiteMethod, "method"),
+            new FieldType(LogMessageField.Message, "message"),
+            new FieldType(LogMessageField.Exception, "exception"),
+            new FieldType(LogMessageField.SourceFileName, "file")
+        };
 
         [NonSerialized]
         private const string SettingsFileName = "UserSettings.dat";
@@ -131,35 +76,16 @@ namespace Log2Console.Settings
         private uint _transparency = 100;
         private bool _highlightLogger = true;
         private bool _highlightLogMessages = true;
+        private FieldType[] _columnConfiguration;
+        private FieldType[] _messageDetailConfiguration;
 
-        private FieldType[] _columnConfiguration = new[]
-                                                       {
-                                                           new FieldType(LogMessageField.SequenceNr, "Nr"),
-                                                           new FieldType(LogMessageField.TimeStamp, "Time"),
-                                                           new FieldType(LogMessageField.Level, "Level"),
-                                                           new FieldType(LogMessageField.ThreadName, "Thread"),
-                                                           new FieldType(LogMessageField.CallSiteClass, "Class"),
-                                                           new FieldType(LogMessageField.CallSiteMethod, "Method"),
-                                                           new FieldType(LogMessageField.Message, "Message"),
-                                                       };
 
-        private FieldType[] _csvColumnHeaderFields = new FieldType[]
-                                                         {
-                                                             new FieldType(LogMessageField.SequenceNr, "sequence"),
-                                                             new FieldType(LogMessageField.TimeStamp, "time"),
-                                                             new FieldType(LogMessageField.Level, "level"),
-                                                             new FieldType(LogMessageField.ThreadName, "thread"),
-                                                             new FieldType(LogMessageField.CallSiteClass, "class"),
-                                                             new FieldType(LogMessageField.CallSiteMethod, "method"),
-                                                             new FieldType(LogMessageField.Message, "message"),
-                                                             new FieldType(LogMessageField.Exception, "exception"),
-                                                             new FieldType(LogMessageField.SourceFileName, "file")
-                                                         };
+        private FieldType[] _csvColumnHeaderFields;
         private SourceFileLocation[] _sourceLocationMapConfiguration;
         private bool _autoScrollToLastLog = true;
         private bool _groupLogMessages = false;
         private int _messageCycleCount = 0;
-        private string _timeStampFormatString = "G";
+        private string _timeStampFormatString = "yyyy-MM-dd HH:mm:ss.ffff";
 
         private Font _defaultFont = null;
         private Font _logListFont = null;
@@ -347,7 +273,7 @@ namespace Log2Console.Settings
         [Description("Configure which Columns to Display")]        
         public FieldType[] ColumnConfiguration
         {
-            get { return _columnConfiguration; }
+            get { return _columnConfiguration ?? (ColumnConfiguration = DefaultColumnConfiguration); }
             set
             {
                 _columnConfiguration = value;
@@ -355,12 +281,13 @@ namespace Log2Console.Settings
             }
         }
 
+
         [Category("Columns")]
         [DisplayName("CSV File Header Column Settings")]
         [Description("Configures which columns maps to which fields when auto detecting the CSV structure based on the header")]        
         public FieldType[] CsvHeaderColumns
         {
-            get { return _csvColumnHeaderFields; }
+            get { return _csvColumnHeaderFields ?? (CsvHeaderColumns = DefaultCsvColumnHeaderConfiguration); }
             set
             {
                 _csvColumnHeaderFields = value;
@@ -450,6 +377,17 @@ namespace Log2Console.Settings
             set { _recursivlyEnableLoggers = value; }
         }
 
+        [Category("Message Details")]
+        [DisplayName("Details information")]
+        [Description("Configure which information to Display in the message details")]
+        public FieldType[] MessageDetailConfiguration
+        {
+            get { return _messageDetailConfiguration ?? (MessageDetailConfiguration = DefaultDetailsMessageConfiguration); }
+            set
+            {
+                _messageDetailConfiguration = value;
+            }
+        }
 
         [Category("Message Details")]
         [Description("Show or hide the message properties in the message details panel.")]

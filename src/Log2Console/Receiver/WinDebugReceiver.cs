@@ -15,7 +15,7 @@ namespace Log2Console.Receiver
     {
         #region Overrides of BaseReceiver
 
-		[Browsable(false)]
+        [Browsable(false)]
         public override string SampleClientConfig
         {
             get { return "N/A"; }
@@ -48,6 +48,7 @@ namespace Log2Console.Receiver
 
             LogMessage logMsg = new LogMessage();
             logMsg.Message = text;
+            logMsg.LoggerName = processName;
             logMsg.LoggerName = String.Format("{0}.{1}", processName, pid);
             logMsg.Level = LogLevels.Instance[LogLevel.Debug];
             logMsg.ThreadName = pid.ToString();

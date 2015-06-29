@@ -100,7 +100,7 @@ namespace Log2Console.Receiver
         private void EventLogOnEntryWritten(object sender, EntryWrittenEventArgs entryWrittenEventArgs)
         {
             LogMessage logMsg = new LogMessage();
-
+            logMsg.RootLoggerName = _baseLoggerName;
             logMsg.LoggerName = String.IsNullOrEmpty(entryWrittenEventArgs.Entry.Source)
                                     ? _baseLoggerName
                                     : String.Format("{0}.{1}", _baseLoggerName, entryWrittenEventArgs.Entry.Source);

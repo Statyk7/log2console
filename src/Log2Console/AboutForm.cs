@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -20,11 +21,11 @@ namespace Log2Console
       //  Change assembly information settings for your application through either:
       //  - Project->Properties->Application->Assembly Information
       //  - AssemblyInfo.cs
-      this.Text = String.Format("About {0}", AssemblyTitle);
-      this.labelProductName.Text = AssemblyProduct;
-      this.labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
-      this.labelCopyright.Text = AssemblyCopyright;
-      this.labelCompanyName.Text = AssemblyCompany;
+      Text = String.Format("About {0}", AssemblyTitle);
+      labelProductName.Text = AssemblyProduct;
+      labelVersion.Text = String.Format("Version {0}", AssemblyVersion);
+      labelCopyright.Text = AssemblyCopyright;
+      labelCompanyName.Text = AssemblyCompany;
 
       List<string> lines = new List<string>();
       lines.Add(AssemblyDescription);
@@ -38,11 +39,12 @@ namespace Log2Console
       lines.Add(" - RobSmyth (on CodePlex)");
       lines.Add(" - Florent Lopez aka \"Shift F12\" (Yakoo on CodePlex)");
       lines.Add(" - Alexey \"Lex\" Lavnikov (LexLavnikov on CodePlex)");
+      lines.Add(" - Rudy Wahl (Rudy_Wahl on CodePlex)");
       lines.Add("");
       lines.Add("Credits:");
       lines.Add(" - Boomy Icons by Milosz Wlazlo (http://miloszwl.deviantart.com)");
       lines.Add(" - DockExtender by Herre Kuijpers (herre@xs4all.nl)");
-      this.textBoxDescription.Lines = lines.ToArray();
+      textBoxDescription.Lines = lines.ToArray();
     }
 
 
@@ -64,7 +66,7 @@ namespace Log2Console
             return titleAttribute.Title;
         }
         // If there was no Title attribute, or if the Title attribute was the empty string, return the .exe name
-        return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+        return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
       }
     }
 

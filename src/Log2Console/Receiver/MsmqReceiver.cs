@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Messaging;
 
@@ -87,11 +88,11 @@ namespace Log2Console.Receiver
         /// </summary>
         public override void Initialize()
         {
-            if (!MessageQueue.Exists(this.QueueName))
+            if (!MessageQueue.Exists(QueueName))
             {
-                if (this.Create)
+                if (Create)
                 {
-                    MessageQueue.Create(this.QueueName, this.Transactional);
+                    MessageQueue.Create(QueueName, Transactional);
                 }
                 else
                 {
@@ -116,7 +117,7 @@ namespace Log2Console.Receiver
         private void Start()
         {
 
-            _queue = new MessageQueue(this.QueueName);
+            _queue = new MessageQueue(QueueName);
 
             _queue.ReceiveCompleted += delegate(Object source, ReceiveCompletedEventArgs asyncResult)
             {
@@ -127,14 +128,15 @@ namespace Log2Console.Receiver
 
                     if (Notifiable != null)
                     {
-                        string loggingEvent = System.Text.Encoding.ASCII.GetString(((MemoryStream)m.BodyStream).ToArray());
+                        string loggingEvent = Encoding.ASCII.GetString(((MemoryStream)m.BodyStream).ToArray());
                         LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "MSMQLogger");
                         logMsg.LoggerName = string.Format("{0}_{1}", QueueName.TrimStart('.'), logMsg.LoggerName);
+                        logMsg.RootLoggerName = QueueName;
                         Notifiable.Notify(logMsg);
                     }
 
 
-                    if (this.BulkProcessBackedUpMessages)
+                    if (BulkProcessBackedUpMessages)
                     {
                         Message[] all = ((MessageQueue) source).GetAllMessages();
                         if (all.Length > 0)
@@ -148,7 +150,7 @@ namespace Log2Console.Receiver
                                 Message thisone = ((MessageQueue) source).Receive();
 
                                 string loggingEvent =
-                                    System.Text.Encoding.ASCII.GetString(((MemoryStream) thisone.BodyStream).ToArray());
+                                    Encoding.ASCII.GetString(((MemoryStream) thisone.BodyStream).ToArray());
                                 LogMessage logMsg = ReceiverUtils.ParseLog4JXmlLogEvent(loggingEvent, "MSMQLogger");
                                 logMsg.LoggerName = string.Format("{0}_{1}", QueueName.TrimStart('.'), logMsg.LoggerName);
                                 logs[i] = logMsg;

@@ -328,6 +328,9 @@ namespace Log2Console.Receiver
                         case LogMessageField.LoggerName:
                             logMsg.LoggerName = fieldValue;
                             break;
+                        case LogMessageField.RootLoggerName:
+                            logMsg.RootLoggerName = fieldValue;
+                            break;
                         case LogMessageField.Level:
                             logMsg.Level = LogLevels.Instance[(LogLevel) Enum.Parse(typeof (LogLevel), fieldValue)];
                             //if (logMsg.Level == null)
@@ -392,6 +395,7 @@ namespace Log2Console.Receiver
                                  {
                                      SequenceNr = 0,
                                      LoggerName = "Log2Console",
+                                     RootLoggerName = "Log2Console",
                                      Level = LogLevels.Instance[LogLevel.Error],
                                      Message = "Error Parsing Log Entry Line: " + sb,
                                      ThreadName = string.Empty,
