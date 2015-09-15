@@ -267,6 +267,7 @@ namespace Log2Console
             loggerTreeView.Font = UserSettings.Instance.LoggerTreeFont;
 
             logListView.BackColor = UserSettings.Instance.LogListBackColor;
+            logDetailTextBox.BackColor = UserSettings.Instance.LogMessageBackColor;
 
             LogLevels.Instance.LogLevelInfos[(int)LogLevel.Trace].Color = UserSettings.Instance.TraceLevelColor;
             LogLevels.Instance.LogLevelInfos[(int)LogLevel.Debug].Color = UserSettings.Instance.DebugLevelColor;
