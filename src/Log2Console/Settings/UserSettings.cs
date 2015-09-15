@@ -93,6 +93,7 @@ namespace Log2Console.Settings
         private Font _loggerTreeFont = null;
 
         private Color _logListBackColor = Color.Empty;
+        private Color _logMessageBackColor = Color.Empty;
 
         private Color _traceLevelColor = DefaultTraceLevelColor;
         private Color _debugLevelColor = DefaultDebugLevelColor;
@@ -450,6 +451,15 @@ namespace Log2Console.Settings
         {
             get { return _logListBackColor; }
             set { _logListBackColor = value; }
+        }
+
+        [Category("Colors")]
+        [Description("Set the Background Color of the Log Message details.")]
+        [DisplayName("Log Message details Background Color")]
+        public Color LogMessageBackColor
+        {
+            get { return _logMessageBackColor; }
+            set { _logMessageBackColor = value; }
         }
 
 
