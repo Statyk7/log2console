@@ -24,5 +24,5 @@ Log2Console is a development tool offering a nice UI to display, filter and sear
 ## Screenshots
 _**More [Screenshots](docs/Screenshots.md) here**_
 
-![](docs/Home_Log2Console_3.pg)
+![](docs/Home_Log2Console_3.png)
 
