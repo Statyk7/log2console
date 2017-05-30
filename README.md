@@ -13,7 +13,7 @@ Log2Console is a development tool offering a nice UI to display, filter and sear
 
 ## Receivers
 * File (Standard log or using log4j xml format)
-* UDP IP v4 and v6 (Provides compatibility with log4j and [NLog](NLog))
+* UDP IP v4 and v6 (Provides compatibility with log4j and [NLog](docs/NLog.md))
 * .NET Remoting (Prefered receiver for log4net)
 * WinDebug (Receiver for OutputDebugString(), in C++)
 * MSMQ (Microsoft Message Queuing)
