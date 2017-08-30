@@ -27,4 +27,4 @@ _**More [Screenshots](docs/Screenshots.md) here**_
 ![](docs/Home_Log2Console_3.png)
 
 ## Download
-Latest Release: (releases/latest)
+[Log2Console](releases/latest)
