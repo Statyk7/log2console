@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Log2Console.Properties;
 using log4net.Config;
@@ -720,11 +721,14 @@ namespace Log2Console
 
                 sb.Append(logMsgItem.GetMessageDetails());
 
+                // Removing trailing '}' char
+                sb.Remove(sb.Length - 1, 1);
+
                 if (UserSettings.Instance.ShowMsgDetailsProperties)
                 {
                     // Append properties
                     foreach (KeyValuePair<string, string> kvp in logMsgItem.Message.Properties)
-                        sb.AppendFormat("{0} = {1}{2}", kvp.Key, kvp.Value, Environment.NewLine);
+                        sb.AppendFormat("{0} = {1}{2}", kvp.Key, kvp.Value, "\\line\n");
                 }
 
 
@@ -740,9 +744,16 @@ namespace Log2Console
                     }
                 }
 
+                // Closing rtf document
+                sb.Append('}');
+
+                var rtf = sb.ToString();
+
+                // Since rtf only support 7-bit text encoding, we need to escape non-ASCII chars
+                rtf = Regex.Replace(rtf, "[^\x00-\x7F]", m => string.Format(@"\u{0}{1}", (short)m.Value[0], m.Value[0]));
 
                 logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
-                logDetailTextBox.Rtf = sb.ToString();
+                logDetailTextBox.Rtf = rtf;
 
                 OpenSourceFile(logMsgItem.Message.SourceFileName, logMsgItem.Message.SourceFileLineNr);
             }
