@@ -58,6 +58,8 @@ namespace Log2Console
         // Specific event handler on minimized action
         public event EventHandler Minimized;
 
+        private static readonly Regex Stacktrace = new Regex(@"([\S]+\.[\w\d]{1,3}):(line|строка) (\d+)", RegexOptions.Compiled|RegexOptions.IgnoreCase);
+
 
         public MainForm()
         {
@@ -845,39 +847,16 @@ namespace Log2Console
         {
             bool stackTraceFileDetected = false;
 
-            //Detect a C Sharp File                
-            int endOfFileIndex = line.ToLower().LastIndexOf(".cs");
-            if (endOfFileIndex != -1)
+            var match = Stacktrace.Match(line);
+            if (match.Success)
             {
-                var leftTruncatedFile = line.Substring(0, endOfFileIndex + 3);
-                int startOfFileIndex = leftTruncatedFile.LastIndexOf(":") - 1;
-                if (startOfFileIndex >= 0)
-                {
-                    string fileName = leftTruncatedFile.Substring(startOfFileIndex, leftTruncatedFile.Length - startOfFileIndex);
+                var fileName = match.Groups[1].Value;
+                var fileLine = match.Groups[3].Value;
 
-                    const string lineSignature = ":line ";
-                    int lineIndex = line.ToLower().LastIndexOf(lineSignature);
-                    if (lineIndex != -1)
-                    {
-                        int lineSignatureLength = lineSignature.Length;
-                        var lineNrString = line.Substring(lineIndex + lineSignatureLength,
-                                                            line.Length - lineIndex - lineSignatureLength);
-                        lineNrString = lineNrString.TrimEnd(new[] { ',' });
-                        if (!string.IsNullOrEmpty(lineNrString))
-                        {
-                            uint parsedLineNr;
-                            if (uint.TryParse(lineNrString, out parsedLineNr))
-                            {
-                                int fileLine = (int)parsedLineNr;
-                                stackTraceFileDetected = true;
+                stackTraceFileDetected = true;
 
-                                tbExceptions.SelectedText = line.Substring(0, startOfFileIndex - 1) + " ";
-                                tbExceptions.InsertLink(string.Format("{0} line:{1}",
-                                                                fileName, fileLine));
-                            }
-                        }
-                    }
-                }
+                tbExceptions.SelectedText = line.Substring(0, match.Groups[0].Index - 1) + " ";
+                tbExceptions.InsertLink(string.Format("{0} line:{1}", fileName, fileLine));
             }
 
             return stackTraceFileDetected;

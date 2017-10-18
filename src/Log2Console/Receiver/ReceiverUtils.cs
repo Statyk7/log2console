@@ -1,4 +1,4 @@
-﻿using Log2Console.Log;
+using Log2Console.Log;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -124,7 +124,7 @@ namespace Log2Console.Receiver
                             break;
 
                         case "log4j:throwable":
-                            logMsg.Message += Environment.NewLine + reader.ReadString();
+                            logMsg.ExceptionString += reader.ReadString() + Environment.NewLine;
                             break;
 
                         case "log4j:locationInfo":
@@ -144,9 +144,10 @@ namespace Log2Console.Receiver
                             break;
 
                         case "log4j:properties":
+                        case "nlog:properties":
                             reader.Read();
                             while (reader.MoveToContent() == XmlNodeType.Element
-                                   && reader.Name == "log4j:data")
+                                   && reader.LocalName == "data")
                             {
                                 string name = reader.GetAttribute("name");
                                 string value = reader.GetAttribute("value");
