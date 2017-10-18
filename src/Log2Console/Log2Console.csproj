@@ -79,12 +79,21 @@
   <ItemGroup>
     <Reference Include="ICSharpCode.TextEditor, Version=3.2.1.6466, Culture=neutral, PublicKeyToken=4d61825e8dd49f1a, processorArchitecture=MSIL">
       <HintPath>..\packages\ICSharpCode.TextEditor.3.2.1.6466\lib\Net20\ICSharpCode.TextEditor.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\External\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Core.1.1.0.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAPICodePack-Shell.1.1.0.0\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -129,17 +138,6 @@
     <Compile Include="Settings\FieldType.cs" />
     <Compile Include="Settings\LayoutSettings.cs" />
     <Compile Include="Settings\SourceFileLocation.cs" />
-    <Compile Include="Win32ApiCodePack\CommonDllNames.cs" />
-    <Compile Include="Win32ApiCodePack\Core.cs" />
-    <Compile Include="Win32ApiCodePack\TabbedThumbnailNativeMethods.cs" />
-    <Compile Include="Win32ApiCodePack\TaskbarManager.cs" />
-    <Compile Include="Win32ApiCodePack\TaskbarNativeMethods.cs" />
-    <Compile Include="Win32ApiCodePack\TaskbarProgressBarState.cs" />
-    <Compile Include="Win32ApiCodePack\TaskbarWindow.cs" />
-    <Compile Include="Win32ApiCodePack\TaskbarWindowManager.cs" />
-    <Compile Include="Win32ApiCodePack\ThumbnailToolbarButton.cs" />
-    <Compile Include="Win32ApiCodePack\ThumbnailToolbarManager.cs" />
-    <Compile Include="Win32ApiCodePack\ThumbnailToolbarProxyWindow.cs" />
     <EmbeddedResource Include="AboutForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutForm.cs</DependentUpon>
@@ -270,9 +268,7 @@
     <Content Include="res\pin.png" />
     <Content Include="res\saveas16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\RichTextBoxLinks\RichTextBoxLinks.csproj">
       <Project>{8B833B00-BB4C-4FAF-B6C4-BF77824F96A1}</Project>

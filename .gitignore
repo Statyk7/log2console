@@ -1,0 +1,13 @@
+bin
+obj
+StyleCop.Cache
+_ReSharper*
+_TeamCity.*
+*.user
+*.suo
+*.~*
+.*
+
+!.gitignore
+
+src/packages
