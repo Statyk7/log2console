@@ -124,7 +124,7 @@ namespace Log2Console.Receiver
                             break;
 
                         case "log4j:throwable":
-                            logMsg.ExceptionString += reader.ReadString() + Environment.NewLine;
+                            logMsg.ExceptionString = reader.ReadString();
                             break;
 
                         case "log4j:locationInfo":
