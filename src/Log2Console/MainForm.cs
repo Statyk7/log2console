@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Log2Console.Properties;
 using log4net.Config;
@@ -44,9 +45,9 @@ namespace Log2Console
         private Timer _taskbarProgressTimer;
         private const int _taskbarProgressTimerPeriod = 2000;
         private bool _addedLogMessage;
-        private readonly ThumbnailToolbarButton _pauseWinbarBtn;
-        private readonly ThumbnailToolbarButton _autoScrollWinbarBtn;
-        private readonly ThumbnailToolbarButton _clearAllWinbarBtn;
+        private readonly ThumbnailToolBarButton _pauseWinbarBtn;
+        private readonly ThumbnailToolBarButton _autoScrollWinbarBtn;
+        private readonly ThumbnailToolBarButton _clearAllWinbarBtn;
 
         private readonly Queue<LogMessage> _eventQueue;
         private Timer _logMsgTimer;
@@ -56,6 +57,8 @@ namespace Log2Console
 
         // Specific event handler on minimized action
         public event EventHandler Minimized;
+
+        private static readonly Regex Stacktrace = new Regex(@"([\S]+\.[\w\d]{1,3}):(line|строка) (\d+)", RegexOptions.Compiled|RegexOptions.IgnoreCase);
 
 
         public MainForm()
@@ -110,25 +113,26 @@ namespace Log2Console
                 try
                 {
                     // Taskbar Progress
-                    TaskbarManager.Instance.ApplicationId = Text;
+                    // This line is needed for pinning current window to TaskbarManager
+                    TaskbarManager.Instance.SetOverlayIcon(null, null);
                     _taskbarProgressTimer = new Timer(OnTaskbarProgressTimer, null, _taskbarProgressTimerPeriod, _taskbarProgressTimerPeriod);
 
                     // Pause Btn
-                    _pauseWinbarBtn = new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon()), pauseBtn.ToolTipText);
+                    _pauseWinbarBtn = new ThumbnailToolBarButton(Icon.FromHandle(((Bitmap)pauseBtn.Image).GetHicon()), pauseBtn.ToolTipText);
                     _pauseWinbarBtn.Click += pauseBtn_Click;
 
                     // Auto Scroll Btn
                     _autoScrollWinbarBtn =
-                        new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)autoLogToggleBtn.Image).GetHicon()), autoLogToggleBtn.ToolTipText);
+                        new ThumbnailToolBarButton(Icon.FromHandle(((Bitmap)autoLogToggleBtn.Image).GetHicon()), autoLogToggleBtn.ToolTipText);
                     _autoScrollWinbarBtn.Click += autoLogToggleBtn_Click;
 
                     // Clear All Btn
                     _clearAllWinbarBtn =
-                        new ThumbnailToolbarButton(Icon.FromHandle(((Bitmap)clearLoggersBtn.Image).GetHicon()), clearLoggersBtn.ToolTipText);
+                        new ThumbnailToolBarButton(Icon.FromHandle(((Bitmap)clearLoggersBtn.Image).GetHicon()), clearLoggersBtn.ToolTipText);
                     _clearAllWinbarBtn.Click += clearAll_Click;
 
                     // Add Btns
-                    TaskbarManager.Instance.ThumbnailToolbars.AddButtons(Handle, _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
+                    TaskbarManager.Instance.ThumbnailToolBars.AddButtons(Handle, _pauseWinbarBtn, _autoScrollWinbarBtn, _clearAllWinbarBtn);
                 }
                 catch (Exception)
                 {
@@ -154,7 +158,7 @@ namespace Log2Console
         private const int SIZE_MINIMIZED = 1;
         /// <summary>
         /// Catch on minimize event
-        /// @author : Asbj�rn Ulsberg -=|=- asbjornu@hotmail.com
+        /// @author : Asbjшrn Ulsberg -=|=- asbjornu@hotmail.com
         /// </summary>
         /// <param name="msg"></param>
         protected override void WndProc(ref Message msg)
@@ -664,6 +668,7 @@ namespace Log2Console
         {
             if (_isWin7orLater)
             {
+                Process.GetCurrentProcess().Refresh();
                 TaskbarManager.Instance.SetProgressState(_addedLogMessage
                                                                 ? TaskbarProgressBarState.Indeterminate
                                                                 : TaskbarProgressBarState.NoProgress);
@@ -718,11 +723,14 @@ namespace Log2Console
 
                 sb.Append(logMsgItem.GetMessageDetails());
 
+                // Removing trailing '}' char
+                sb.Remove(sb.Length - 1, 1);
+
                 if (UserSettings.Instance.ShowMsgDetailsProperties)
                 {
                     // Append properties
                     foreach (KeyValuePair<string, string> kvp in logMsgItem.Message.Properties)
-                        sb.AppendFormat("{0} = {1}{2}", kvp.Key, kvp.Value, Environment.NewLine);
+                        sb.AppendFormat("{0} = {1}{2}", kvp.Key, kvp.Value, "\\line\n");
                 }
 
 
@@ -738,9 +746,16 @@ namespace Log2Console
                     }
                 }
 
+                // Closing rtf document
+                sb.Append('}');
+
+                var rtf = sb.ToString();
+
+                // Since rtf only support 7-bit text encoding, we need to escape non-ASCII chars
+                rtf = Regex.Replace(rtf, "[^\x00-\x7F]", m => string.Format(@"\u{0}{1}", (short)m.Value[0], m.Value[0]));
 
                 logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
-                logDetailTextBox.Rtf = sb.ToString();
+                logDetailTextBox.Rtf = rtf;
 
                 OpenSourceFile(logMsgItem.Message.SourceFileName, logMsgItem.Message.SourceFileLineNr);
             }
@@ -832,39 +847,16 @@ namespace Log2Console
         {
             bool stackTraceFileDetected = false;
 
-            //Detect a C Sharp File                
-            int endOfFileIndex = line.ToLower().LastIndexOf(".cs");
-            if (endOfFileIndex != -1)
+            var match = Stacktrace.Match(line);
+            if (match.Success)
             {
-                var leftTruncatedFile = line.Substring(0, endOfFileIndex + 3);
-                int startOfFileIndex = leftTruncatedFile.LastIndexOf(":") - 1;
-                if (startOfFileIndex >= 0)
-                {
-                    string fileName = leftTruncatedFile.Substring(startOfFileIndex, leftTruncatedFile.Length - startOfFileIndex);
+                var fileName = match.Groups[1].Value;
+                var fileLine = match.Groups[3].Value;
 
-                    const string lineSignature = ":line ";
-                    int lineIndex = line.ToLower().LastIndexOf(lineSignature);
-                    if (lineIndex != -1)
-                    {
-                        int lineSignatureLength = lineSignature.Length;
-                        var lineNrString = line.Substring(lineIndex + lineSignatureLength,
-                                                            line.Length - lineIndex - lineSignatureLength);
-                        lineNrString = lineNrString.TrimEnd(new[] { ',' });
-                        if (!string.IsNullOrEmpty(lineNrString))
-                        {
-                            uint parsedLineNr;
-                            if (uint.TryParse(lineNrString, out parsedLineNr))
-                            {
-                                int fileLine = (int)parsedLineNr;
-                                stackTraceFileDetected = true;
+                stackTraceFileDetected = true;
 
-                                tbExceptions.SelectedText = line.Substring(0, startOfFileIndex - 1) + " ";
-                                tbExceptions.InsertLink(string.Format("{0} line:{1}",
-                                                                fileName, fileLine));
-                            }
-                        }
-                    }
-                }
+                tbExceptions.SelectedText = line.Substring(0, match.Groups[0].Index - 1) + " ";
+                tbExceptions.InsertLink(string.Format("{0} line:{1}", fileName, fileLine));
             }
 
             return stackTraceFileDetected;
