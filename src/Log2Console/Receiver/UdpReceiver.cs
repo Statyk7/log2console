@@ -72,10 +72,13 @@ namespace Log2Console.Receiver
                 return
                     "Configuration for log4net:" + Environment.NewLine +
                     "<appender name=\"UdpAppender\" type=\"log4net.Appender.UdpAppender\">" + Environment.NewLine +
-                    "    <remoteAddress value=\"localhost\" />" + Environment.NewLine +
+                    "    <remoteAddress value=\"127.0.0.1\" />" + Environment.NewLine +
                     "    <remotePort value=\"7071\" />" + Environment.NewLine +
                     "    <layout type=\"log4net.Layout.XmlLayoutSchemaLog4j\" />" + Environment.NewLine +
-                    "</appender>";
+                    "</appender>" + Environment.NewLine +
+                    + Environment.NewLine +
+                    "And add appender to log4net <root>:"+ Environment.NewLine +
+                    "<appender-ref ref=\"UdpAppender\" />";
             }
         }
 
