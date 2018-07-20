@@ -154,7 +154,7 @@ namespace Log2Console
         private const int SIZE_MINIMIZED = 1;
         /// <summary>
         /// Catch on minimize event
-        /// @author : Asbjørn Ulsberg -=|=- asbjornu@hotmail.com
+        /// @author : Asbjorn Ulsberg -=|=- asbjornu@hotmail.com
         /// </summary>
         /// <param name="msg"></param>
         protected override void WndProc(ref Message msg)
