@@ -160,16 +160,31 @@ namespace Log2Console.Log
         public string GetMessageDetails()
         {
             var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
-            foreach (var fieldType in UserSettings.Instance.MessageDetailConfiguration)
+
+            if (UserSettings.Instance.UseMsgDetailsRtf)
             {
-                var info = GetInformation(fieldType).Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
-                sb.Append(@"\b " + fieldType.Field + @": \b0 ");
-                if (info.Length > 40)
-                    sb.Append(@" \line ");
-                sb.Append(info + @" \line ");
+                sb.Append(@"{\rtf1\ansi ");
+                foreach (var fieldType in UserSettings.Instance.MessageDetailConfiguration)
+                {
+                    var info = GetInformation(fieldType).Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+                    sb.Append(@"\b " + fieldType.Field + @": \b0 ");
+                    if (info.Length > 40)
+                        sb.Append(@" \line ");
+                    sb.Append(info + @" \line ");
+                }
+                sb.Append(@"}");
             }
-            sb.Append(@"}");
+            else
+            {
+                foreach (var fieldType in UserSettings.Instance.MessageDetailConfiguration)
+                {
+                    var info = GetInformation(fieldType);
+                    sb.Append(fieldType.Field + ": ");
+                    if (info.Length > 40)
+                        sb.AppendLine();
+                    sb.AppendLine(info);
+                }
+            }
             return sb.ToString();
         }
     }

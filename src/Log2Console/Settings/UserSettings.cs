@@ -104,6 +104,7 @@ namespace Log2Console.Settings
 
         private bool _msgDetailsProperties = false;
         private bool _msgDetailsException = true;
+        private bool _msgDetailsUseRtf = true;
 
         private LogLevelInfo _logLevelInfo;
         private List<IReceiver> _receivers = new List<IReceiver>();
@@ -406,6 +407,15 @@ namespace Log2Console.Settings
         {
             get { return _msgDetailsException; }
             set { _msgDetailsException = value; }
+        }
+
+        [Category("Message Details")]
+        [Description("Use the Rich Text Format")]
+        [DisplayName("Use Rtf")]
+        public bool UseMsgDetailsRtf
+        {
+            get { return _msgDetailsUseRtf; }
+            set { _msgDetailsUseRtf = value; }
         }
 
         [Category("Fonts")]

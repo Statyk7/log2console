@@ -740,7 +740,8 @@ namespace Log2Console
 
 
                 logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
-                logDetailTextBox.Rtf = sb.ToString();
+                if (UserSettings.Instance.UseMsgDetailsRtf) logDetailTextBox.Rtf = sb.ToString();
+                else logDetailTextBox.Text = sb.ToString();
 
                 OpenSourceFile(logMsgItem.Message.SourceFileName, logMsgItem.Message.SourceFileLineNr);
             }
