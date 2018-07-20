@@ -154,7 +154,7 @@ namespace Log2Console
         private const int SIZE_MINIMIZED = 1;
         /// <summary>
         /// Catch on minimize event
-        /// @author : Asbjørn Ulsberg -=|=- asbjornu@hotmail.com
+        /// @author : Asbjorn Ulsberg -=|=- asbjornu@hotmail.com
         /// </summary>
         /// <param name="msg"></param>
         protected override void WndProc(ref Message msg)
@@ -740,7 +740,8 @@ namespace Log2Console
 
 
                 logDetailTextBox.ForeColor = logMsgItem.Message.Level.Color;
-                logDetailTextBox.Rtf = sb.ToString();
+                if (UserSettings.Instance.UseMsgDetailsRtf) logDetailTextBox.Rtf = sb.ToString();
+                else logDetailTextBox.Text = sb.ToString();
 
                 OpenSourceFile(logMsgItem.Message.SourceFileName, logMsgItem.Message.SourceFileLineNr);
             }
@@ -944,7 +945,7 @@ namespace Log2Console
             if (String.IsNullOrEmpty(logDetailTextBox.Text))
                 return;
 
-            Clipboard.SetText(logDetailTextBox.Text);
+            Clipboard.SetDataObject(logDetailTextBox.Text, false, 5, 200);
         }
 
         private void aboutBtn_Click(object sender, EventArgs e)
@@ -1316,7 +1317,7 @@ namespace Log2Console
                     builder.AppendLine(logMsgItem.Message.ToString());
             }
 
-            Clipboard.SetText(builder.ToString());
+            Clipboard.SetDataObject(builder.ToString(), false, 5, 200);
         }
     }
 }
