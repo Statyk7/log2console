@@ -163,7 +163,7 @@ namespace Log2Console.Log
             sb.Append(@"{\rtf1\ansi ");
             foreach (var fieldType in UserSettings.Instance.MessageDetailConfiguration)
             {
-                var info = GetInformation(fieldType).Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");
+                var info = GetInformation(fieldType).Replace(@"\", @"\\").Replace("\r\n", @" \line ").Replace("\n", @" \line ").Replace("{", @"\{").Replace("}", @"\}");
                 sb.Append(@"\b " + fieldType.Field + @": \b0 ");
                 if (info.Length > 40)
                     sb.Append(@" \line ");
