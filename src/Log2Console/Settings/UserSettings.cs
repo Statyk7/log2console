@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using Log2Console.Log;
 using Log2Console.Receiver;
-
+using System.Reflection;
 
 namespace Log2Console.Settings
 {
@@ -66,6 +66,9 @@ namespace Log2Console.Settings
 
         [NonSerialized] 
         private Dictionary<string, string> _sourceCodeLocationMap;
+
+        [NonSerialized]
+        private bool _portableMode;
 
         private static UserSettings _instance;
 
@@ -145,13 +148,14 @@ namespace Log2Console.Settings
             set { _instance = value; }
         }
 
-        public static bool Load()
+        public static bool Load(bool portableMode)
         {
             bool ok = false;
 
             _instance = new UserSettings();
+            _instance._portableMode = portableMode;
 
-            string settingsFilePath = GetSettingsFilePath();
+            string settingsFilePath = GetSettingsFilePath(portableMode);
             if (!File.Exists(settingsFilePath))
                 return ok;
 
@@ -190,23 +194,33 @@ namespace Log2Console.Settings
                     ok = false;
                 }
             }
+            _instance._portableMode = portableMode;
 
             return ok;
         }
 
-        private static string GetSettingsFilePath()
+        private static string GetSettingsFilePath(bool portableMode)
         {
-            string userDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            
-            DirectoryInfo di = new DirectoryInfo(userDir);
-            di = di.CreateSubdirectory("Log2Console");
+            if (portableMode)
+            {
+                string startupPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            return di.FullName + Path.DirectorySeparatorChar + SettingsFileName;
+                return Path.Combine(startupPath, SettingsFileName);
+            }
+            else
+            {
+                string userDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                DirectoryInfo di = new DirectoryInfo(userDir);
+                di = di.CreateSubdirectory("Log2Console");
+
+                return Path.Combine(di.FullName, SettingsFileName);
+            }
         }
 
         public void Save()
         {
-            string settingsFilePath = GetSettingsFilePath();
+            string settingsFilePath = GetSettingsFilePath(this._portableMode);
 
             using (FileStream fs = new FileStream(settingsFilePath, FileMode.Create))
             {
