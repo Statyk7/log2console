@@ -85,7 +85,8 @@ namespace Log2Console
             _loggersPanelFloaty.Docking += OnFloatyDocking;
 
             // Settings
-            _firstStartup = !UserSettings.Load();
+            bool portableMode = Environment.GetCommandLineArgs().Contains("--portable");
+            _firstStartup = !UserSettings.Load(portableMode);
             if (_firstStartup)
             {
                 // Initialize default layout
