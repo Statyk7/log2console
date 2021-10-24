@@ -29,7 +29,7 @@ namespace ICSharpCode.TextEditor.Util
 			
 			StringBuilder rtf = new StringBuilder();
 			
-			rtf.Append(@"{\rtf1\ansi\ansicpg1252\deff0\deflang1031");
+			rtf.Append(@"{\rtf1\ansi\ansicpg1252\deff0\deflang1031\ansicpg932");	// Localizing Japanese
 			BuildFontTable(textArea.Document, rtf);
 			rtf.Append('\n');
 			

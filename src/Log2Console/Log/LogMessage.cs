@@ -160,7 +160,7 @@ namespace Log2Console.Log
         public string GetMessageDetails()
         {
             var sb = new StringBuilder();
-            sb.Append(@"{\rtf1\ansi ");
+            sb.Append(@"{\rtf1\ansi\ansicpg932 ");      // Localizing Japanese
             foreach (var fieldType in UserSettings.Instance.MessageDetailConfiguration)
             {
                 var info = GetInformation(fieldType).Replace(@"\", @"\\").Replace("{", @"\{").Replace("}", @"\}");

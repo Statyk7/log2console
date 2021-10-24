@@ -27,6 +27,10 @@ namespace Log2Console.Settings
       Dictionary<string, ReceiverFactory.ReceiverInfo> receiverTypes = ReceiverFactory.Instance.ReceiverTypes;
       foreach (KeyValuePair<string, ReceiverFactory.ReceiverInfo> kvp in receiverTypes)
       {
+          // Exclude: WinDebug
+          if (System.Text.RegularExpressions.Regex.IsMatch(kvp.Value.Name, "^WinDebug "))
+            continue;
+
           ToolStripItem item = null;
 
           if (quickFileOpen)

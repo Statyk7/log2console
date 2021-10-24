@@ -177,7 +177,7 @@ namespace RichTextBoxLinks
 				throw new ArgumentOutOfRangeException("position");
 
 			this.SelectionStart = position;
-			this.SelectedRtf = @"{\rtf1\ansi "+text+@"\v #"+hyperlink+@"\v0}";
+			this.SelectedRtf = @"{\rtf1\ansi\ansicpg932 " + text+@"\v #"+hyperlink+@"\v0}";		// Localizing Japanese
 			this.Select(position, text.Length + hyperlink.Length + 1);
 			this.SetSelectionLink(true);
 			this.Select(position + text.Length + hyperlink.Length + 1, 0);
